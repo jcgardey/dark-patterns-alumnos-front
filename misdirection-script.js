@@ -2,6 +2,7 @@
 //contraste de luminancia basado en la fórmula de luminosidad relativa del W3C (fue un dolor de cabeza :c)
 // LINK: https://www.w3.org/WAI/GL/wiki/Relative_luminance
 
+//TODO: SELECCIONAR BUTTONS Y PROBAR MISSDIRECTION
 
 function getLuminance(r, g, b) {
     const a = [r, g, b].map(v => {

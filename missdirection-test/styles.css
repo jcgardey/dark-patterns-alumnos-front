@@ -1,0 +1,149 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f8f8;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.pricing-container {
+    display: flex;
+    gap: 20px;
+}
+
+.plan-options {
+    width: 200px;
+}
+
+.plan-options h2 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+.billing-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.option {
+    display: flex;
+    align-items: center;
+}
+
+.option input {
+    margin-right: 10px;
+}
+
+.option label {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    cursor: pointer;
+}
+
+.discount {
+    color: #4d52f5;
+    font-weight: bold;
+}
+
+.plan-cards {
+    display: flex;
+    gap: 20px;
+}
+
+.plan-card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    width: 250px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.plan-card h3 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+}
+
+.plan-desc {
+    font-size: 1rem;
+    color: #1a1919;
+    margin-bottom: 20px;
+}
+
+.plan-card ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+.plan-card ul li {
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+    position: relative;
+    padding-left: 20px;
+}
+
+.plan-card ul li:before {
+    content: "✔";
+    position: absolute;
+    left: 0;
+    color: #4d52f5;
+}
+
+.free {
+    background-color: #f0f0f0; /* back más claro para reducir su prominencia */
+    color: #575757; 
+}
+
+.price {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.price small {
+    font-size: 0.8rem;
+    color: #fff4f4; 
+}
+
+.plan-card button {
+    background-color: #000;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.plan-card.pro {
+    background-color: #2b2ecf; /* azul mas oscuro  */
+    color: white; /* texto blanco para mas contraste */
+    font-weight: bold; 
+}
+
+.plan-card.pro button {
+    background-color: #eeeeee; /* botón más oscuro del fondo */
+    color: #2b2ecf; 
+    font-weight: bold; 
+}
+
+
+.plan-card.premium {
+    background-color: #fa7e18; 
+    color: white;
+    font-weight: bold; 
+}
+
+.plan-card.premium button {
+    background-color: #fff;
+    color: #f58427; 
+    font-weight: bold; 
+}

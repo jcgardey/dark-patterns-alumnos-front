@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Misdirection test</title>
+    <link rel="stylesheet" href="styles.css">
+
+    <script type="module" src="../missdirection-script.js"></script>
+</head>
+<body>
+    <div class="pricing-container">
+        <div class="plan-options">
+            <h2>Elige tu plan</h2>
+            <div class="billing-options">
+                <div class="option">
+                    <input type="radio" id="anual" name="billing" checked>
+                    <label for="anual">
+                        <span>Facturación anual</span>
+                        <span class="discount">Ahorra un 17% ¡oh sí!</span>
+                    </label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="mensual" name="billing">
+                    <label for="mensual">Facturación mensual</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="plan-cards">
+            <div class="plan-card free">
+                <h3>Gratis</h3>
+                <p class="plan-desc">Enviar archivos de vez en cuando</p>
+                <ul>
+                    <li>Envia hasta 2 GB</li>
+                    <li>No hace falta verificar transferencias</li>
+                    <li>Prueba portales y revisiones</li>
+                    <li>Hasta 20 descargas por transferencia</li>
+                </ul>
+                <div class="price">
+                    <span>$0</span>
+                    <p>sin pagar un solo céntimo</p>
+                </div>
+                <button>Crear cuenta</button>
+            </div>
+
+            <div class="plan-card pro">
+                <h3>Pro</h3>
+                <p class="plan-desc">Enviar archivos muy grandes a menudo</p>
+                <ul>
+                    <li>Enviar y recibir hasta 200 GB</li>
+                    <li>1 TB de almacenamiento por persona</li>
+                    <li>5 portales, revisiones ilimitadas</li>
+                    <li>Descargas ilimitadas por transferencia</li>
+                </ul>
+                <div class="price">
+                    <span>$10 <small>USD/mes</small></span>
+                    <p>por persona, facturado anualmente</p>
+                </div>
+                <button>Registrarse</button>
+            </div>
+
+            <div class="plan-card premium">
+                <h3>Premium</h3>
+                <p class="plan-desc">Compartir trabajo sin límites</p>
+                <ul>
+                    <li>Transferencias sin límite de tamaño</li>
+                    <li>Almacenamiento ilimitado</li>
+                    <li>Portales y revisiones ilimitadas</li>
+                    <li>Descargas ilimitadas por transferencia</li>
+                </ul>
+                <div class="price">
+                    <span>$19 <small>USD/mes</small></span>
+                    <p>por persona, facturado anualmente</p>
+                </div>
+                <button>Registrarse</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

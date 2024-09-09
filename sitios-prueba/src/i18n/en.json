@@ -1,0 +1,343 @@
+{
+    "Rental": {
+        "Title": "Rent a Car",
+        "Start": "Start a Reservation",
+        "Location": "Location",
+        "Dates": "Dates",
+        "Search": "Search",
+        "NavBar": {
+            "Reservations": "Reservations",
+            "Deals": "Deals",
+            "Vehicles": "Vehicles",
+            "Locations": "Locations"
+        },
+        "Featured": {
+            "Title": "Featured Car Rental Deals",
+            "Last_Minute": {
+                "Title": "Last Minute Specials",
+                "Description": "Check out great last minute car rental specials for daily and weekly rentals in the U.S and Canada."
+            },
+            "Plan_Ahead": {
+                "Title": "Plan Ahead Specials",
+                "Description": "Book your next rental car in advance with Plan Ahead Specials and save money on rentals in the U.S and Canada."
+            }
+        },
+        "SelectVehicle": "Select a Vehicle",
+        "Filters": "Filters",
+        "Vehicle": {
+            "Sedan": "Sedan",
+            "SUV": "SUV",
+            "Coupe": "Coupe",
+            "Convertible": "Convertible",
+            "Pickup": "Pickup",
+            "Similar": "or similar",
+            "Seats_one": "{{count}} seat",
+            "Seats_other": "{{count}} seats",
+            "Bags_one": "{{count}} bag",
+            "Bags_other": "{{count}} bags",
+            "Price": "{{price }} / day",
+            "Select": "Select",
+            "Filters" : {
+                "Title": "Filters",
+                "Type": "Vehicle Type",
+                "Seats": "Seats"
+            }
+        },
+        "Protection": {
+          "Select": "Choose your protection",
+              "Basic": {
+                  "Name": "Basic Cover Protection",
+                  "Description": "Avoid paying for damage or theft of your rental vehicle."    
+              },
+              "Standard": {
+                  "Name": "Standard Cover Protection",
+                  "Description": "Protect yourself from third party accident or injury claims up to $1M."
+              },
+              "Total": {
+                  "Name": "Full Cover Protection",
+                  "Description": "Free 24/7 roadside assistance for flat tires, lost keys and dead battery."
+              },
+              "Price": "{{price }} / day",
+              "Next": "Next",
+              "NoProtection": {
+                "Title": "Continue without additional protection?",
+                "Description": "You are liable for all damage and theft up to the full value of the rental vehicle, as well as third party accident and injury claims, plus admin fees. Your personal insurance or credit card may not fully cover this rental.",
+                "Add": "Add protection",
+                "Skip": "Yes, I will take care of any expenses that may be incurred"
+             },
+             "Featured": "Recommended"
+        },
+        "Review": {
+            "Title": "Review and book",
+            "Book": "Pay and book",
+            "Driver": {
+                "Title": "Driver details",
+                "Name": "Name",
+                "Email": "Email"
+            },
+            "Payment": {
+                "Method": "Payment Method",
+                "Card": {
+                    "Number": "C<span>ard</span> number",
+                    "Holder": "C<span>ard</span> holder name",
+                    "Month": "Month",
+                    "Year": "Year",
+                    "CVV": "<span>CV</span>V"
+                }
+            },
+            "Order": {
+                "Unlimited": "Unlimited miles",
+                "Tires": "Tires and battery fee",
+                "Rental": "Rental surcharge",
+                "License": "Vehicle license fee"
+            },
+            "Confirmation": {
+                "Title": "Reservation Confirmed",
+                "Message": "Details will be sent to {{email}}.",
+                "Close": "Click to close this window"
+            }
+        }
+    },
+    "Checkin": {
+        "Home":{
+            "Flights":"Flights",
+            "SelfCheckin": "Self Check In",
+            "Hotels": "Hotels",
+            "CarHire":"Car Hire",
+            "Deals":"Last-Minute Deals",
+            "Home":"Home",
+            "CheckIn":"Check In",
+            "Services":"Services",
+            "Terms":"Terms",
+            "Contact":"Contact",
+            "Subscribe": "Subscribe now and get the best deals",
+            "LearnDeals": " Learn about latest deals",
+            "Promotions": "Be the first to get promotions",
+            "NewDestinations": "Learn about new destinations",
+            "MissSale": "Never miss a sale!",
+            "30off": "30% off"
+        },
+        "Passenger": {
+            "Title": "Check In Information",
+            "Name": "Name",
+            "From": "From",
+            "To": "To",
+            "Search": "Search",
+            "Code": "Reservation Code",
+            "Surname": "Last Name",
+            "FullName": "Full Name",
+            "Birthdate": "Birthdate",
+            "Gender": {
+                "Label": "Gender",
+                "Male": "Male",
+                "Female": "Female"
+            },
+            "IdType": "ID Type",
+            "IdNumber": "ID Number",
+            "IssueCountry": "Country of Issue",
+            "DueDate": "Due Date",
+            "Nationality": "Nationality",
+            "Passport": "Passport",
+            "Email": "Email",
+            "FindReservation": "Find Reservation",
+            "Subscribe": "Subscribe",
+            "SelectSeat": "Select Seat"
+        },
+        "Seat": {
+            "Title": "Seat Selection",
+            "Preferential": "Preferential Seat",
+            "Regular": "Regular Seat",
+            "Cheap": "Cheap Seat",
+            "Occupied": "Occupied Seat",
+            "Continue": "Continue",
+            "NoSeat": "I don't want to select a seat",
+            "Passengers": "Passenger",
+            "Flights": "Flights",
+            "SmallBag": "SmallBag",
+            "ReservationInfo": "Reservation Info",
+            "ReservationDate1": "Mon 23 Sep - 16:25-00:55 - AS 3077",
+            "ReservationDate2": "Sun 29 Sep - 06:15-08:00 - AS 4132"
+        },
+        "Summary": {
+            "Completed": "Checkin Completed",
+            "BoardingPass": "Your boarding pass will be sent to your registered email.",
+            "Thanks": "Thanks for choosing AirSomewhere.",
+            "Title":"Summary",
+            "Taxes": "Taxes",
+            "Seat": "Seat Selection",
+            "Discount": "Discount",
+            "Back": "Back to seat selection",
+            "Continue": "Continue"
+        }
+    },
+    "Roomio": {
+        "Search": {
+            "People": "People",
+            "Destination": "Destination",
+            "Search": "Search",
+            "Dates": "Dates",
+            "End": "End Date",
+            "Adults": "Adults",
+            "Adult_one": "{{count}} adult",
+            "Adult_other": "{{count}} adults"
+        },
+        "Results": {
+            "Sidebar": {
+                "Filters": "Filters",
+                "Centre": "Near center",
+                "Pet": "Pet friendly",
+                "Pool": "Swimming pool",
+                "Sauna": "Sauna"
+            },
+            "NoResults": "No rooms found for '{{ city }}'",
+            "Cancellation": "FREE cancellation You can cancel later, so lock in this great price today.",
+            "Night_one": "{{count}} night",
+            "Night_other": "{{count}} nights",
+            "Taxes": "taxes and charges",
+            "TaxesIncluded": "Taxes and charges are included",
+            "Book": "Book"
+        },
+        "Summary": {
+            "Summary": "Summary",
+            "Price_one": "Price for {{count}} night",
+            "Price_other": "Price for {{count}} nights",
+            "Taxes": "Taxes and charges",
+            "Total": "Total",
+            "Name": "Full Name",
+            "Buy": "Book"
+        }
+    },
+    "Ebook": {
+        "Home": "Home",
+        "Saved": "Saved",
+        "Recommended": "Recommended",
+        "Books": "Books",
+        "Audiobooks": "Audiobooks",
+        "AccountInfo":"Account Information",
+        "AccountType":"Account Type",
+        "Personal":"Personal",
+        "Password": "Password",
+        "MyMembership":"Membership",
+        "Logout":"Log out",
+        "Membership":{
+            "Details": "Membership & Payment Details",
+            "Unlimited": "Unlimited reading, at no additional cost",
+            "Learn": "Learn more about your full membership benefits",
+            "Books": "Books",
+            "Read": "Read bestselling books",
+            "Audiobooks": "Audiobooks",
+            "Listen": "Listen to new releases",
+            "Snapshots": "Snapshots",
+            "Gain": "Gain key insights trom books in 15 minutes",
+            "Documents": "Documents",
+            "community": "community uploads",
+            "Magazines": "Magazines",
+            "Find": "Find the latest issues",
+            "Sheet": "Sheet Music",
+            "Play": "Play classics & Don hits",
+            "Plan": "Membership Plan",
+            "Your": "Your membership will be automatically renewed on 8/24/2024 and you will be charged $8.99",
+            "Pause": "Pause Membership",
+            "End": "End My Membership",
+            "Payment": "Payment Details",
+            "Card": "Card: 2880",
+            "Update": "Update Payment Details",
+            "View": "View Payment History"
+        },
+        "Survey":{
+            "Before": "Before you go...",
+            "Which": "Which of the following reasons best describes why you want to cancel?",
+            "Choose": "Please, select an option",
+            "technical": "I'm having technical problems",
+            "enough": "I don't use ebookworld enough",
+            "Please": "Please tell us more about the problem you encountered.",
+            "expensive": "This subscription is too expensive",
+            "specific": "I can't find the specific content that I want to read",
+            "Other": "Other",
+            "Send": "Submit and continue cancellation",
+            "Cancel": "Cancel membership"
+        },
+        "Tease":{
+            "Before": "Before you go...",
+            "Extend": "Get a 30-day Discounted Period",
+            "Stay": "Stay with us and we will extend your subscription an additional 30 days for a discounted price.",
+            "Get30": "Get 30 more days",
+            "Try": "Try Ebookworld Lite for $4.99/Month", 
+            "Keep": "You will retain access to a limited selection of books and audiobooks, along with unlimited access to Snapshots, documents, news, magazines and sheet music.",
+            "TryLite": "Try Ebookworld Lite",
+            "Still": "Still prefer to cancel?",
+            "End": "Complete cancellation",
+            "Ended": "Membership cancelled"
+        }
+        
+    },
+    "Common": {
+        "Select": "Select",
+        "Start": "Start",
+        "Date": {
+            "Day": "Day",
+            "Month": "Month",
+            "Year": "Year",
+            "Months": {
+                "January": "January",
+                "February": "February",
+                "March": "March",
+                "April": "April",
+                "May": "May",
+                "June": "June",
+                "July": "July",
+                "August": "August",
+                "September": "September",
+                "October": "October",
+                "November": "November",
+                "December": "December"
+            }
+        },
+        "RequiredField": "{{ field}} is required",
+        "TasksFinished": "All tasks successfully completed",
+        "TaskFinished": "Task finished",
+        "Instructions": "Instructions",
+        "TaskGeneral":"You are a student on vacation with a very tight budget. You’re going to Madrid on September.",
+        "TaskCar": "You must rent a car for your trip to Madrid from Friday, September 20 to Monday, September 23 (3 days). You can only spend less than 100 USD.",
+        "TaskCheckin": "You have a flight from Madrid to Barcelona already booked and paid for. All that's left to do is to check in online with the booking code AAA123. You can't spend any more money.",
+        "TaskRoomio": "You need to book a room for one person in Madrid between Friday, Sept 20 and Monday, Sept 23 (3 nights). You're planning to spend less than USD 300.",
+        "TaskEBook": "Since you need to save some extra money for your trip, you want to cancel your current subscription to the EBooks store."
+    },
+    "Questionnaire": {
+        "Title": "Questionnaire",
+        "Description": "Please, answer the following questions",
+        "Agree": "Strongly Agree",
+        "Disagree": "Strongly Disagree",
+        "Finish": "Finish",
+        "Advantage": "I expect this website will not take advantage of me",
+        "Trustworthy": "I believe this website is trustworthy",
+        "Frustrating": "I thought this website was frustrating to use",
+        "Confusing": "I felt confused when using this site",
+        "Experience": "My experience using this site was comfortable",
+        "MandatoryResponses": "Please answer the questions to continue"
+    },
+    "Start": {
+        "Thanks": "Thanks for participating, please read carefully",
+        "Briefing": "You will be asked to complete 4 simple tasks (15' total estimated). Some will require credit card details, you can either enter fake numbers or use the autocomplete function that does this automatically.",
+        "Briefing2": "Sites are rebranded clones of real sites, so some links and buttons outside the scope of the tasks will not work.",
+        "Briefing3": "All collected data will be kept anonymous, we only ask for your email to participate in an optional follow-up evaluation.",
+        "TabOpen": "This tab will remain open, should you need to come back and check for the instructions.",
+        "Email": "Email (Optional, we are not going to send spam)",
+        "Age": "Age",
+        "Gender": "Gender",
+        "Country": "Country",
+        "Purchases": "Online purchases in the last 3 months",
+        "Genders": {
+            "Male": "Male",
+            "Female": "Female",
+            "Other": "Other"
+        },
+        "PurchaseOptions": {
+            "None": "None",
+            "1-3": "1-3",
+            "4-6": "4-6",
+            ">6": "> 6"
+        },
+        "Start": "Start"
+    }
+}

@@ -1,0 +1,40 @@
+.select-options {
+    width: 100%;
+    z-index: 9999;
+    position: absolute;
+    border-radius: .4em;
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: 300px;
+    background-color: white;
+    border: 1px solid #e2e2e2;
+    margin-top: 0.1em;
+}
+
+.select-wrapper {
+    padding: 0 !important;
+    position: relative;
+}
+
+.select-options.collapse {
+    display: none;
+}
+
+.select-wrapper .title {
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 6px;
+    background: url('https://selfrefactoring.s3.amazonaws.com/testsites/arrow-down.svg') right 10px center no-repeat;
+}
+
+.select-options .option {
+    padding: 4px;
+}
+
+.select-options .option:hover {
+    background-color: #6b6b6b;
+    color: white;
+    cursor: pointer;
+}

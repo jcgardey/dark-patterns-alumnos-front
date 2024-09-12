@@ -1,0 +1,169 @@
+
+a{
+	color: #CD5CDE;
+}
+
+.head .logo i{
+	font-size: 1.2em;
+	transform: rotate(30deg);
+	margin-right: 12px;
+}
+.head h1 a{
+	text-decoration: none;
+	color: white;
+}
+.head .search .btn{
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+	color: white;
+	background: #CD5CDE;
+	border: none;
+}
+.head .search .btn i{
+	margin: 0;
+}
+
+
+.head .account-icon i {
+	 text-align: center;
+	 font-size: 1.3em;
+}
+/* Sidebar */
+.sidebar{
+	padding: 40px 0;
+	background: #FFF5FE;
+}
+.sidebar ul{
+	list-style: none;
+}
+.sidebar ul li{
+	padding: 10px 6px;
+}
+.sidebar ul a{
+	text-decoration: none;
+	color: #707070;
+}
+.sidebar ul a i{
+	width: 25px;
+}
+
+
+/* Booklist */
+.booklist{
+	padding: 40px;
+}
+.booklist .card{
+	border: none;
+	display: inline-block;
+	margin: 5px 20px;
+	vertical-align:top
+}
+.booklist .card img{
+	height: 220px;
+}
+.booklist .card .card-body{
+	padding: 10px 0;
+	text-align: center;
+}
+.booklist .card .card-text{
+	font-size: .9em;
+	color: #666;
+	height: 60px;
+	overflow: hidden;
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;  
+}
+
+
+/* Membership */
+.benefits{
+	background: #fafafa;
+	max-width: 800px;
+	padding: 20px 40px;
+	border: 1px solid #ccc;
+}
+.benefits h4{
+	font-size: 1.3em;
+	border-bottom: 1px solid #ccc;
+	padding-bottom: 20px;
+}
+.benefits ul{
+	list-style-type: none;
+	padding: 20px 40px 0;
+	text-align: center;
+	margin: 0;
+}
+.benefits ul li{
+	display: inline-block;
+	height: 120px;
+	width: 120px;
+	text-align: center;
+	margin: 30px 40px;
+	vertical-align: top;
+}
+.benefits ul li i{
+	font-size: 1.5em;
+	color: #CD5CDE
+}
+.benefits ul li p{
+	display: block;
+	font-weight: bold;
+	margin-bottom: 5px;
+}
+.benefits ul li span{
+	font-size: .9em;
+	color: #999;
+}
+.membership-options{
+	margin: 40px 20px;
+	color: #999;
+}
+
+/* Survey */
+.survey .offer{
+	padding: 20px 40px;
+}
+
+.survey .form-check{
+	margin: 10px 0;
+	font-size: .9em;
+}
+.survey form a.submit{
+	margin-top: 30px;
+	display: inline-block;
+}
+
+
+
+.offer .item{
+	text-align: center;
+	padding: 40px;
+}
+.offer i{
+	font-size: 5em;
+	margin-bottom: 20px;
+	color: #CD5CDE;
+}
+.offer h6{
+	
+}
+
+.offer .item p{
+	display: block;
+	height: 100px;
+}
+.offer .cancel{
+	margin-top: 30px;
+	font-size: .9em;
+}
+.offer .btn-primary, .offer .btn-primary:hover, .offer .btn-primary:active, .offer .btn-primary:visited {
+	background: #CD5CDE;
+	border-color: color(srgb 0.724 0 0.75)
+}
+
+
+
+
+
+

@@ -1,0 +1,94 @@
+ [
+        {
+            "nombre": "Washington, D.C.",
+            "pais": "Estados Unidos"
+        },
+        {
+            "nombre": "Miami",
+            "pais":"Estados Unidos"
+        },
+        {
+            "nombre": "New York",
+            "pais": "Estados Unidos"
+        },
+        {
+            "nombre": "Liverpool",
+            "pais": "Reino Unido"
+        },
+        {
+            "nombre": "Londres",
+            "pais": "Reino Unido"
+        },
+        {
+            "nombre": "París",
+            "pais": "Francia"
+        },
+        {
+            "nombre": "Berlín",
+            "pais": "Alemania"
+        },
+        {
+            "nombre": "Frankfurt",
+            "pais": "Alemania"
+        },
+        {
+            "nombre": "Beijing",
+            "pais": "China"
+        },
+        {
+            "nombre": "Pekín",
+            "pais": "China"
+        },
+        {
+            "nombre": "Nueva Delhi",
+            "pais": "India"
+        },
+        {
+            "nombre": "Firenze",
+            "pais": "Italia"
+        },
+        {
+            "nombre": "Roma",
+            "pais": "Italia"
+        },
+        {
+            "nombre": "Ciudad de México",
+            "pais": "México"
+        },
+        {
+            "nombre": "Buenos Aires",
+            "pais": "Argentina"
+        },
+        {
+            "nombre": "Mar del Plata",
+            "pais": "Argentina"
+        },
+        {
+            "nombre": "Riad",
+            "pais": "Arabia Saudita"
+        },
+        {
+            "nombre": "Barcelona", 
+            "pais": "España" 
+        }, 
+        {
+            "nombre": "Madrid", 
+            "pais": "España" 
+        }, 
+        {
+            "nombre": "Tokio",
+            "pais": "Japón"
+        },
+        {
+            "nombre": "Sao Paulo",
+            "pais": "Brasil"
+        },
+        {
+            "nombre": "Rio de Janeiro",
+            "pais": "Brasil"
+        },
+        {
+            "nombre": "Amsterdam",
+            "pais": "Paises Bajos"
+        }
+]

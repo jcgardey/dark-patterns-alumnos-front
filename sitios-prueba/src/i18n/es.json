@@ -1,0 +1,341 @@
+{
+    "Rental": {
+        "Title": "Alquiler de Vehículos",
+        "Start": "Iniciar una Reserva",
+        "Location": "Ubicación",
+        "Dates": "Fechas",
+        "Search": "Buscar",
+        "NavBar": {
+            "Reservations": "Reservas",
+            "Deals": "Ofertas",
+            "Vehicles": "Vehiculos",
+            "Locations": "Oficinas"
+        },
+        "Featured": {
+            "Title": "Ofertas destacadas",
+            "Last_Minute": {
+                "Title": "Ofertas especiales de ultimo minuto",
+                "Description": "Revisa las increíbles ofertas especiales de último minuto en alquiler de autos para alquileres diarios y semanales en EE. UU. y Canadá."
+            },
+            "Plan_Ahead": {
+                "Title": "Ofertas especiales por anticipacion",
+                "Description": "Reserva tu próximo auto de alquiler por adelantado con las ofertas especiales por planificar con anticipación y ahorra dinero en alquileres en EE. UU. y Canadá."
+            }
+        },
+        "SelectVehicle": "Seleccionar un Vehículo",
+        "Vehicle": {
+            "Sedan": "Sedan",
+            "SUV": "SUV",
+            "Coupe": "Coupe",
+            "Convertible": "Convertible",
+            "Pickup": "Pickup",
+            "Similar": "o similar",
+            "Seats_one": "{{count}} asiento",
+            "Seats_other": "{{count}} asientos",
+            "Bags_one": "{{count}} valija",
+            "Bags_other": "{{count}} valijas",
+            "Price": "{{price }} / día",
+            "Select": "Seleccionar",
+            "Filters" : {
+                "Title": "Filtros",
+                "Type": "Tipo de Vehiculo",
+                "Seats": "Asientos"
+            }
+        },
+        "Protection": {
+            "Select": "Elija su protección",
+            "Basic": {
+                "Name": "Cobertura Básica",
+                "Description": "Evita pagar por daños o robo del vehículo en alquier."    
+            },
+            "Standard": {
+                "Name": "Cobertura Estándar",
+                "Description": "Protégete de las demandas por accidente o lesiones de terceros hasta 1 millon USD."
+            },
+            "Total": {
+                "Name": "Cobertura Total",
+                "Description": "Asistencia gratuita 24/7 para neumáticos pinchados, pérdida de llaves y batería descargada."
+            },
+            "Price": "{{price }} / día",
+            "Next": "Siguiente",
+            "NoProtection": {
+                "Title": "Continuar sin protección adicional?",
+                "Description": "Usted es responsable de los daños o el robo del vehículo hasta el valor total del vehículo de alquiler más los gastos administrativos. Es posible que su seguro personal o su tarjeta de crédito no cubran totalmente este viaje.",
+                "Add": "Agregar protección",
+                "Skip": "Sí, me voy a hacer cargo de los gastos que surjan"
+            },
+            "Featured": "Recomendada"
+        },
+        "Review": {
+            "Title": "Revisar y reservar",
+            "Book": "Reservar",
+            "Driver": {
+                "Title": "Datos del conductor",
+                "Name": "Nombre",
+                "Email": "Email"
+            },
+            "Payment": {
+                "Method": "Método de pago",
+                "Card": {
+                    "Number": "N<span>úm</span>ero de tarjeta",
+                    "Holder": "N<span>om</span>bre del titular",
+                    "Month": "Mes",
+                    "Year": "Año",
+                    "CVV": "C<span>ód</span>igo de seguridad"
+                }
+            },
+            "Order": {
+                "Unlimited": "Millas ilimitadas",
+                "Tires": "Tasa de neumáticos y baterías",
+                "Rental": "Recargo de alquiler",
+                "License": "Impuesto de circulación"
+            },
+            "Confirmation": {
+                "Title": "Reserva Confirmada",
+                "Message": "Los datos de la reserva seran enviados a {{email}}.",
+                "Close": "Click para cerrar esta ventana"
+            }
+        }
+    },
+    "Checkin": {
+        "Home":{
+            "Flights":"Vuelos",
+            "SelfCheckin": "Auto Check In",
+            "Hotels": "Hoteles",
+            "CarHire":"Autos",
+            "Deals":"Ofertas de Último Momento",
+            "Home":"Home",
+            "CheckIn":"Check In",
+            "Services":"Servicios",
+            "Terms":"Términos",
+            "Contact":"Contacto",
+            "Subscribe": "Suscríbete ahora y consigue las mejores ofertas",
+            "LearnDeals": " Conoce las últimas ofertas",
+            "Promotions": "Sé el primero en conseguir promociones",
+            "NewDestinations": "Conoce los nuevos destinos",
+            "MissSale": "¡No te pierdas nunca una oferta!",
+            "30off": "30% off"
+        },
+        "Passenger": {
+            "Title": "Datos del pasajero",
+            "Name": "Nombre",
+            "From": "Origen",
+            "To": "Destino",
+            "Search": "Buscar",
+            "Code": "Código de Reserva",
+            "Surname": "Apellido",
+            "FullName": "Nombre Completo",
+            "Birthdate": "Fecha de Nacimiento",
+            "Gender": {
+                "Label": "Género",
+                "Male": "Masculino",
+                "Female": "Femenino"
+            },
+            "IdType": "Tipo de documento",
+            "IdNumber": "Número de documento",
+            "IssueCountry": "País de emisión",
+            "DueDate": "Fecha de vencimiento",
+            "Nationality": "Nacionalidad",
+            "Passport": "Pasaporte",
+            "Email": "Email",
+            "FindReservation": "Encontrar Reserva",
+            "Subscribe": "Subscribirse",
+            "SelectSeat": "Elegir Asiento"
+        },
+        "Seat": {
+            "Title": "Selección de Asiento",
+            "Preferential": "Asiento preferencial",
+            "Regular": "Asiento regular",
+            "Cheap": "Asiento con descuento",
+            "Occupied": "Asiento ocupado",
+            "Continue": "Continuar",
+            "NoSeat": "No deseo elegir mi asiento",
+            "Passengers": "Pasajeros",
+            "Flights": "Vuelos",
+            "SmallBag": "Equipaje de Cabina",
+            "ReservationInfo": "Información de la Reserva",
+            "ReservationDate1": "Lun 23 Sep - 16:25-00:55 . AS 3077",
+            "ReservationDate2": "Dom 29 Sep - 06:15-08:00 - AS 4132"
+        },
+        "Summary": {
+            "Completed": "Checkin Completado",
+            "BoardingPass": "La tarjeta de embarque se enviará a la dirección de correo electrónico registrada.",
+            "Thanks": "Gracias por elegir AirSomewhere",
+            "Title":"Resumen",
+            "Taxes": "Impuestos y tasas",
+            "Seat": "Selección de Asiento",
+            "Discount": "Descuentos",
+            "Back": "Volver a la selección de asientos",
+            "Continue": "Continuar"
+        }
+    },
+    "Roomio": {
+        "Search": {
+            "People": "People",
+            "Destination": "Destino",
+            "Search": "Buscar",
+            "Dates": "Fechas",
+            "Adults": "Adultos",
+            "Adult_one": "{{count}} adulto",
+            "Adult_other": "{{count}} adultos"
+        },
+        "Results": {
+            "Sidebar": {
+                "Filters": "Filtros",
+                "Centre": "Cerca del centro",
+                "Pet": "Pet friendly",
+                "Pool": "Con piscina",
+                "Sauna": "Con sauna"
+            },
+            "NoResults": "No se encontraron habitaciones para '{{ city }}'",
+            "Cancellation": "Cancelación gratuita, puede guardar el precio y cancelar más tarde",
+            "Night_one": "{{count}} noche",
+            "Night_other": "{{count}} noches",
+            "Taxes": "Impuestos y tasas",
+            "TaxesIncluded": "Impuestos y tasas incluidos",
+            "Book": "Reservar"
+        },
+        "Summary": {
+            "Summary": "Resumen",
+            "Price_one": "Precio por {{count}} noche",
+            "Price_other": "Precio por {{count}} noches",
+            "Taxes": "Impuestos y tasas",
+            "Total": "Total",
+            "Name": "Nombre Completo",
+            "Buy": "Completar Reserva"
+        }
+    },
+    "Ebook": {
+        "Home": "Inicio",
+        "Saved": "Guardados",
+        "Recommended": "Recomendados",
+        "Books": "Libros",
+        "Audiobooks": "Audiolibros",
+        "AccountInfo":"Información de Cuenta",
+        "AccountType":"Tipo de Cuenta",
+        "Personal":"Personal",
+        "Password": "Contraseña",
+        "MyMembership":"Membresía",
+        "Logout":"Salir",
+        "Membership":{
+            "Details": "Membresía y Detalles de Pago",
+            "Unlimited": "Lectura sin límites con tu membresía",
+            "Learn": "Learn more about your full membership benefits",
+            "Books": "Books",
+            "Read": "Lea bestsellers",
+            "Audiobooks": "Audiolibros",
+            "Listen": "Para escuchar estrenos",
+            "Snapshots": "Snapshots",
+            "Gain": "Resúmenes de 15 minutos",
+            "Documents": "Documentos",
+            "community": "Cargas de la comunidad",
+            "Magazines": "Revistas",
+            "Find": "Últimas ediciones",
+            "Sheet": "Partituras",
+            "Play": "Clásicos y éxitos nuevos",
+            "Plan": "Plan de Membresía",
+            "Your": "Su plan se renovará automáticamente el 24/8/24, y se cobrarán USD9.99",
+            "Pause": "",
+            "End": "Cancelar mi membresía",
+            "Payment": "Detalles de Pago",
+            "Card": "Tarjeta VISA finalizada en 9903",
+            "Update": "Actualizar Medio de Pago",
+            "View": "Ver Historial de Pagos"
+        },
+        "Survey":{
+            "Before": "Antes de que te vayas...",
+            "Which": "¿Cuál de los siguientes motivos te llevó a cancelar tu membresía?",
+            "Choose": "Por favor, elija una opcion",
+            "technical": "Tengo problemas técnicos",
+            "enough": "No uso ebookworld lo suficiente",
+            "Please": "Por favor explicanos los motivos",
+            "expensive": "Esta suscripción es demasiado cara",
+            "specific": "No puedo encontrar el contenido específico que quiero leer",
+            "Other": "Otros problemas",
+            "Send": "Enviar y continuar la cancelación",
+            "Cancel": "Cancelar membresía"
+        },
+        "Tease":{
+            "Before": "Antes de que te vayas...",
+            "Extend": "Obtenga un periodo de descuento de 30 días",
+            "Stay":"Quedate con nosotros y ampliaremos su suscripción 30 días más por un precio reducido.",
+            "Get30":"Obtener 30 días más",
+            "Try": "Probar Ebookworld Lite por $4.99/Mes",
+            "Keep":"Conservarás el acceso a una selección limitada de libros y audiolibros, junto con acceso ilimitado a Instantáneas, documentos, noticias, revistas y partituras.",
+            "TryLite":"Probar Ebookworld Lite",
+            "Still":"¿Aún prefieres cancelar?",
+            "End":"Finalizar cancelación",
+            "Ended":"Membresia cancelada"
+        }
+        
+    },
+    "Common": {
+        "Select": "Seleccionar",
+        "Start": "Iniciar",
+        "Date": {
+            "Day": "Día",
+            "Month": "Mes",
+            "Year": "Año",
+            "Months": {
+                "January": "Enero",
+                "February": "Febrero",
+                "March": "Marzo",
+                "April": "Abril",
+                "May": "Mayo",
+                "June": "Junio",
+                "July": "Julio",
+                "August": "Agosto",
+                "September": "Septiembre",
+                "October": "Octubre",
+                "November": "Noviembre",
+                "December": "Diciembre"
+            }
+        },
+        "RequiredField": "{{ field}} es requerido",
+        "TasksFinished": "Todas las tareas fueron completadas correctamente",
+        "TaskFinished": "Tarea finalizada",
+        "Instructions": "Instrucciones",
+        "TaskGeneral": "Eres un estudiante que está de vacaciones con un presupuesto muy ajustado. Te vas a Madrid en septiembre",
+        "TaskCar": "Necesitas alquilar un coche para tu viaje a Madrid entre el viernes 20/9 y el lunes 23/9 (3 días). Sólo puedes gastar menos de 100 USD",
+        "TaskCheckin": "Tienes un vuelo de Madrid a Barcelona ya reservado y pago. Solo queda hacer el checkin online con el código de reserva AAA123. No puedes gastar más dinero.",
+        "TaskRoomio": "Necesitas reservar una habitación para una persona en Madrid entre el viernes 20/9 y el lunes 23/9 (3 noches). Piensas gastar menos de 300 USD",
+        "TaskEBook": "Como necesitas ahorrar algo de dinero extra para tu viaje, quieres cancelar tu suscripción actual a la tienda de EBooks"
+    },
+    "Questionnaire": {
+        "Title": "Cuestionario",
+        "Description": "Por favor, conteste el siguiente cuestionario",
+        "Agree": "Muy de acuerdo",
+        "Disagree": "Muy en desacuerdo",
+        "Finish": "Finalizar",
+        "Advantage": "Supongo que este sitio no se aprovechará de mí",
+        "Trustworthy": "Creo que este sitio es confiable",
+        "Frustrating": "Utilizar este sitio fue frustrante",
+        "Confusing": "Me sentí confundido utilizando este sitio",
+        "Experience": "Mi experiencia utilizando este sitio fue positiva",
+        "MandatoryResponses": "Por favor responda las preguntas para continuar"
+    },
+    "Start": {
+        "Thanks": "Gracias por participar, por favor lea cuidadosamente",
+        "Briefing": "Se te pedirá que completes 4 tareas sencillas (15' total estimado). Algunas requerirán datos de una tarjeta de crédito, en esos casos ingresar números falsos o utilizar la función de autocompletar que hace esto mismo automáticamente.",
+        "Briefing2": "Los sitios son clones de sitios reales alterados, por lo que algunos enlaces y botones ajenos a las tareas no funcionarán.",
+        "Briefing3": "Todos los datos recopilados se mantendrán anónimos, solo te pedimos tu correo electrónico para participar en una evaluación de seguimiento opcional.",
+        "TabOpen": "Esta pestaña permanecerá abierta, por si necesitas volver y comprobar las instrucciones",
+        "Email": "Email (Opcional, no te vamos a enviar spam)",
+        "Age": "Edad",
+        "Gender": "Género",
+        "Country": "País",
+        "Purchases": "Cantidad de compras online realizadas en los últimos 3 meses",
+        "Genders": {
+            "Male": "Masculino",
+            "Female": "Femenino",
+            "Other": "Otro"
+        },
+        "PurchaseOptions": {
+            "None": "Ninguna",
+            "1-3": "1-3",
+            "4-6": "4-6",
+            ">6": ">6"
+        },
+        "Start": "Comenzar"
+    }
+}

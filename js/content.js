@@ -1,4 +1,4 @@
-const endpoint = "http:/127.0.0.1:5000/";
+const endpoint = "http:/localhost:5000/";
 
 function scrape() {
   // aggregate all DOM elements on the page
@@ -16,7 +16,7 @@ function scrape() {
     filtered_elements.push(text);
   }
   // post to the web server
-  fetch(endpoint, {
+  fetch("http://localhost:5000/", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ tokens: filtered_elements }),

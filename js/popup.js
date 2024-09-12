@@ -24,6 +24,6 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.message === "update_tokens_list") {
-    document.getElementById("tokens").innerHTML  = request.tokens.map(token => `<li>${token}</li>`);
+    document.getElementById("tokens").innerHTML  = request.tokens.map(token => `<li>${token.text}<br>${token.pattern}</li>`);
   }
 });

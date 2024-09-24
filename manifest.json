@@ -12,8 +12,16 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["hiddenCosts.js"]
+      "js": [
+        "hiddenCosts.js",
+        "api_connection.js"
+      ]
     }
-  ]
+  ],
+  "background":{
+    "scripts": [
+      "background.js"
+    ]
+  }
 }
 

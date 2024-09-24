@@ -1,0 +1,52 @@
+.form-label {
+    font-size: 16px;
+    display: block;
+    font-family: "Oxygen";
+    margin: 3px 0;
+    color: #696969;
+    font-weight: 400;
+}
+
+.form-input {
+    height: 40px;
+    border-radius: 5px;
+    border: 1px solid #e2e2e2;
+    width: 100%;
+    padding:6px;
+    box-sizing: border-box;
+}
+
+.form-input.error {
+    border-color: red;
+}
+
+.field-error {
+    color: red;
+    display: block;
+}
+
+.inline-input {
+   display: flex;
+   justify-content: space-between;
+}
+
+.form-field {
+    margin: 1.5em 0;
+}
+
+.col-4 {
+    width: 40%;
+}
+
+.radio-item.inline {
+    display: inline-block;
+    margin-right: 5px;
+}
+.radio-item.block {
+    display: block;
+    margin: 10px 4px;
+}
+
+select {
+    box-sizing: content-box;
+}

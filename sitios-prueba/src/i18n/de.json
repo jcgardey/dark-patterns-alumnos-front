@@ -1,0 +1,343 @@
+{
+    "Rental": {
+        "Title": "Ein Auto mieten",
+        "Start": "Eine Reservierung starten",
+        "Location": "Standort",
+        "Dates": "Daten",
+        "Search": "Suche",
+        "NavBar": {
+            "Reservations": "Reservierungen",
+            "Deals": "Deals",
+            "Vehicles": "Fahrzeuge",
+            "Locations": "Standorte"
+        },
+        "Featured": {
+            "Title": "Ausgewählte Mietwagen-Angebote",
+            "Last_Minute": {
+                "Title": "Last-Minute-Angebote",
+                "Description": "Hier finden Sie tolle Last-Minute-Angebote für Tages- und Wochenmieten in den USA und Kanada."
+            },
+            "Plan_Ahead": {
+                "Title": "Plan Ahead Specials",
+                "Description": "Buchen Sie Ihren nächsten Mietwagen im Voraus mit Plan Ahead Specials und sparen Sie Geld bei Anmietungen in den USA und Kanada."
+            }
+        },
+        "SelectVehicle": "Wählen Sie ein Fahrzeug",
+        "Filters": "Filter",
+        "Vehicle": {
+            "Sedan": "Limousine",
+            "SUV": "SUV",
+            "Coupe": "Coupe",
+            "Convertible": "Cabrio",
+            "Pickup": "Pick-up",
+            "Similar": "oder ähnlich",
+            "Seats_one": "{{count}} Sitz",
+            "Seats_other": "{{count}} Sitze",
+            "Bags_one": "{{count}} Tasche",
+            "Bags_other": "{{count}} Taschen",
+            "Price": "{{price }} / Tag",
+            "Select": "Auswählen",
+            "Filters" : {
+                "Title": "Filter",
+                "Type": "Fahrzeugtyp",
+                "Seats": "Sitze"
+            }
+        },
+        "Protection": {
+          "Select": "Wählen Sie Ihren Schutz",
+              "Basic": {
+                  "Name": "Grundlegender Versicherungsschutz",
+                  "Description": "Vermeiden Sie die Bezahlung von Schäden oder Diebstahl an Ihrem Mietfahrzeug."    
+              },
+              "Standard": {
+                  "Name": "Standard-Abdeckungsschutz",
+                  "Description": "Schützen Sie sich vor Ansprüchen Dritter bei Unfällen oder Verletzungen bis zu einer Höhe von 1 Million Dollar."
+              },
+              "Total": {
+                  "Name": "Vollständiger Schutz der Abdeckung",
+                  "Description": "Kostenlose 24/7-Pannenhilfe für platte Reifen, verlorene Schlüssel und leere Batterien."
+              },
+              "Price": "{{price }} / Tag",
+              "Next": "Weiter",
+              "NoProtection": {
+                "Title": "Weiter ohne zusätzlichen Schutz?",
+                "Description": "Sie haften für alle Schäden und Diebstähle bis zum vollen Wert des Mietwagens, sowie für Unfall- und Verletzungsschäden Dritter, zuzüglich Verwaltungsgebühren. Ihre persönliche Versicherung oder Kreditkarte deckt diese Miete möglicherweise nicht vollständig ab.",
+                "Add": "Schutz hinzufügen",
+                "Skip": "Ja, ich werde für alle anfallenden Kosten aufkommen."
+             },
+             "Featured": "Ausgewählt"
+        },
+        "Review": {
+            "Title": "Rezension und Buch",
+            "Book": "Bezahlen und buchen",
+            "Driver": {
+                "Title": "Angaben zum Fahrer",
+                "Name": "Name",
+                "Email": "E-Mail"
+            },
+            "Payment": {
+                "Method": "Zahlungsmethode",
+                "Card": {
+                    "Number": "Kartennummer",
+                    "Holder": "Name des Karteninhabers",
+                    "Month": "Monat",
+                    "Year": "Jahr",
+                    "CVV": "CVV"
+                }
+            },
+            "Order": {
+                "Unlimited": "Unbegrenzte Meilen",
+                "Tires": "Reifen und Batteriekosten",
+                "Rental": "Mietzuschlag",
+                "License": "Lizenzgebühr für Fahrzeuge"
+            },
+            "Confirmation": {
+                "Title": "Bestätigte Reservierung",
+                "Message": "Einzelheiten werden übermittelt an {{email}}.",
+                "Close": "Klicken Sie, um dieses Fenster zu schließen"
+            }
+        }
+    },
+    "Checkin": {
+        "Home":{
+            "Flights":"Flüge",
+            "SelfCheckin": "Selbst einchecken",
+            "Hotels": "Hotels",
+            "CarHire":"Autovermietung",
+            "Deals":"Last-Minute-Angebote",
+            "Home":"Startseite",
+            "CheckIn":"Check-in",
+            "Services":"Dienstleistungen",
+            "Terms":"Bedingungen",
+            "Contact":"Kontakt",
+            "Subscribe": "Jetzt abonnieren und die besten Angebote erhalten",
+            "LearnDeals": " Erfahren Sie mehr über die neuesten Angebote",
+            "Promotions": "Seien Sie der Erste, der Sonderangebote erhält",
+            "NewDestinations": "Lernen Sie neue Reiseziele kennen",
+            "MissSale": "Nie mehr einen Verkauf verpassen!",
+            "30off": "30% Rabatt"
+        },
+        "Passenger": {
+            "Title": "Informationen zum Einchecken",
+            "Name": "Name",
+            "From": "Von",
+            "To": "An",
+            "Search": "Suche",
+            "Code": "Buchungscode",
+            "Surname": "Nachname",
+            "FullName": "Vollständiger Name",
+            "Birthdate": "Geburtsdatum",
+            "Gender": {
+                "Label": "Geschlecht",
+                "Male": "Männlich",
+                "Female": "Weiblich"
+            },
+            "IdType": "ID-Typ",
+            "IdNumber": "ID-Nummer",
+            "IssueCountry": "Land der Ausgabe",
+            "DueDate": "Fälligkeitsdatum",
+            "Nationality": "Nationalität",
+            "Passport": "Reisepass",
+            "Email": "E-Mail",
+            "FindReservation": "Buchung finden",
+            "Subscribe": "Abonnieren",
+            "SelectSeat": "Sitz auswählen"
+        },
+        "Seat": {
+            "Title": "Sitzauswahl",
+            "Preferential": "Vorzugssitz",
+            "Regular": "Normaler Sitz",
+            "Cheap": "Günstiger Sitz",
+            "Occupied": "Besetzter Sitz",
+            "Continue": "Weiter",
+            "NoSeat": "Ich möchte keinen Sitzplatz auswählen",
+            "Passengers": "Passagier",
+            "Flights": "Flüge",
+            "SmallBag": "Handgepäck",
+            "ReservationInfo": "Informationen zur Buchung",
+            "ReservationDate1": "Mon 23 Sep - 16:25-00:55 - AS 3077",
+            "ReservationDate2": "Sun 29 Sep - 06:15-08:00 - AS 4132"
+        },
+        "Summary": {
+            "Completed": "Checkin abgeschlossen",
+            "BoardingPass": "Ihre Bordkarte wird an Ihre registrierte E-Mail-Adresse gesendet.",
+            "Thanks": "Danke, dass Sie sich für AirSomewhere entschieden haben.",
+            "Title":"Zusammenfassung",
+            "Taxes": "Steuern",
+            "Seat": "Sitzauswahl",
+            "Discount": "Rabatt",
+            "Back": "Zurück zur Sitzplatzwahl",
+            "Continue": "Weiter"
+        }
+    },
+    "Roomio": {
+        "Search": {
+            "People": "Personen",
+            "Destination": "Reiseziel",
+            "Search": "Suche",
+            "Dates": "Daten",
+            "End": "Enddatum",
+            "Adults": "Erwachsene",
+            "Adult_one": "{{count}} Erwachsene",
+            "Adult_other": "{{count}} Erwachsene"
+        },
+        "Results": {
+            "Sidebar": {
+                "Filters": "Filter",
+                "Centre": "Zentrumsnah",
+                "Pet": "Haustiere willkommen",
+                "Pool": "Schwimmbad",
+                "Sauna": "Sauna"
+            },
+            "NoResults": "Keine Zimmer gefunden für '{{ city }}'",
+            "Cancellation": "KOSTENLOSE Stornierung Sie können später stornieren, also sichern Sie sich diesen günstigen Preis noch heute..",
+            "Night_one": "{{count}} Nacht",
+            "Night_other": "{{count}} Nächte",
+            "Taxes": "Steuern und Abgaben",
+            "TaxesIncluded": "Steuern und Gebühren sind inbegriffen",
+            "Book": "Jetzt buchen"
+        },
+        "Summary": {
+            "Summary": "Zusammenfassung",
+            "Price_one": "Preis für {{count}} Nacht",
+            "Price_other": "Preis für {{count}} Nächte",
+            "Taxes": "Steuern und Abgaben",
+            "Total": "Insgesamt",
+            "Name": "Vollständiger Name",
+            "Buy": "Kostenpflichtig buchen"
+        }
+    },
+    "Ebook": {
+        "Home": "Startseite",
+        "Saved": "Gespeichert",
+        "Recommended": "Empfohlen",
+        "Books": "Bücher",
+        "Audiobooks": "Hörbücher",
+        "AccountInfo":"Mein Konto",
+        "AccountType":"Konto-Typ",
+        "Personal":"Persönlich",
+        "Password": "Passwort",
+        "MyMembership":"Mitgliedschaft",
+        "Logout":"Abmelden",
+        "Membership":{
+            "Details": "Mitgliedschaft & Zahlungsdetails",
+            "Unlimited": "Unbegrenztes Lesen, ohne zusätzliche Kosten",
+            "Learn": "Erfahren Sie mehr über alle Vorteile einer Mitgliedschaft",
+            "Books": "Bücher",
+            "Read": "Bestseller lesen",
+            "Audiobooks": "Hörbücher",
+            "Listen": "Neuerscheinungen anhören",
+            "Snapshots": "Snapshots",
+            "Gain": "Die wichtigsten Erkenntnisse in 15 Minuten",
+            "Documents": "Dokumente",
+            "community": "Community-Uploads",
+            "Magazines": "Zeitschriften",
+            "Find": "Die neuesten Ausgaben finden",
+            "Sheet": "Musiknoten",
+            "Play": "Spiele Klassiker & Don Hits",
+            "Plan": "Mitgliedschaft",
+            "Your": "Ihre Mitgliedschaft wird am 24.8.2024 automatisch verlängert und Ihnen werden 8,99 EUR berechnet.",
+            "Pause": "Pause Mitgliedschaft",
+            "End": "Meine Mitgliedschaft beenden",
+            "Payment": "Details zur Bezahlung",
+            "Card": "Karte: 2880",
+            "Update": "Zahlungsdetails aktualisieren",
+            "View": "Zahlungsverlauf anzeigen"
+        },
+        "Survey":{
+            "Before": "Bevor Sie gehen...",
+            "Which": "Welcher der folgenden Gründe beschreibt am besten, warum Sie kündigen möchten?",
+            "Choose": "Bitte wählen Sie eine Option",
+            "technical": "Ich habe technische Probleme",
+            "enough": "Ich benutze ebookworld nicht genug",
+            "Please": "Bitte erzählen Sie uns mehr über das Problem, das Sie hatten.",
+            "expensive": "Dieses Abonnement ist zu teuer",
+            "specific": "Ich kann die Inhalte, die ich lesen möchte, nicht finden",
+            "Other": "Other",
+            "Send": "Stornierung einreichen und fortsetzen",
+            "Cancel": "Mitgliedschaft kündigen"
+        },
+        "Tease":{
+            "Before": "Bevor Sie gehen...",
+            "Extend": "Erhalten Sie einen 30-tägigen ermäßigten Zeitraum",
+            "Stay": "Bleiben Sie bei uns und wir verlängern Ihr Abonnement um weitere 30 Tage zu einem vergünstigten Preis.",
+            "Get30": "Erhalten Sie 30 weitere Tage",
+            "Try": "Testen Sie Ebookworld Lite für $4.99/Monat", 
+            "Keep": "Sie haben weiterhin Zugriff auf eine begrenzte Auswahl an Büchern und Hörbüchern sowie unbegrenzten Zugriff auf Schnappschüsse, Dokumente, Nachrichten, Zeitschriften und Noten.",
+            "TryLite": "Versuchen Sie Ebookworld Lite",
+            "Still": "Möchten Sie immer noch stornieren?",
+            "End": "Vollständige Löschung",
+            "Ended": "Mitgliedschaft gestrichen"
+        }
+        
+    },
+    "Common": {
+        "Select": "Wählen Sie",
+        "Start": "Start",
+        "Date": {
+            "Day": "Tag",
+            "Month": "Monat",
+            "Year": "Jahr",
+            "Months": {
+                "January": "Januar",
+                "February": "Februar",
+                "March": "März",
+                "April": "April",
+                "May": "Mai",
+                "June": "Juni",
+                "July": "Juli",
+                "August": "August",
+                "September": "September",
+                "October": "Oktober",
+                "November": "November",
+                "December": "Dezember"
+            }
+        },
+        "RequiredField": "{{ field}} ist erforderlich",
+        "TasksFinished": "Alle Aufgaben erfolgreich abgeschlossen",
+        "TaskFinished": "Aufgabe beendet",
+        "Instructions": "Anleitung",
+        "TaskGeneral":"Du bist ein Student, der in den Urlaub fährt und ein sehr knappes Budget hat. Du fährst im September nach Madrid.",
+        "TaskCar": "Du musst ein Auto für Deinen Aufenthalt in Madrid von Freitag bis Montag (3 Tage) mieten. Du kannst nur höchstens USD 100 ausgeben.",
+        "TaskCheckin": "Du hast bereits einen Flug von Madrid nach Barcelona gebucht und bezahlt. Du musst nur noch mit dem Buchungscode AAA123 online einchecken und kannst kein Geld mehr ausgeben.",
+        "TaskRoomio": "Du musst ein Zimmer für eine Person in Madrid zwischen Freitag, 20. September, und Montag, 23. September, buchen (3 Nächte). Du planst, weniger als 300 USD auszugeben.",
+        "TaskEBook": "Da du etwas mehr Geld für deine Reise sparen musst, möchtest du dein derzeitiges Abonnement für den EBooks Store kündigen."
+    },
+    "Questionnaire": {
+        "Title": "Fragebogen",
+        "Description": "Bitte beantworten Sie die folgenden Fragen",
+        "Agree": "Stimme ich voll und ganz zu",
+        "Disagree": "Stimme ich überhaupt nicht zu",
+        "Finish": "Absenden",
+        "Advantage": "Ich erwarte, dass diese Website mich nicht ausnutzen wird.",
+        "Trustworthy": "Ich glaube, diese Website ist vertrauenswürdig",
+        "Frustrating": "Ich fand die Bedienung dieser Benutzerschnittstelle frustrierend",
+        "Confusing": "Ich fühlte mich bei der Nutzung dieser Website verwirrt",
+        "Experience": "Meine Erfahrungen mit dieser Website waren komfortabel",
+        "MandatoryResponses": "Bitte beantworten Sie die Fragen, um fortzufahren"
+    },
+    "Start": {
+        "Thanks": "Danke für Ihre Teilnahme, bitte lesen Sie die folgende Anleitung sorgfältig",
+        "Briefing": "Sie werden gebeten, 4 einfache Aufgaben zu erfüllen (Dauer insgesamt ca. 15 Minuten). In einigen Fällen sind Kreditkartendaten erforderlich. Sie können entweder falsche Zahlen eingeben oder die Funktion zum automatischen Ausfüllen verwenden, die dies automatisch erledigt.",
+        "Briefing2": "Bei den Seiten handelt es sich um umbenannte Klone echter Seiten, so dass einige Links und Schaltflächen, die nicht in den Aufgabenbereich fallen, nicht funktionieren.",
+        "Briefing3": "Alle gesammelten Daten werden anonym gehalten, wir bitten Sie nur um Ihre E-Mail, um an einer optionalen Folgeauswertung teilnehmen zu können.",
+        "TabOpen": "Dieser Tab bleibt geöffnet, falls Du zurückkommen möchtest, um nach der Anleitung zu suchen.",
+        "Email": "E-Mail (Optional, wir werden keinen Spam versenden)",
+        "Age": "Alter",
+        "Gender": "Geschlecht",
+        "Country": "Land",
+        "Purchases": "Online-Käufe in den letzten 3 Monaten",
+        "Genders": {
+            "Male": "Männlich",
+            "Female": "Weiblich",
+            "Other": "Divers"
+        },
+        "PurchaseOptions": {
+            "None": "Keine",
+            "1-3": "1-3",
+            "4-6": "4-6",
+            ">6": "> 6"
+        },
+        "Start": "Start"
+    }
+}

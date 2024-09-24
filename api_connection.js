@@ -1,8 +1,9 @@
 window.onload = (event) => {
-  chrome.runtime.sendMessage("test");
-  console.log("Script manda un msg");
-  chrome.runtime.onMessage.addListener((request, sender) => {
-    console.log("Script recibe un msg");
-    console.log(request.message);
+  // Cuando termina de cargar una página le avisa a background y espera respuesta.
+  chrome.runtime.sendMessage({test: "test"}, response => {
+  if (!response)
+    console.error("This was a fiasco :", runtime.lastError.message);
+  else
+    console.log(response);
   });
 };

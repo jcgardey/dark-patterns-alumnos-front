@@ -32,9 +32,8 @@ function sendRequest(url, data, callback) {
       }
     });
 }
-chrome.runtime.onMessage.addListener((request, sender) => {
-  console.log("Background recibe un msg");
-  if (request === "test"){
-    sendMessageCurrentTab({ message: "Pasaje de mensajes anda."});
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.test === "test"){
+    sendResponse({ message: "Pasaje de mensajes anda."});
   }
 });

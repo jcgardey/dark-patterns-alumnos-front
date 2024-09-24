@@ -36,51 +36,54 @@ function getColor(element) {
     return { backgroundColor, color };
 }
 
-
-
 const checkMisdirection = () => {
+    const elements = document.querySelectorAll('.plan-card, button'); // Selecciona las plan-card como los botones
 
-    const plans = document.querySelectorAll('.plan-card');
+    const contrasts = []; // almacena constrastes y buttons
 
-    plans.forEach(plan => {
-        const { backgroundColor, color } = getColor(plan);
-        const contrast = getContrast(backgroundColor, color);
-
-
-        // checking para controlar por la consola del navegador lo que se obtuvo de getContrast y getColor
-        console.log(`${plan.querySelector('h3').innerText}:`, {
-            'Color de Fondo': backgroundColor,
-            'Color de Texto': color,
-            'Contraste': contrast.toFixed(2),
-
-        });
-    
-    
+    elements.forEach(element => {
+        if (element instanceof HTMLElement && element.innerText !== 'Siguiente') { // chequea que sea un elemento HTML
+            const { backgroundColor, color } = getColor(element);
+            const contrast = getContrast(backgroundColor, color);
+            contrasts.push({ element, contrast }); // guarda el elemento y su contraste
+            
+            console.log(`${element.tagName}:`, {
+                'Color de Fondo': backgroundColor,
+                'Color de Texto': color,
+                'Contraste': contrast.toFixed(2),
+            });
+        }
     });
 
+    // Comparar contrastes de planes
+    const freeElement = document.querySelector('.free');
+    const proElement = document.querySelector('.pro');
+    const premiumElement = document.querySelector('.premium');
 
-    /* Si los contrastes de "Pro" 
-        y "Premium" son más altos, entonces son más LLAMATIVOS, sino, el plan "Free" es más llamativo
-        Osea si el contraste es alto, el contendor será más fácil de leer, entonces tiene mas predominancia
-    */
+    if (freeElement && proElement && premiumElement) {
+        const freeContrast = getContrast(getColor(freeElement).backgroundColor, getColor(freeElement).color);
+        const proContrast = getContrast(getColor(proElement).backgroundColor, getColor(proElement).color);
+        const premiumContrast = getContrast(getColor(premiumElement).backgroundColor, getColor(premiumElement).color);
 
+        if (proContrast > freeContrast || premiumContrast > freeContrast)
+            console.log("El plan Pro o el plan Premium son más llamativos que el plan Free.");
+        else 
+            console.log("El plan Free es más llamativo que Pro y Premium.");
+    } 
 
-    const freeContrast = getContrast(getColor(document.querySelector('.free'))
-                        .backgroundColor, getColor(document.querySelector('.free')).color);
-
-    const proContrast = getContrast(getColor(document.querySelector('.pro'))
-                        .backgroundColor, getColor(document.querySelector('.pro')).color);
-    const premiumContrast = getContrast(getColor(document.querySelector('.premium'))
-                        .backgroundColor, getColor(document.querySelector('.premium')).color);
-
-    // comparo los contrastes
-
-    // TODO: queda revisar bien esto, está medio a mano, pero funciona :)
-    if (proContrast > freeContrast || premiumContrast > freeContrast)
-        console.log("El plan Pro o el plan Premium son más llamativos que el plan Free.");
-    else 
-        console.log("El plan Free es más llamativo que Pro y Premium.");
-
+    // compara contrastes de botones
+    const buttonContrasts = contrasts.filter(item => item.element.tagName === 'BUTTON'); // filtro porque solo me interesan los botones
+    
+    if (buttonContrasts.length > 0) {
+        // calculo el contraste maximo
+        const mostAttractiveButton = buttonContrasts.reduce((max, current) => (current.contrast > max.contrast ? current : max));
+        console.log(`El botón más llamativo es:`, {
+            'Elemento': mostAttractiveButton.element,
+            'Contraste': mostAttractiveButton.contrast.toFixed(2),
+        });
+    } else {
+        console.warn("No se encontraron botones para evaluar el contraste.");
+    }
 }
 
 const clickeables = ['a', 'button'];
@@ -175,9 +178,9 @@ function pintar(nodes, color){
     if (nodes.length > 0){
         nodes.forEach((node) => {
             try {
-                let srt = color;
+                let srt = color; //
                 Object.assign(node.style, { background: `${color}` });
-                pintar(node.childNodes);
+                pintar(node.childNodes); //
             } catch (e) {
                 //console.log(node + ' falla: ' + e);
             }

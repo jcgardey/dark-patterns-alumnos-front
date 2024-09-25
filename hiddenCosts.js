@@ -9,7 +9,7 @@ function getDistance (element,anotherElement) {
     return Math.sqrt(Math.pow(centerA.x - centerB.x, 2) + Math.pow(centerA.y - centerB.y, 2));
 }
 
-console.log("HOLA ESTO ESTA ANDANDO :)");
+console.log("ESTO ESTA ANDANDO");
 const elementos = document.querySelectorAll('p,span,h5'); //Esto es temporal porque podrían aparecer precios con varios tipos de tags HTML. Estamos viendo como incluir distintos tags
 let hiddenCosts = [];
 let prices = [];

@@ -312,6 +312,9 @@ function cantidadDestacados(contrastes){
     },0);
 }
 
-document.addEventListener("DOMContentLoaded",comprobarNodos);
+// para que la extension corra el algoritmo
+comprobarNodos()
 
-document.addEventListener("DOMContentLoaded", checkMisdirection);
+//document.addEventListener("DOMContentLoaded",comprobarNodos);
+
+//document.addEventListener("DOMContentLoaded", checkMisdirection);

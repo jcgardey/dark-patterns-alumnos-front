@@ -16,13 +16,14 @@
         "page_segmentation/common.js",
         "page_segmentation/block_segment.js",
         "hiddenCosts.js",
-        "api_connection.js"
+        "confirmshaming.js"
       ]
     }
   ],
   "background":{
     "scripts": [
-      "background.js"
+      "background.js",
+      "sitios-prueba/node_modules/axios/dist/axios.js"
     ]
   }
 }

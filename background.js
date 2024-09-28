@@ -26,14 +26,19 @@ function sendRequest(url, data, callback) {
         'Content-Type': 'application/json',
       },
     })
-    .then((response) => {
+    .then(({ data }) => {
       if (callback) {
-        callback(response);
+        callback({ data });
       }
+    })
+    .catch((error) => {
+      callback({ error });
     });
 }
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.test === "test"){
-    sendResponse(request.filtered_elements.length);
+  if (request.pattern === "SHAMING"){
+    sendRequest("http://localhost:5000", { tokens: request.data }, sendResponse);
+    return true;
   }
 });

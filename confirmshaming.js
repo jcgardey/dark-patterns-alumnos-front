@@ -14,10 +14,13 @@ window.onload = (event) => {
     filtered_elements.push(text);
   }
 
-  chrome.runtime.sendMessage({test: "test", filtered_elements}, response => {
-  if (!response)
-    console.error("This was a fiasco :", runtime.lastError.message);
-  else
-    console.log(response);
+  chrome.runtime.sendMessage({pattern: "SHAMING", data: filtered_elements}, (response) => {
+    const { error, data } = response;
+    if (error) {
+      if (error.code === "ERR_NETWORK") console.log("El servidor no responde.");
+      else console.log(error);
+      }
+    else
+      console.log(data);
   });
 };

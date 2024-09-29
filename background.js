@@ -38,7 +38,11 @@ function sendRequest(url, data, callback) {
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.pattern === "SHAMING"){
-    sendRequest("http://localhost:5000", { tokens: request.data }, sendResponse);
+    sendRequest("http://localhost:5000/shaming", { tokens: request.data }, sendResponse);
+    return true;
+  }
+  if (request.pattern === "URGENCY"){
+    sendRequest("http://localhost:5000/urgency", { tokens: request.data }, sendResponse);
     return true;
   }
 });

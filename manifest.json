@@ -16,6 +16,7 @@
         "page_segmentation/common.js",
         "page_segmentation/block_segment.js",
         "hiddenCosts.js",
+        "urgency.js",
         "confirmshaming.js"
       ]
     }

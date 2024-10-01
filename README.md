@@ -1,1 +1,1 @@
-Extension con el objetivo de detectar dark patterns 
+DP de momento solo se busca detectar hidden costs 

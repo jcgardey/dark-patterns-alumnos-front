@@ -374,5 +374,4 @@ CssPathEngine.prototype.getElement = function(aNode, aExpr) {
 
 };
 
-export default XPathInterpreter;
 

@@ -17,7 +17,10 @@
         "page_segmentation/block_segment.js",
         "hiddenCosts.js",
         "urgency.js",
-        "confirmshaming.js"
+        "confirmshaming.js",
+        "misdirection-script.js",
+        "extension.js",
+        "XPathInterpreter.js"
       ]
     }
   ],

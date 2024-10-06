@@ -1,5 +1,4 @@
 function hiddenCostScript(){
-
     const elementos = document.querySelectorAll('p,span,h5'); //Esto es temporal porque podrían aparecer precios con varios tipos de tags HTML. Estamos viendo como incluir distintos tags
     let hiddenCosts = [];
     let prices = [];
@@ -30,6 +29,7 @@ function hiddenCostScript(){
                     if(distance < hiddenCostDistance )
                     {
                         hiddenCosts.push(prices[i]);
+                        resaltarElementoConTexto(prices[i], "guarda con la billetera");
                         break;
                     }
                     j++;
@@ -66,57 +66,9 @@ function hiddenCostScript(){
             }
     }
 
-    function logPrint(){
-        console.log("precios: ");
-        for(let i=0; i<prices.length;i++){
-            console.log(prices[i].textContent);
-        }
-        
-        console.log("precios ocultos: ");
-        for(let i=0; i<hiddenCosts.length;i++){
-            console.log(hiddenCosts[i].textContent);
-            hiddenCosts[i].setAttribute("style","background-color: #FFCCCB;")
-        }
-        
-        console.log(`Tamaño de precio potencial: ${biggestPriceSize}`);
-        console.log(`Se detectaron ${principalPrices.length} precios potenciales`);
-        
-        for(let i=0;i<principalPrices.length;i++)
-        {
-            console.log(principalPrices[i].textContent);
-            principalPrices[i].setAttribute("style","background-color: #CCFEFF;")
-        }
-    }
-    /*Se busca diferenciar precios por el mayor tamaño porque, suponemos, que es mas probable que sean precios finales debido a que llaman más la atención
-    Ademas de eso se busca diferenciar precios de por si mediante el uso de RegExp*/
-
     sizeCheck();
-
-    /* Se realiza una comparación con los precios que se consideraron no finales buscando diferenciar los que pueden catalogarse como hidden costs*/
     distanceCheck();
-
-    /* Se imprime resultados para testear */
-
-    logPrint();
-
+    pintar();
+    return hiddenCosts;
 }
 
-
-
-    const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-            // Lógica que se ejecuta al detectar cambios en el DOM
-
-            console.log("Cambio detectado en el DOM");
-            // Aquí puedes agregar la lógica que debe ejecutar tu extensión
-
-            console.log("HOLA ESTO ESTA ANDANDO :)");
-
-        hiddenCostScript();
-
-        });
-    });
-
-hiddenCostScript();
-// Seleccionar el nodo que se desea observar y los tipos de cambios
-observer.observe(document.body, { childList: true, subtree: true });

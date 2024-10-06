@@ -1,3 +1,4 @@
+window.onload = function () {
 // Cuando termina de cargar una página la segmenta y manda a background
 let elements_shaming = segments(document.body);
 let filtered_elements_shaming = [];
@@ -10,7 +11,8 @@ for (let i = 0; i < elements_shaming.length; i++) {
   if (text.length == 0) {
     continue;
   }
-  filtered_elements_shaming.push(text);
+  let path = XPATHINTERPRETER.getPath(elements_shaming[i], document.body);
+  filtered_elements_shaming.push({ text, path });
 }
 
 chrome.runtime.sendMessage({pattern: "SHAMING", data: filtered_elements_shaming}, (response) => {
@@ -19,6 +21,12 @@ chrome.runtime.sendMessage({pattern: "SHAMING", data: filtered_elements_shaming}
     if (error.code === "ERR_NETWORK") console.log("El servidor no responde.");
     else console.log(error);
     }
-  else
-    console.log(data);
+  else {
+    let nodes = [];
+    data.forEach((item) => {
+      nodes.push(XPATHINTERPRETER.getElementByXPath(item.path[0], document.body));
+    });
+    console.log(data, nodes);
+  }
 });
+}

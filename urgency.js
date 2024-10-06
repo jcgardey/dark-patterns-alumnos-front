@@ -10,7 +10,8 @@ for (let i = 0; i < elements_urgency.length; i++) {
   if (text.length == 0) {
     continue;
   }
-  filtered_elements_urgency.push(text);
+  let path = XPATHINTERPRETER.getPath(elements_urgency[i], document.body);
+  filtered_elements_urgency.push({ text, path });
 }
 
 chrome.runtime.sendMessage({pattern: "URGENCY", data: filtered_elements_urgency}, (response) => {
@@ -19,6 +20,11 @@ chrome.runtime.sendMessage({pattern: "URGENCY", data: filtered_elements_urgency}
     if (error.code === "ERR_NETWORK") console.log("El servidor no responde.");
     else console.log(error);
     }
-  else
-    console.log(data);
+  else {
+    let nodes = [];
+    data.forEach((item) => {
+      nodes.push(XPATHINTERPRETER.getElementByXPath(item.path[0], document.body));
+    });
+    console.log(data, nodes);
+  }
 });

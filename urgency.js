@@ -25,6 +25,7 @@ chrome.runtime.sendMessage({pattern: "URGENCY", data: filtered_elements_urgency}
     data.forEach((item) => {
       nodes.push(XPATHINTERPRETER.getElementByXPath(item.path[0], document.body));
     });
+    nodes.forEach((node) => resaltarElementoConTexto(node, "Fake Urgency"));
     console.log(data, nodes);
   }
 });

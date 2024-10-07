@@ -26,6 +26,7 @@ chrome.runtime.sendMessage({pattern: "SHAMING", data: filtered_elements_shaming}
     data.forEach((item) => {
       nodes.push(XPATHINTERPRETER.getElementByXPath(item.path[0], document.body));
     });
+    nodes.forEach((node) => resaltarElementoConTexto(node, "Confirm Shaming"));
     console.log(data, nodes);
   }
 });

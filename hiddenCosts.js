@@ -68,7 +68,8 @@ function hiddenCostScript(){
 
     sizeCheck();
     distanceCheck();
-    pintar();
+  //Pintar() tiraba error y trababa todo, así que lo comenté
+    //pintar();
     return hiddenCosts;
 }
 

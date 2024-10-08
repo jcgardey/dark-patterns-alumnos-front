@@ -103,7 +103,7 @@ function isSpecial(element){
             return true;
         }
     }catch (e){
-        console.log(e);
+        //console.log(e);
     }
     return false;
 }
@@ -251,9 +251,18 @@ const comprobarNodos = () =>{
 }
 
 function resaltarElementoConTexto(elemento, texto) {
+    // Chequea que el elemento no haya sido remarcado antes
+    if (elemento.style.border === "6px dashed yellow" &&
+      elemento.style.position === "relative") {
+      return;
+    };
     // Aplica el estilo al borde del elemento
     elemento.style.border = "6px dashed yellow";
     elemento.style.position = "relative"; // Para posicionar el globo correctamente
+
+  // Agregar el globoTexto rompia algo
+  // Por ahora lo desactive y le agregué un tooltip barato para probar
+    elemento.title = texto;
 
     // Crea el globo de texto
     const globoTexto = document.createElement("div");
@@ -297,7 +306,7 @@ function resaltarElementoConTexto(elemento, texto) {
     globoTexto.appendChild(botonCerrar);
 
     // Agrega el globo como hijo del elemento
-    elemento.appendChild(globoTexto);
+    //elemento.appendChild(globoTexto);
 }
 
 /**

@@ -12,9 +12,23 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["hiddenCosts.js", "misdirection-script.js"],
-      "run_at": "document_end"
+      "js": [
+        "page_segmentation/common.js",
+        "page_segmentation/block_segment.js",
+        "hiddenCosts.js",
+        "urgency.js",
+        "confirmshaming.js",
+        "misdirection-script.js",
+        "extension.js",
+        "XPathInterpreter.js"
+      ]
     }
-  ]
+  ],
+  "background":{
+    "scripts": [
+      "background.js",
+      "sitios-prueba/node_modules/axios/dist/axios.js"
+    ]
+  }
 }
 

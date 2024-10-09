@@ -6,7 +6,7 @@ export const Site = ({ site }) => {
 
   const onClick = (isDark) => {
     window.open(
-      `${window.location.origin}${site.url}${isDark ? '?enabled=true' : ''}`,
+      `${window.location.origin}${site.url}?enabled=${isDark}`,
       '_blank',
       'noopener,noreferrer'
     );

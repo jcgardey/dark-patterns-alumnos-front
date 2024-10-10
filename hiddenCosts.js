@@ -68,7 +68,6 @@ function hiddenCostScript(){
 
     sizeCheck();
     distanceCheck();
-    pintar();
     return hiddenCosts;
 }
 

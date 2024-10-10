@@ -8,7 +8,7 @@ fakeUrgencyScript();
 }
 */
 
-// Observer solo ejecuta el callback 5 segundos después de la ultima mutación
+// Observer solo ejecuta el callback 1 segundos después de la ultima mutación
 // En páginas que cambian constantemente no sirve
 let previousURL = '';
 let timer;
@@ -20,7 +20,7 @@ const observer = new MutationObserver(function(mutation){
       comprobarNodos();
       confirmShamingScript();
       fakeUrgencyScript();
-  }, 500);
+  }, 1000);
 /*
     if(location.href !== previousURL){
         previousURL = location.href;

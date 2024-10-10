@@ -25,7 +25,7 @@ const confirmShamingScript = function() {
       data.forEach((item) => {
         nodes.push(XPATHINTERPRETER.getElementByXPath(item.path[0], document.body));
       });
-      nodes.forEach((node) => resaltarElementoConTexto(node, "Confirm Shaming"));
+      nodes.forEach((node) => resaltarElementoConTexto(node, "SHAMING"));
     }
   });
 }

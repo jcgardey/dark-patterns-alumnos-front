@@ -33,7 +33,7 @@ function hiddenCostScript() {
           hiddenCosts.push(prices[i]);
           resaltarElementoConTexto(
             prices[i],
-            'Posiblemente sea un precio oculto'
+            'HIDDENCOST'
           );
           break;
         }

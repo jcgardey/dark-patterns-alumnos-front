@@ -278,23 +278,24 @@ const comprobarNodos = () => {
     filtrados.forEach(
         (idx)=>{
             //pintar([sp[idx]],'#FF0000');
-            resaltarElementoConTexto(sp[idx],'Cuidado con el MISDIRECTION!')
+            resaltarElementoConTexto(sp[idx],'MISDIRECTION')
         }
     );
 }
 
-function resaltarElementoConTexto(elemento, texto) {
+function resaltarElementoConTexto(elemento, tipo) {
   // Chequeo simple para saber si ya fue resaltado
-  if (elemento.classList.contains("resaltado-dark-pattern")) return;
+  if (elemento.classList.contains(tipo)) return;
   // Aplica el estilo al borde del elemento
   elemento.style.border = '6px dashed #fad482';
   elemento.style.position = 'relative'; // Para posicionar el globo correctamente
   elemento.classList.add("resaltado-dark-pattern");
+  elemento.classList.add(tipo);
 
   // Crea el globo de texto
   const globoTexto = document.createElement('span');
   const p = document.createElement('p');
-  p.textContent = texto;
+  p.textContent = DP_TEXT[tipo];
   p.style.width = '100%';
   p.style.lineHeight = '1.5';
   globoTexto.appendChild(p);
@@ -356,7 +357,7 @@ function cantidadDestacados(contrastes){
 }
 
 // para que la extension corra el algoritmo
-comprobarNodos();
+//comprobarNodos();
 
 //document.addEventListener("DOMContentLoaded",comprobarNodos);
 

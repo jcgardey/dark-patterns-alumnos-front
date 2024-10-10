@@ -25,7 +25,7 @@ const fakeUrgencyScript = function() {
       data.forEach((item) => {
         nodes.push(XPATHINTERPRETER.getElementByXPath(item.path[0], document.body));
       });
-      nodes.forEach((node) => resaltarElementoConTexto(node, "Fake Urgency"));
+      nodes.forEach((node) => resaltarElementoConTexto(node, "URGENCY"));
     }
   });
 }

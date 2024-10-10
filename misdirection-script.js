@@ -251,7 +251,7 @@ const comprobarNodos = () =>{
 }
 
 function resaltarElementoConTexto(elemento, texto) {
-    // Chequea que el elemento no haya sido remarcado antes
+    // Chequeo simple para saber si ya fue resaltado
     if (elemento.style.border === "6px dashed yellow" &&
       elemento.style.position === "relative") {
       return;
@@ -260,13 +260,11 @@ function resaltarElementoConTexto(elemento, texto) {
     elemento.style.border = "6px dashed yellow";
     elemento.style.position = "relative"; // Para posicionar el globo correctamente
 
-  // Agregar el globoTexto rompia algo
-  // Por ahora lo desactive y le agregué un tooltip barato para probar
-    elemento.title = texto;
-
     // Crea el globo de texto
-    const globoTexto = document.createElement("div");
+    // Tuve que hacerlo "span" porque "div" rompía el algoritmo de segmentación
+    const globoTexto = document.createElement("span");
     globoTexto.textContent = texto;
+    globoTexto.classList.add("resaltador-dark-pattern");
 
     // Crea el botón de cerrar (la cruz)
     const botonCerrar = document.createElement("span");
@@ -306,7 +304,7 @@ function resaltarElementoConTexto(elemento, texto) {
     globoTexto.appendChild(botonCerrar);
 
     // Agrega el globo como hijo del elemento
-    //elemento.appendChild(globoTexto);
+    elemento.appendChild(globoTexto);
 }
 
 /**

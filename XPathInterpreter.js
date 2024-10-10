@@ -375,3 +375,4 @@ CssPathEngine.prototype.getElement = function(aNode, aExpr) {
 };
 
 
+const XPATHINTERPRETER = new XPathInterpreter();

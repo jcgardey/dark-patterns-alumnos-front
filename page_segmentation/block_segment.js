@@ -1,3 +1,22 @@
+function recursiveSegmentation(children){
+  var result = [];
+
+  for (var child of children) {
+      result = result.concat(segments(child));
+  }
+
+  return result;
+}
+
+function wasResalted(element) {
+  if (!element.hasChildNodes()) return false;
+  let children = element.children;
+  for (const child of children) {
+    if (child.classList.contains("resaltador-dark-pattern")) return true;
+  }
+  return false;
+}
+
 var allIgnoreChildren = function(element) {
     if (element.children.length === 0) {
         return false;
@@ -19,69 +38,63 @@ var segments = function(element) {
     if (!element) {
         return [];
     }
-  
     var tag = element.tagName.toLowerCase();
-    if (!ignoredElements.includes(tag) && !isPixel(element) && isShown(element)) {
-        if (blockElements.includes(tag)) {
-            if (!containsBlockElements(element)) {
-                if (allIgnoreChildren(element)) {
-                    return [];
-                }
-                else {
-                    if (getElementArea(element) / winArea > 0.3) {
-                        var result = [];
-    
-                        for (var child of element.children) {
-                            result = result.concat(segments(child));
-                        }
-    
-                        return result;
-                    }
-                    else {
-                        return [element];
-                    }
-                }
+    if (ignoredElements.includes(tag) || isPixel(element) || !isShown(element)) {
+      return [];
+    }
+
+      /*
+    if (wasResalted(element)) {
+      for (const child of element.children) {
+        if (child.classList.contains("resaltador-dark-pattern")) {
+          console.log(child);
+          element.removeChild(child);
+        }
+      }
+    }
+        */
+  
+  // Es bloque (div, section, etc)
+    if (blockElements.includes(tag)) {
+        if (!containsBlockElements(element)) {
+            if (allIgnoreChildren(element)) {
+                return [];
             }
-            else if (containsTextNodes(element)) {
+            if (getElementArea(element) / winArea > 0.3) {
+              return recursiveSegmentation(element.children);
+            }
+            else {
                 return [element];
             }
-            else {
-                var result = [];
-  
-                for (var child of element.children) {
-                    result = result.concat(segments(child));
-                }
-  
-                return result;
-            }
         }
+        else if (containsTextNodes(element)) {
+            return [element];
+        }
+      // Parche para que ande con el resaltador
+      /*
+        else if (wasResalted(element)) {
+            for (const child of element.children) {
+              if (child.classList.contains("resaltador-dark-pattern")) element.removeChild(child);
+            }
+            return [element];
+        }
+        */
         else {
-            if (containsBlockElements(element, false)) {
-                var result = [];
-    
-                for (var child of element.children) {
-                    result = result.concat(segments(child));
-                }
-  
-                return result;
-            }
-            else {
-                if (getElementArea(element) / winArea > 0.3) {
-                    var result = [];
-        
-                    for (var child of element.children) {
-                        result = result.concat(segments(child));
-                    }
-        
-                    return result;
-                }
-                else {
-                    return [element];
-                }
-            }
+          return recursiveSegmentation(element.children);
         }
     }
+  // No es bloque
     else {
-        return [];
+        if (containsBlockElements(element, false)) {
+          return recursiveSegmentation(element.children);
+        }
+        else {
+            if (getElementArea(element) / winArea > 0.3) {
+              return recursiveSegmentation(element.children);
+            }
+            else {
+                return [element];
+            }
+        }
     }
 };

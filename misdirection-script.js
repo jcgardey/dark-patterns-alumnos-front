@@ -86,6 +86,24 @@ const checkMisdirection = () => {
     }
 }
 
+function isHidden(element) {
+    let actual = element;
+    let raiz = document.body;
+    let isHidden = false;
+    
+    while (actual !== raiz && actual != null && !isHidden) {
+        if (
+            (actual.classList && actual.classList.contains('hidden')) || 
+            actual.getAttribute('hidden') === 'true'  // Verificar si 'hidden' es exactamente 'true'
+        ) {
+            isHidden = true;
+        }
+        actual = actual.parentNode;  // Subir al elemento padre
+    }
+    
+    return isHidden;
+}
+
 const clickeables = ['a', 'button'];
 /**
  * @param {ChildNode} element
@@ -93,7 +111,8 @@ const clickeables = ['a', 'button'];
  */
 function isSpecial(element){
     try{
-        if (element.nodeName !== '#text' && 
+        if (element.nodeName !== '#text' &&
+            !isHidden(element) &&
                 (
                     (element.getAttribute('onclick') != null) || 
                     (element.getAttribute('href') != null) || 
@@ -234,7 +253,7 @@ const comprobarNodos = () =>{
 
     contrastes.forEach(
         (elems, idx) => {
-            if (cantidadDestacados(elems) > (elems.length * 0.66)){
+            if (cantidadDestacados(elems) >= (elems.length * 0.50)){
                 console.log(idx)
                 filtrados.push(idx)
             }
@@ -314,11 +333,14 @@ function resaltarElementoConTexto(elemento, texto) {
 function cantidadDestacados(contrastes){
     promedio = contrastes.reduce((acc,cont)=>acc+cont) / contrastes.length;
     return contrastes.reduce((acc,actual)=>{
-        if (actual > promedio) return acc+1
+        if (actual > (promedio + (promedio * 0.2))) return acc+1
         else return acc
     },0);
 }
 
-document.addEventListener("DOMContentLoaded",comprobarNodos);
+// para que la extension corra el algoritmo
+comprobarNodos()
 
-document.addEventListener("DOMContentLoaded", checkMisdirection);
+//document.addEventListener("DOMContentLoaded",comprobarNodos);
+
+//document.addEventListener("DOMContentLoaded", checkMisdirection);

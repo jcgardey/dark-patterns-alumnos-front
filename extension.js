@@ -16,11 +16,11 @@ const observer = new MutationObserver(function(mutation){
   if (timer) clearTimeout(timer);
   timer = setTimeout(() => {
       hiddenCostScript();
-      checkMisdirection();
+      //checkMisdirection();
       comprobarNodos();
       confirmShamingScript();
       fakeUrgencyScript();
-  }, 5000);
+  }, 500);
 /*
     if(location.href !== previousURL){
         previousURL = location.href;

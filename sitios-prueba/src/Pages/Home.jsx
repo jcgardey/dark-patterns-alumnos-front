@@ -32,7 +32,7 @@ export const Home = () => {
       <h1 className="text-3xl">Sitios de prueba</h1>
       <div className="my-8 border-b border-gray-300">
         {sites.map((site, i) => (
-          <Site key={site.id} site={site} />
+          <Site key={site.name} site={site} />
         ))}
       </div>
     </div>

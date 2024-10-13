@@ -16,7 +16,7 @@ const observer = new MutationObserver(function(mutation){
       comprobarNodos();
       confirmShamingScript();
       fakeUrgencyScript();
-  }, 1000);
+  }, 100);
 });
 
 observer.observe(document,{ childList: true, subtree: true });

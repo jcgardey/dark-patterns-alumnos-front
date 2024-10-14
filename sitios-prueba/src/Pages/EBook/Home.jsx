@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { createContext, useEffect, useState } from 'react';
 import { NavBar } from '../../components/EBook/NavBar';
 import { Footer } from '../../components/EBook/Footer';
 import './books.css';
@@ -6,34 +6,38 @@ import { Link, Outlet } from 'react-router-dom';
 import { updateDarkPatternState } from '../../utils/dark_patterns';
 import { useTranslation } from 'react-i18next';
 
+export const CartContext = createContext();
+
 export const Home = () => {
-  
   const { t } = useTranslation();
-  
+
+  const [shoppingCart, setShoppingCart] = useState([]);
   useEffect(() => {
     updateDarkPatternState();
   }, []);
 
   return (
-    <>
+    <CartContext.Provider value={[shoppingCart, setShoppingCart]}>
       <NavBar />
       <div className="flex">
         <div className="w-1/6 sidebar px-8">
           <ul>
             <li>
               <Link to="/ebook">
-                <i className="fa-solid fa-sharp fa-house"></i>  {t('Ebook.Home')}
+                <i className="fa-solid fa-sharp fa-house"></i> {t('Ebook.Home')}
               </Link>
             </li>
             <li>
               <a href="javascript:void(0)">
-                <i className="fa-solid fa-sharp fa-bookmark"></i> {t('Ebook.Saved')}
+                <i className="fa-solid fa-sharp fa-bookmark"></i>{' '}
+                {t('Ebook.Saved')}
               </a>
             </li>
             <li className="separator"></li>
             <li>
               <a href="javascript:void(0)">
-                <i className="fa-solid fa-sharp fa-star"></i> {t('Ebook.Recommended')}
+                <i className="fa-solid fa-sharp fa-star"></i>{' '}
+                {t('Ebook.Recommended')}
               </a>
             </li>
             <li>
@@ -43,7 +47,8 @@ export const Home = () => {
             </li>
             <li>
               <a href="javascript:void(0)">
-                <i className="fa-solid fa-sharp fa-headphones"></i> {t('Ebook.Audiobooks')}
+                <i className="fa-solid fa-sharp fa-headphones"></i>{' '}
+                {t('Ebook.Audiobooks')}
               </a>
             </li>
           </ul>
@@ -52,8 +57,7 @@ export const Home = () => {
           <Outlet />
         </div>
       </div>
-      
       <Footer />
-    </>
+    </CartContext.Provider>
   );
 };

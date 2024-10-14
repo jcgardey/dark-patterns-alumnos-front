@@ -28,6 +28,7 @@ import { WebsitesGroups } from './Pages/Dashboard/WebsitesGroups';
 import { CreateWebsiteGroup } from './Pages/Dashboard/CreateWebsiteGroup';
 import { WebsitesPage } from './Pages/Dashboard/WebsitesPage';
 import { EditWebsiteGroup } from './Pages/Dashboard/EditWebsiteGroup';
+import { CartPage } from './Pages/EBook/CartPage';
 
 function App() {
   useEffect(() => {
@@ -64,18 +65,8 @@ function App() {
               element={<CancelMembership />}
             />
             <Route path="/ebook/books_offer" element={<BooksOffer />} />
+            <Route path="/ebook/cart" element={<CartPage />} />
           </Route>
-
-          <Route path="/dashboard" element={<WebsitesGroups />} />
-          <Route
-            path="/dashboard/groups/new"
-            element={<CreateWebsiteGroup />}
-          />
-          <Route path="/dashboard/websites" element={<WebsitesPage />} />
-          <Route
-            path="/dashboard/websites/:groupId"
-            element={<EditWebsiteGroup />}
-          />
         </Routes>
       </BrowserRouter>
     </>

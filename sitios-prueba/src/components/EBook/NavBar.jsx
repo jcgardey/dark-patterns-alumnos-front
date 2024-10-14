@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { CartContext } from '../../Pages/EBook/Home';
 
 export const NavBar = () => {
   const [dropdown, setDropdown] = useState(false);
   const { t } = useTranslation();
+  const [cart, setCart] = useContext(CartContext);
 
   return (
     <div className="head px-12 py-8 text-gray-500 border-b-2 border-fuchsia-500">
@@ -33,7 +35,15 @@ export const NavBar = () => {
             </button>
           </div>
         </div>
-        <div className="w-1/3 flex justify-end relative">
+        <div className="w-1/3 flex gap-4 justify-end items-center relative">
+          <div className="relative">
+            <Link to="/ebook/cart">
+              <i className="fa-solid fa-sharp fa-xl fa-cart-shopping"></i>
+            </Link>
+            <span className="absolute bg-fuchsia-500 text-white rounded-full py-0.5 px-2 bottom-4 left-4">
+              {cart.length}
+            </span>
+          </div>
           <div>
             <a
               className="flex justify-center items-center text-gray-600 hover:cursor-pointer"
@@ -67,7 +77,10 @@ export const NavBar = () => {
                   </Link>
                 </li>
                 <li className="hover:bg-gray-100">
-                  <a className="dropdown-item px-4 py-1 block w-full" href="javascript:void(0)">
+                  <a
+                    className="dropdown-item px-4 py-1 block w-full"
+                    href="javascript:void(0)"
+                  >
                     {t('Ebook.Logout')}
                   </a>
                 </li>

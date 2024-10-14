@@ -10,7 +10,7 @@ export const Books = () => {
     setTargetBook(book);
     setTimeout(() => {
       setTargetBook(null);
-    }, 5000);
+    }, 6000);
   };
 
   return (
@@ -21,13 +21,13 @@ export const Books = () => {
       {targetBook && (
         <div className="fixed bottom-4 right-4 bg-white border rounded border-fuchsia-500 p-4 flex gap-2 items-center">
           <p className="text-lg text-gray-700">
-            Se agregó "{targetBook.title}" al carrito.
+            Se agregó "{targetBook.title}".
           </p>
           <Link
             to="/ebook/cart"
-            className="text-fuchsia-500 font-bold text-underline"
+            className="text-fuchsia-500 font-bold underline"
           >
-            Ver
+            Ver carrito
           </Link>
         </div>
       )}

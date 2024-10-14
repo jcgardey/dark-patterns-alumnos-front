@@ -1,14 +1,21 @@
 import { formatCurrency } from '../../utils/currency';
 import mastercard from '../../assets/EBook/mastercard.png';
-import { useContext, useMemo } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { CartContext } from '../../Pages/EBook/Home';
+import { FinishedTask } from '../FinishedTask';
 
 export const Summary = () => {
   const [cart, setCart] = useContext(CartContext);
 
+  const [finishedTask, setFinishedTask] = useState(false);
+
   const total = useMemo(() =>
     cart.reduce((total, item) => total + item.price, 0)
   );
+
+  const handleFinish = () => {
+    setFinishedTask(true);
+  };
 
   return (
     <div className="shadow p-4 w-1/3">
@@ -36,10 +43,14 @@ export const Summary = () => {
             <p className="text-xl font-bold">{formatCurrency(total)}</p>
           </div>
         </div>
-        <button className="bg-fuchsia-500 text-white rounded p-2 font-bold">
+        <button
+          onClick={handleFinish}
+          className="bg-fuchsia-500 text-white rounded p-2 font-bold"
+        >
           Finalizar compra
         </button>
       </div>
+      <FinishedTask show={finishedTask} />
     </div>
   );
 };

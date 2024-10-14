@@ -32,6 +32,7 @@ export const books = [
     img: murder,
     author: 'Arnold Bennett',
     price: 10000,
+    last: true,
   },
 
   {
@@ -53,6 +54,7 @@ export const books = [
     img: higgler,
     author: 'A. E. Coppard',
     price: 15000,
+    last: true,
   },
 
   {
@@ -67,6 +69,7 @@ export const books = [
     img: switcher,
     author: 'Roald Dahl',
     price: 25000,
+    last: true,
   },
 
   {
@@ -145,6 +148,7 @@ export const books = [
     img: horse,
     author: 'D. H. Lawrence',
     price: 15000,
+    last: true,
   },
 
   {

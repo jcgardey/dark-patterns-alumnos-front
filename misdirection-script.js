@@ -289,11 +289,21 @@ function resaltarElementoConTexto(elemento, tipo) {
   // Aplica el estilo al borde del elemento
   elemento.style.border = '6px dashed #fad482';
   elemento.style.position = 'relative'; // Para posicionar el globo correctamente
-  elemento.classList.add("resaltado-dark-pattern");
   elemento.classList.add(tipo);
 
-  // Crea el globo de texto
-  const globoTexto = document.createElement('span');
+  // Chequea si ya existe un globo de texto para el elemento
+  // Si no existe, lo crea.
+  let globoTexto;
+  elemento.childNodes.forEach(child => {
+    if (child.classList)
+      if (child.classList.contains("resaltado-dark-pattern")) globoTexto = child;
+  });
+  if (!globoTexto) {
+    globoTexto = document.createElement('span');
+    globoTexto.classList.add("resaltado-dark-pattern");
+  }
+
+  // Agrega texto al globo
   const p = document.createElement('p');
   p.textContent = DP_TEXT[tipo];
   p.style.width = '100%';
@@ -312,7 +322,9 @@ function resaltarElementoConTexto(elemento, tipo) {
 
   // Función para cerrar el globo
   botonCerrar.addEventListener('click', function () {
-    elemento.removeChild(globoTexto);
+    globoTexto.removeChild(p);
+    globoTexto.removeChild(botonCerrar);
+    if (!globoTexto.hasChildNodes()) elemento.removeChild(globoTexto);
   });
 
   const rect = elemento.getBoundingClientRect();

@@ -2,7 +2,7 @@ import { Confirmation } from './Confirmation';
 import { Modal } from './Modal';
 import { useTranslation } from 'react-i18next';
 
-export const FinishedTask = ({ show, website, data = {} }) => {
+export const FinishedTask = ({ show }) => {
   const { t } = useTranslation();
 
   const closeTab = () => {

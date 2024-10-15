@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { formatCurrency } from '../../utils/currency';
 
 export const Room = ({ room, nights, adults }) => {
   const { t, i18n } = useTranslation();
@@ -52,12 +53,12 @@ export const Room = ({ room, nights, adults }) => {
             {t('Roomio.Results.Night', { count: nights })}
           </h5>
           <h5 className="text-xl my-1 font-medium">
-            $ {darkEnabled ? priceForStay : priceForStayWithTaxes}
+            {formatCurrency(darkEnabled ? priceForStay : priceForStayWithTaxes)}
           </h5>
 
           <p className="text-sm text-gray-500 my-2">
             {darkEnabled
-              ? `+$ ${taxesForStay} ${t('Roomio.Results.Taxes')}`
+              ? `+ ${formatCurrency(taxesForStay)} ${t('Roomio.Results.Taxes')}`
               : t('Roomio.Results.TaxesIncluded')}
           </p>
           <Link

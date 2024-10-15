@@ -12,6 +12,7 @@ import { dateString } from '../../utils/date';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { CarFilters } from '../../components/CarRent/CarFilters';
+import { formatCurrency } from '../../utils/currency';
 
 const Vehicle = ({ vehicle, onSelect }) => {
   const { t } = useTranslation();
@@ -23,7 +24,7 @@ const Vehicle = ({ vehicle, onSelect }) => {
     >
       <div className="w-1/3">
         <h3 className="text-slate-700 text-2xl font-bold">{vehicle.name}</h3>
-        {t('Rental.Vehicle.'+[vehicle.capType])}
+        {t('Rental.Vehicle.' + [vehicle.capType])}
         <p className="my-1 text-grey-800 italic">
           {vehicle.description} {t('Rental.Vehicle.Similar')}
         </p>
@@ -45,7 +46,7 @@ const Vehicle = ({ vehicle, onSelect }) => {
       </div>
       <div className="w-1/3">
         <p className="text-2xl text-center font-bold text-slate-500 my-2">
-          &#36;{t('Rental.Vehicle.Price', { price: vehicle.price })}
+          {t('Rental.Vehicle.Price', { price: formatCurrency(vehicle.price) })}
         </p>
         <button className="w-full bg-slate-700 hover:bg-slate-800 text-white py-2">
           {t('Rental.Vehicle.Select')}
@@ -67,7 +68,7 @@ export const SelectVehicle = ({}) => {
       capType: 'Sedan',
       description: 'VW Jetta',
       capacity: 5,
-      price: 32.99,
+      price: 30000,
       img: standard,
     },
     {
@@ -76,7 +77,7 @@ export const SelectVehicle = ({}) => {
       capType: 'SUV',
       description: 'Ford Edge',
       capacity: 5,
-      price: 41.15,
+      price: 40000,
       img: standard_suv,
     },
     {
@@ -85,7 +86,7 @@ export const SelectVehicle = ({}) => {
       capType: 'Pickup',
       description: 'Ford F150',
       capacity: 4,
-      price: 45.95,
+      price: 45000,
       img: pickup,
     },
     {
@@ -93,7 +94,7 @@ export const SelectVehicle = ({}) => {
       type: 'pickup',
       capType: 'Pickup',
       capacity: 4,
-      price: 46.06,
+      price: 45000,
       img: standard_pickup,
     },
     {
@@ -102,7 +103,7 @@ export const SelectVehicle = ({}) => {
       capType: 'Convertible',
       description: 'Ford Mustang',
       capacity: 4,
-      price: 65.23,
+      price: 65000,
       img: convertible,
     },
     {
@@ -111,7 +112,7 @@ export const SelectVehicle = ({}) => {
       capType: 'Sporty',
       description: 'Dodge Challenger',
       capacity: 4,
-      price: 68.65,
+      price: 70000,
       img: sporty,
     },
   ];
@@ -134,10 +135,10 @@ export const SelectVehicle = ({}) => {
   const availableFilters = {
     type: [
       { value: 'sedan', label: t('Rental.Vehicle.Sedan') },
-      { value: 'suv', label:  t('Rental.Vehicle.SUV')},
-      { value: 'coupe', label:  t('Rental.Vehicle.Coupe')},
-      { value: 'convertible', label:  t('Rental.Vehicle.Convertible')},
-      { value: 'pickup', label:  t('Rental.Vehicle.Pickup')}
+      { value: 'suv', label: t('Rental.Vehicle.SUV') },
+      { value: 'coupe', label: t('Rental.Vehicle.Coupe') },
+      { value: 'convertible', label: t('Rental.Vehicle.Convertible') },
+      { value: 'pickup', label: t('Rental.Vehicle.Pickup') },
     ],
     seats: [
       { value: 2, label: '2+' },

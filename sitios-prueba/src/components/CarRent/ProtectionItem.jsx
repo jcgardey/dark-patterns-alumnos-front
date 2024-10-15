@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { formatCurrency } from '../../utils/currency';
 
 export const ProtectionItem = ({
   title,
@@ -41,7 +42,7 @@ export const ProtectionItem = ({
       </div>
       <div className="my-2">
         <p className="text-center text-xl font-bold text-slate-700">
-          ${t('Rental.Protection.Price', { price })}
+          {t('Rental.Protection.Price', { price: formatCurrency(price) })}
         </p>
       </div>
     </div>

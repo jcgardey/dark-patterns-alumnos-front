@@ -64,7 +64,7 @@ export const SelectProtection = () => {
             protection={protection}
             setProtection={setProtection}
             items={[t('Rental.Protection.Basic.Description')]}
-            price={9.99}
+            price={10000}
           />
 
           <ProtectionItem
@@ -75,7 +75,7 @@ export const SelectProtection = () => {
               t('Rental.Protection.Basic.Description'),
               t('Rental.Protection.Standard.Description'),
             ]}
-            price={29.99}
+            price={30000}
           />
 
           <ProtectionItem
@@ -87,7 +87,7 @@ export const SelectProtection = () => {
               t('Rental.Protection.Standard.Description'),
               t('Rental.Protection.Total.Description'),
             ]}
-            price={59.99}
+            price={60000}
             featured={true}
           />
         </div>

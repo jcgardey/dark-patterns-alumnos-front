@@ -103,21 +103,21 @@ const checkMisdirection = () => {
 };
 
 function isHidden(element) {
-    let actual = element;
-    let raiz = document.body;
-    let isHidden = false;
-    
-    while (actual !== raiz && actual != null && !isHidden) {
-        if (
-            (actual.classList && actual.classList.contains('hidden')) || 
-            actual.getAttribute('hidden') === 'true'  // Verificar si 'hidden' es exactamente 'true'
-        ) {
-            isHidden = true;
-        }
-        actual = actual.parentNode;  // Subir al elemento padre
+  let actual = element;
+  let raiz = document.body;
+  let isHidden = false;
+
+  while (actual !== raiz && actual != null && !isHidden) {
+    if (
+      (actual.classList && actual.classList.contains('hidden')) ||
+      actual.getAttribute('hidden') === 'true' // Verificar si 'hidden' es exactamente 'true'
+    ) {
+      isHidden = true;
     }
-    
-    return isHidden;
+    actual = actual.parentNode; // Subir al elemento padre
+  }
+
+  return isHidden;
 }
 
 const clickeables = ['a', 'button'];
@@ -125,21 +125,20 @@ const clickeables = ['a', 'button'];
  * @param {ChildNode} element
  * @returns {boolean}
  */
-function isSpecial(element){
-    try{
-        if (element.nodeName !== '#text' &&
-            !isHidden(element) &&
-                (
-                    (element.getAttribute('onclick') != null) || 
-                    (element.getAttribute('href') != null) || 
-                    (clickeables.includes(element.nodeName.toLowerCase()))
-                )
-            ) {
-            return true;
-        }
-    }catch (e){
-        //console.log(e);
+function isSpecial(element) {
+  try {
+    if (
+      element.nodeName !== '#text' &&
+      !isHidden(element) &&
+      (element.getAttribute('onclick') != null ||
+        element.getAttribute('href') != null ||
+        clickeables.includes(element.nodeName.toLowerCase()))
+    ) {
+      return true;
     }
+  } catch (e) {
+    //console.log(e);
+  }
   return false;
 }
 
@@ -265,23 +264,22 @@ const comprobarNodos = () => {
   // filtrado de elementos segun contrastes y umbral del 60%
   filtrados = [];
 
-    contrastes.forEach(
-        (elems, idx) => {
-            if (cantidadDestacados(elems) >= (elems.length * 0.50)){
-                console.log(idx)
-                filtrados.push(idx)
-            }
-        }
-    );
-    
-    // marcando las coincidencias
-    filtrados.forEach(
-        (idx)=>{
-            //pintar([sp[idx]],'#FF0000');
-            resaltarElementoConTexto(sp[idx],'MISDIRECTION')
-        }
-    );
-}
+  contrastes.forEach((elems, idx) => {
+    if (cantidadDestacados(elems) >= elems.length * 0.5) {
+      console.log(idx);
+      filtrados.push(idx);
+    }
+  });
+
+  // marcando las coincidencias
+  filtrados.forEach((idx) => {
+    //pintar([sp[idx]],'#FF0000');
+    //TO-DO: eliminar este if
+    if (sp[idx].id !== 'root') {
+      resaltarElementoConTexto(sp[idx], 'MISDIRECTION');
+    }
+  });
+};
 
 function resaltarElementoConTexto(elemento, tipo) {
   // Chequeo simple para saber si ya fue resaltado
@@ -294,13 +292,14 @@ function resaltarElementoConTexto(elemento, tipo) {
   // Chequea si ya existe un globo de texto para el elemento
   // Si no existe, lo crea.
   let globoTexto;
-  elemento.childNodes.forEach(child => {
+  elemento.childNodes.forEach((child) => {
     if (child.classList)
-      if (child.classList.contains("resaltado-dark-pattern")) globoTexto = child;
+      if (child.classList.contains('resaltado-dark-pattern'))
+        globoTexto = child;
   });
   if (!globoTexto) {
     globoTexto = document.createElement('span');
-    globoTexto.classList.add("resaltado-dark-pattern");
+    globoTexto.classList.add('resaltado-dark-pattern');
   }
 
   // Agrega texto al globo
@@ -360,12 +359,12 @@ function resaltarElementoConTexto(elemento, tipo) {
  *
  * @param {num[]} contrastes
  */
-function cantidadDestacados(contrastes){
-    promedio = contrastes.reduce((acc,cont)=>acc+cont) / contrastes.length;
-    return contrastes.reduce((acc,actual)=>{
-        if (actual > (promedio + (promedio * 0.2))) return acc+1
-        else return acc
-    },0);
+function cantidadDestacados(contrastes) {
+  promedio = contrastes.reduce((acc, cont) => acc + cont) / contrastes.length;
+  return contrastes.reduce((acc, actual) => {
+    if (actual > promedio + promedio * 0.2) return acc + 1;
+    else return acc;
+  }, 0);
 }
 
 // para que la extension corra el algoritmo

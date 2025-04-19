@@ -71,7 +71,7 @@ Una vez descargado y extraido el repositorio:
 > Todavia no tiene botón de apagado asi que dispara los comprobadores en todos lados.
 
 # Activar sitios de prueba
-Para activar los sitios es necesario tener instalado [**Node**](https://nodejs.org/es) para poder usar **npm**
+Para activar los sitios es necesario tener instalado [**Node**](https://nodejs.org/es) para poder usar **npm** y [**vite**](https://vite.dev/guide/#manual-installation).
 
 ```console
 npm i (necesario la primera vez)

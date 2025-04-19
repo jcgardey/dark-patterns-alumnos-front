@@ -70,6 +70,14 @@ Una vez descargado y extraido el repositorio:
 > [!WARNING]
 > Todavia no tiene botón de apagado asi que dispara los comprobadores en todos lados.
 
+# Activar sitios de prueba
+Para activar los sitios es necesario tener instalado [**Node**](https://nodejs.org/es) para poder usar **npm**
+
+```console
+npm i (necesario la primera vez)
+npm run dev
+```
+
 # Observaciones
 > [!CAUTION]
 > **En manifest.json, todos los scripts deben agregarse de modo que globals.js sea el primero en ejecutarse y extension.js el último, teniendo en cuenta que los scripts se activan en el orden en el que aparecen en el manifest.**

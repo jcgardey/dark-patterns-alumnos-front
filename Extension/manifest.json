@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "DP_extension",
-  "version": "1.0",
+  "version": "1.1",
 
   "description": "Detector de ciertos DP",
 
@@ -13,6 +13,7 @@
     {
       "matches": ["<all_urls>"],
       "js": [
+        "globals.js",
         "XPathInterpreter.js",
         "page_segmentation/common.js",
         "page_segmentation/block_segment.js",
@@ -26,8 +27,7 @@
   ],
   "background":{
     "scripts": [
-      "background.js",
-      "sitios-prueba/node_modules/axios/dist/axios.js"
+      "background.js"
     ]
   }
 }

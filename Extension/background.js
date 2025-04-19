@@ -44,6 +44,7 @@ function sendRequest(url, data, callback) {
       callback?.({ error: responseData });
     }
   }).catch((error) => {
+    error.code = "ERR_NETWORK";
     callback?.({ error });
   });
 }

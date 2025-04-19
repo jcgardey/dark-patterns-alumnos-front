@@ -1,7 +1,7 @@
 // Objeto a usar en extension.js
 const FakeUrgency = {
   tipo: DP_TYPES.URGENCY,
-  check: () => {
+  check: function() {
     let elements_urgency = segments(document.body);
     let filtered_elements_urgency = [];
 

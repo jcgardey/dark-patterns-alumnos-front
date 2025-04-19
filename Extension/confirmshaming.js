@@ -1,7 +1,7 @@
 // Objeto a usar en extension.js
 const ConfirmShaming = {
   tipo: DP_TYPES.SHAMING,
-  check: () => {
+  check: function() {
     const invalidTags = ["INPUT"];
     let elements_shaming = segments(document.body);
     let filtered_elements_shaming = [];

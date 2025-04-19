@@ -99,7 +99,7 @@ function sizeCheck(elementos) {
 const HiddenCost = {
   hiddenCostMaxDistance: 40,
   tipo: DP_TYPES.HIDDENCOST,
-  check: () => {
+  check: function() {
     const elementos = document.querySelectorAll('p,span,h5'); //Esto es temporal porque podrían aparecer precios con varios tipos de tags HTML. Estamos viendo como incluir distintos tags
     const precios = sizeCheck(elementos);
     const hiddens = distanceCheck(precios.prices, precios.principalPrices, this.hiddenCostMaxDistance);

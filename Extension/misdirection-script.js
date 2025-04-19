@@ -197,7 +197,8 @@ const Misdirection = {
   umbralCantidadDestacados: 0.5,
   clickeables: ['a', 'button'],
   tipo: DP_TYPES.MISDIRECTION,
-  check: () => {
+  check: function() {
+    console.log("ENTRA A MISDIRECTION")
     // obtencion de padres especiales
     specialParents = getParentOfSpecialNodes(document.body, this.clickeables).arr;
 
@@ -226,7 +227,7 @@ const Misdirection = {
       //TO-DO: eliminar este if
       if (specialParents[idx].id !== 'root') {
         resaltarElementoConTexto(
-          sp[idx], 
+          specialParents[idx], 
           this.tipo
         );
       }

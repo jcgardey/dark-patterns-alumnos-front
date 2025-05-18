@@ -7,7 +7,7 @@
 
   "permissions":["activeTab"],
   "browser_action":{
-    "default_popup": "menu/pantalla.html"
+    "default_popup": "menu/pop-up.html"
   },
   "content_scripts": [
     {
@@ -30,5 +30,6 @@
       "background.js"
     ]
   }
+  
 }
 

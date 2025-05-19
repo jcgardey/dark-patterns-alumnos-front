@@ -4,8 +4,8 @@
   }
 
   body {
-    background-color: rgb(80, 79, 79);
-    color: white; 
+    background-color:  #1A1A1A;
+    color:#E6E6E6;  
     font-family: sans-serif;
     text-align: center;
     margin: 20px;
@@ -14,6 +14,7 @@
   h1 {
     font-size: 18px;
     margin-bottom: 20px;
+    color: #E6E6E6;
   }
   
   .switch {
@@ -34,7 +35,7 @@
     cursor: pointer;
     top: 0; left: 0;
     right: 0; bottom: 0;
-    background-color: #ccc;
+    background-color: #2E2E2E; 
     transition: .4s;
     border-radius: 20px;
   }
@@ -46,13 +47,13 @@
     width: 16px;
     left: 2px;
     bottom: 2px;
-    background-color: white;
+    background-color: #E6E6E6; 
     transition: .4s;
     border-radius: 50%;
   }
   
   input:checked + .slider {
-    background-color: #2196F3;
+    background-color: #6FA28E;
   }
   
   input:checked + .slider:before {
@@ -71,6 +72,7 @@
     flex-direction: column;
     align-items: center;
     font-size: 12px;
+    color: #E6E6E6;
   }
   
   .icon-item img {
@@ -80,6 +82,7 @@
   
   .icon-item img:hover {
     transform: scale(1.1);
+    filter: brightness(1.2);
   }
 
   .main-icon {

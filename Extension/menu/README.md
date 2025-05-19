@@ -10,6 +10,13 @@ Pop-up page para configuracion basica de la extension Dark patterns.
 - Lista de patrones (Confirm Shaming, Fake Urgency, etc.) con interruptores
 - Íconos inferiores de navegación: **Configuración** y **Quiénes somos**
 
+### JS
+Este archivo contiene la lógica JavaScript para manejar los interruptores (checkboxes) en el pop-up de la extensión Dark Patterns.
+
+- Captura el evento change de todos los checkboxes dentro del pop-up.
+
+- Cuando se cambia un interruptor, registra en consola el estado actualizado (encendido/apagado).
+
 ### CSS
 - Popup de 400x400px
 - Fondo gris oscuro
@@ -17,13 +24,6 @@ Pop-up page para configuracion basica de la extension Dark patterns.
 - Interruptores personalizados tipo "slider"
 - Íconos inferiores con efecto `hover`
 - Todo centrado y espaciado usando `flexbox`
-
-### JS
-Este archivo contiene la lógica JavaScript para manejar los interruptores (checkboxes) en el pop-up de la extensión Dark Patterns.
-
-- Captura el evento change de todos los checkboxes dentro del pop-up.
-
-- Cuando se cambia un interruptor, registra en consola el estado actualizado (encendido/apagado).
 
 
 ## Componentes importantes

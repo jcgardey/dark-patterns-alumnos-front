@@ -15,7 +15,7 @@ export const Room = ({ room, nights, adults }) => {
     Math.round(nights * (room.price + room.taxes) * 100) / 100
   ).toFixed(2);
   const taxesForStay = (Math.round(nights * room.taxes * 100) / 100).toFixed(2);
-  const darkEnabled = localStorage.getItem('dark') == 'true' ?? false;
+  const darkEnabled = localStorage.getItem('dark') === 'true';
 
   return (
     <div className="mb-10 border border-gray-400 rounded">

@@ -6,7 +6,7 @@
   "description": "Detector de ciertos DP",
 
   "permissions":["activeTab"],
-  "browser_action":{
+  "action":{
     "default_popup": "menu/pantalla.html"
   },
   "content_scripts": [

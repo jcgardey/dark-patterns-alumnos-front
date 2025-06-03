@@ -1,25 +1,58 @@
-let DP_TYPES;
+// Service Worker, se ejecuta en segundo plano y no tiene acceso al DOM directamente.
 
+
+//let DP_TYPES;
+
+
+//inicializo los dps en true
+chrome.runtime.onInstalled.addListener(() => {
+  const valoresPorDefecto = {
+    SHAMING: true,
+    URGENCY: true,
+    HIDDENCOST: true,
+    MISDIRECTION: true
+  };
+  chrome.storage.sync.set({ dpActivos: valoresPorDefecto }, () => {
+    console.info("Valores por defecto de DP activos guardados.");
+  });
+});
+
+
+
+// Listener para mensajes entrantes desde otras partes de la extensión
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.tipo === "CONSTANTES") {
-    DP_TYPES = message.DP_TYPES;
-    console.info("Constantes cargadas.")
+  // Código comentado para cargar constantes desde un mensaje, se puede habilitar si es necesario
+   if (message.tipo === "CONSTANTES") {
+      DP_TYPES = message.DP_TYPES;
+     console.info("Constantes cargadas.");
+     sendResponse();
+  }
+
+  // Maneja el mensaje cuando se seleccionan Dark Patterns en la popup
+  if (message.tipo === "DARK_PATTERNS_SELECTED") {
+    sendMessageCurrentTab(
+      {
+        tipo: "ACTUALIZAR_DP",
+      });
+    sendResponse({ status: "Ok" });
   }
 });
 
+// Envía un mensaje al contenido de la pestaña actual
 function sendMessageCurrentTab(data) {
   getCurrentTab(function (tab) {
     chrome.tabs.sendMessage(tab.id, data);
   });
 }
 
+// Obtiene la pestaña actual activa y ejecuta el callback con la información de la pestaña
 function getCurrentTab(callback) {
   try {
     let queryOptions = { active: true, lastFocusedWindow: true };
     chrome.tabs.query(queryOptions, ([tab]) => {
       if (chrome.runtime.lastError)
-      console.error(chrome.runtime.lastError);
-      // `tab` will either be a `tabs.Tab` instance or `undefined`.
+        console.error(chrome.runtime.lastError);
+      // `tab` será una instancia de `tabs.Tab` o `undefined`.
       callback(tab);
     });
   } catch (err) {

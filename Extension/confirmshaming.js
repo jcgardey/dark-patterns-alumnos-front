@@ -1,7 +1,7 @@
 // Objeto a usar en extension.js
 const ConfirmShaming = {
   tipo: DP_TYPES.SHAMING,
-  check: function() {
+  check: function () {
     const invalidTags = ["INPUT"];
     let elements_shaming = segments(document.body);
     let filtered_elements_shaming = [];
@@ -25,12 +25,12 @@ const ConfirmShaming = {
       filtered_elements_shaming.push({ text, path });
     }
     
-    chrome.runtime.sendMessage({pattern: this.tipo, data: filtered_elements_shaming}, (response) => {
+    chrome.runtime.sendMessage({ pattern: this.tipo, data: filtered_elements_shaming }, (response) => {
       const { error, data } = response;
       if (error) {
         if (error.code === "ERR_NETWORK") console.log("El servidor no responde.");
         else console.log(error);
-        }
+      }
       else {
         let nodes = [];
         data.forEach((item) => {
@@ -39,5 +39,8 @@ const ConfirmShaming = {
         nodes.forEach((node) => resaltarElementoConTexto(node, this.tipo));
       }
     });
+  },
+  clear: function() {
+    desresaltarElementoConTipo(this.tipo);
   }
 }

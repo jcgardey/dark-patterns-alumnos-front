@@ -11,3 +11,12 @@ Permitir que el usuario seleccione qué dark patterns quiere detectar desde el p
 3. El service_worker.js reenvía ese mensaje a la pestaña activa con chrome.tabs.sendMessage.
 
 4. El content script (extension.js) escucha el mensaje y ejecuta los dps que esten en el storage.
+
+# Función desresaltar
+
+Elimina el texto resaltado de los darkPatterns no seleccionados
+
+- Esta función busca todos los elementos del DOM que tengan la clase asociada a un tipo específico de Dark Pattern (por ejemplo, "URGENCY", "SHAMING", etc.), y elimina:
+- - El borde personalizado aplicado con `resaltarElementoConTexto`
+- - La clase que indica el tipo del patrón
+- - El globo de advertencia con texto explicativo

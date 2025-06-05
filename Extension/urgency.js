@@ -31,5 +31,8 @@ const FakeUrgency = {
         nodes.forEach((node) => resaltarElementoConTexto(node, this.tipo));
       }
     });
+  },
+  clear: function() {
+    desresaltarElementoConTipo(this.tipo);
   }
 }

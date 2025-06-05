@@ -110,5 +110,8 @@ const HiddenCost = {
         this.tipo
       );
     });
+  },
+  clear: function() {
+    desresaltarElementoConTipo(this.tipo);
   }
 }

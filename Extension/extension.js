@@ -12,13 +12,13 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Recibir patrones activos desde el popup a través del service worker
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.tipo === "ACTUALIZAR_DP") {
-    ejecutarDPsSeleccionados(); // Ejecutar inmediatamente cuando se reciben
-    sendResponse({ status: "ejecutando patrones activos" });
-  }
+ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+   if (message.tipo === "ACTUALIZAR_DP") {
+     ejecutarDPsSeleccionados(); // Ejecutar inmediatamente cuando se reciben
+     sendResponse({ status: "ejecutando patrones activos" });
+   }
 
-});
+ });
 
 
 // Ejecutar solo los DP seleccionados por el usuario
@@ -32,6 +32,9 @@ function ejecutarDPsSeleccionados() {
       } catch (e) {
         console.error("Error detectando el DP: " + dp.tipo, e);
       }
+    }
+    else {
+      dp.clear();
     }
   });
 });
@@ -51,7 +54,7 @@ const observer = new MutationObserver(function (mutation) {
 
 observer.observe(document, { childList: true, subtree: true });
 
-chrome.runtime.sendMessage({ tipo: "CONSTANTES", DP_TYPES: DP_TYPES });
+//chrome.runtime.sendMessage({ tipo: "CONSTANTES", DP_TYPES: DP_TYPES });
 
 
 

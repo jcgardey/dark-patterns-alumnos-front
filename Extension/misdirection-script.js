@@ -232,5 +232,8 @@ const Misdirection = {
         );
       }
     });
+  },
+  clear: function() {
+    desresaltarElementoConTipo(this.tipo);
   }
 }

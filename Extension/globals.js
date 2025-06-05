@@ -97,3 +97,26 @@ function resaltarElementoConTexto(elemento, tipo) {
   // Agrega el globo como hijo del elemento
   elemento.appendChild(globoTexto);
 }
+
+/**
+ *
+ * @param {string} tipo Patrón a desresaltar
+ */
+function desresaltarElementoConTipo(tipo) {
+  // Buscar todos los elementos que fueron resaltados con este tipo
+  const elementos = document.querySelectorAll(`.${tipo}`);
+  
+  elementos.forEach((elemento) => {
+    // Quitar borde y clase
+    elemento.style.border = '';
+    elemento.classList.remove(tipo);
+
+    // Buscar y eliminar el globo de texto relacionado
+    const hijos = Array.from(elemento.children);
+    hijos.forEach((hijo) => {
+      if (hijo.classList.contains('resaltado-dark-pattern')) {
+        elemento.removeChild(hijo);
+      }
+    });
+  });
+}

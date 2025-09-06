@@ -110,8 +110,15 @@ const HiddenCost = {
         this.tipo
       );
     });
+    // Actualizar “vector contador”: seteamos el valor exacto para HIDDENCOST
+    console.log("HiddenCost check ejecutado");
+    console.log("Hiddens detectados:", hiddens.length);
+    console.log("setCountForType disponible?", typeof setCountForType);
+
+    setCountForType(this.tipo, hiddens.length);
   },
   clear: function() {
     desresaltarElementoConTipo(this.tipo);
+    setCountForType(this.tipo, 0); 
   }
 }

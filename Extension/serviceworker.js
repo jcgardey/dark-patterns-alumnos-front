@@ -1,7 +1,12 @@
 // Service Worker, se ejecuta en segundo plano y no tiene acceso al DOM directamente.
 
 
-//let DP_TYPES;
+const DP_TYPES = {
+    SHAMING: 'SHAMING',
+    URGENCY: 'URGENCY',
+    MISDIRECTION: 'MISDIRECTION',
+    HIDDENCOST: 'HIDDENCOST',
+}
 
 
 //inicializo los dps en true

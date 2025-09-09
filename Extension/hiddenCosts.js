@@ -103,13 +103,13 @@ const HiddenCost = {
     const elementos = document.querySelectorAll('p,span,h5'); //Esto es temporal porque podrían aparecer precios con varios tipos de tags HTML. Estamos viendo como incluir distintos tags
     const precios = sizeCheck(elementos);
     const hiddens = distanceCheck(precios.prices, precios.principalPrices, this.hiddenCostMaxDistance);
-    
-    hiddens.forEach((hiddenCost) => {
+    return hiddens;
+    /* hiddens.forEach((hiddenCost) => {
       resaltarElementoConTexto(
         hiddenCost,
         this.tipo
       );
-    });
+    }); */
   },
   clear: function() {
     desresaltarElementoConTipo(this.tipo);

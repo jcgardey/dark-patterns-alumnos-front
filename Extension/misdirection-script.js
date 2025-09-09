@@ -222,16 +222,20 @@ const Misdirection = {
       }
     });
 
+    let elemsReturn = []
     // marcando las coincidencias
     contrastesFiltrados.forEach((idx) => {
       //TO-DO: eliminar este if
       if (specialParents[idx].id !== 'root') {
-        resaltarElementoConTexto(
+        /*resaltarElementoConTexto(
           specialParents[idx], 
           this.tipo
-        );
+        );*/
+        elemsReturn.push(specialParents[idx]);
       }
     });
+    console.log(elemsReturn);
+    return elemsReturn;
   },
   clear: function() {
     desresaltarElementoConTipo(this.tipo);

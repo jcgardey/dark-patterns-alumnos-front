@@ -13,29 +13,58 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Recibir patrones activos desde el popup a través del service worker
  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-   if (message.tipo === "ACTUALIZAR_DP") {
+   if (message.tipo === "ACTUALIZAR_DP" || message.tipo === "MODO_AVISO") {
      ejecutarDPsSeleccionados(); // Ejecutar inmediatamente cuando se reciben
      sendResponse({ status: "ejecutando patrones activos" });
    }
-
  });
 
 
 // Ejecutar solo los DP seleccionados por el usuario
 function ejecutarDPsSeleccionados() {
+  let elementos = {    
+    SHAMING: [],
+    URGENCY: [],
+    MISDIRECTION: [],
+    HIDDENCOST: []
+  };
+
   chrome.storage.sync.get("dpActivos", (result) => {
-  const dpActivos = result.dpActivos || {};
-  DARK_PATTERNS.forEach((dp) => {
-    if (dpActivos[dp.tipo]) {
-      try {
-        dp.check();
-      } catch (e) {
-        console.error("Error detectando el DP: " + dp.tipo, e);
+    const dpActivos = result.dpActivos || {};
+    DARK_PATTERNS.forEach((dp) => {
+      if (dpActivos[dp.tipo]) {
+        try {
+          elementos[dp.tipo] = dp.check();
+        } catch (e) {
+          console.error("Error detectando el DP: " + dp.tipo, e);
+        }
       }
-    }
-    else {
+      else {
+        dp.clear();
+      }
+  });
+
+  chrome.storage.sync.get("modoSeleccionado", (res) => {
+    DARK_PATTERNS.forEach((dp) => {
       dp.clear();
-    }
+      switch (res.modoSeleccionado) {
+        case "TODO":
+          console.log("PINTANDO TODO", elementos[dp.tipo]);
+          for (elem in elementos[dp.tipo]){
+            resaltarElementoConTexto(elementos[dp.tipo][elem], dp.tipo);
+          }
+          break;
+        case "MARCA":
+          console.log("PINTANDO BORDE");
+          for (elem in elementos[dp.tipo]) {
+            resaltarBorde(elementos[dp.tipo][elem], dp.tipo);
+          }
+          break;
+        default:
+          console.log("Modo selec: ", res.modoSeleccionado);
+          break;
+      }
+    })
   });
 });
 

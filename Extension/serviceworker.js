@@ -1,18 +1,24 @@
 // Service Worker, se ejecuta en segundo plano y no tiene acceso al DOM directamente.
 
 
-//let DP_TYPES;
+const DP_TYPES = {
+  SHAMING: 'SHAMING',
+  URGENCY: 'URGENCY',
+  MISDIRECTION: 'MISDIRECTION',
+  HIDDENCOST: 'HIDDENCOST',
+}
 
 
 //inicializo los dps en true
 chrome.runtime.onInstalled.addListener(() => {
   const valoresPorDefecto = {
-    SHAMING: true,
-    URGENCY: true,
+    SHAMING: false,
+    URGENCY: false,
     HIDDENCOST: true,
     MISDIRECTION: true
   };
-  chrome.storage.sync.set({ dpActivos: valoresPorDefecto }, () => {
+  const modoSeleccionado = "TODO";
+  chrome.storage.sync.set({ dpActivos: valoresPorDefecto, modoSeleccionado: modoSeleccionado }, () => {
     console.info("Valores por defecto de DP activos guardados.");
   });
 });
@@ -35,6 +41,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         tipo: "ACTUALIZAR_DP",
       });
     sendResponse({ status: "Ok" });
+  }
+
+  if (message.tipo === "MODO_AVISO") {
+    sendMessageCurrentTab({tipo: "MODO_AVISO"});
+    sendResponse("Ok 2");
   }
 });
 

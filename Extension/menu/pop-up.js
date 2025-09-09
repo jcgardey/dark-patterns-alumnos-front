@@ -2,6 +2,7 @@
 
   const switches = document.querySelectorAll('input[type=checkbox]');
 
+  let modoSeleccionado = "TODO";
 
 
     chrome.storage.sync.get("dpActivos", (result) => {
@@ -13,6 +14,12 @@
       });
     });
 
+    chrome.storage.sync.get("modoSeleccionado", (result) => {
+      const radio = document.getElementById(result.modoSeleccionado);
+      radio.checked = true;
+      PintarRadio(radio);
+    });
+    
     // 2. Manejar cambios en los checkboxes sin volver a hacer un get
     switches.forEach((checkbox) => {
       checkbox.addEventListener('change', () => {
@@ -26,7 +33,7 @@
         });
 
         // Guardar nuevo estado en storage
-        chrome.storage.sync.set({ dpActivos: nuevosEstados });
+        chrome.storage.sync.set({ dpActivos: nuevosEstados, modoSeleccionado: modoSeleccionado });
 
         console.info("Nuevos estados de DP guardados:", nuevosEstados);
         
@@ -39,3 +46,24 @@
       });
     });
   });
+
+  document.querySelectorAll('input[type=radio]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      document.querySelectorAll('input[type=radio]').forEach(r => {
+        r.style.background = '';
+        r.style.borderColor = '#cccccc';
+      });
+      if (radio.checked) {
+        PintarRadio(radio);
+        chrome.storage.sync.set({modoSeleccionado: radio.value})
+        chrome.runtime.sendMessage({
+          tipo: "MODO_AVISO",
+        }, (response) => console.log("Rta del worker ", response))
+      }
+    });
+  });
+
+  function PintarRadio(radio){
+    radio.style.background = '#3b82f6'; // azul
+    radio.style.borderColor = '#3b82f6';
+  }

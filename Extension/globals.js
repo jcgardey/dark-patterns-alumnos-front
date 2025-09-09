@@ -17,6 +17,27 @@ const DP_TEXT = {
   HIDDENCOST: 'Posible precio oculto',
 };
 
+const DP_COLORS = {
+  SHAMING: "FF9500",
+  URGENCY: "FF0000",
+  MISDIRECTION: "0400FF",
+  HIDDENCOST: "1AFF00"
+}
+
+/**
+ * 
+ * @param {Element} elemento 
+ * @param {string} tipo Usar DP_TYPES para no tener errores
+ * @returns 
+ */
+function resaltarBorde(elemento, tipo){
+  // Chequeo simple para saber si ya fue resaltado
+  if (elemento == undefined || elemento.classList.contains(tipo)) return;
+  // Aplica el estilo al borde del elemento
+  elemento.style.border = `6px dashed #${DP_COLORS[tipo]}`;
+  elemento.classList.add(tipo);
+}
+
 /**
  * 
  * @param {Element} elemento 
@@ -24,13 +45,12 @@ const DP_TEXT = {
  * @returns 
  */
 function resaltarElementoConTexto(elemento, tipo) {
+  if (elemento == undefined || elemento.classList.contains(tipo)) return;
+
   console.info("Resaltando elemento: ", elemento, "Tipo: " + tipo);
-  // Chequeo simple para saber si ya fue resaltado
-  if (elemento.classList.contains(tipo)) return;
-  // Aplica el estilo al borde del elemento
-  elemento.style.border = '6px dashed #fad482';
+  
+  resaltarBorde(elemento, tipo);
   elemento.style.position = 'relative'; // Para posicionar el globo correctamente
-  elemento.classList.add(tipo);
 
   // Chequea si ya existe un globo de texto para el elemento
   // Si no existe, lo crea.
@@ -77,7 +97,7 @@ function resaltarElementoConTexto(elemento, tipo) {
     left: 0,
     //transform: 'translateX(-50%)',
     padding: '10px',
-    backgroundColor: '#fad482',
+    backgroundColor: `#${DP_COLORS[tipo]}`,
     color: 'black',
     borderRadius: '5px',
     boxShadow: '0 2px 5px rgba(0, 0, 0, 0.3)',

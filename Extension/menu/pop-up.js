@@ -33,7 +33,7 @@
         });
 
         // Guardar nuevo estado en storage
-        chrome.storage.sync.set({ dpActivos: nuevosEstados, modoSeleccionado: modoSeleccionado });
+        chrome.storage.sync.set({ dpActivos: nuevosEstados});
 
         console.info("Nuevos estados de DP guardados:", nuevosEstados);
         

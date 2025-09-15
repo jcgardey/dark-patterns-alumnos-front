@@ -15,13 +15,11 @@
       "matches": ["<all_urls>"],
       "js": [
         "globals.js",
-        "XPathInterpreter.js",
-        "page_segmentation/common.js",
-        "page_segmentation/block_segment.js",
-        "hiddenCosts.js",
-        "urgency.js",
-        "confirmshaming.js",
-        "misdirection-script.js",
+        "analizadorBase.js",
+        "analizadorHiddenCost.js",
+        "analizadorMisdirection.js",
+        "analizadorNLP.js",
+        "recorredor.js",
         "extension.js"
       ]
     }

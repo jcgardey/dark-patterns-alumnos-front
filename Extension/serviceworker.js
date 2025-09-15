@@ -1,13 +1,10 @@
 // Service Worker, se ejecuta en segundo plano y no tiene acceso al DOM directamente.
-
-
 const DP_TYPES = {
   SHAMING: 'SHAMING',
   URGENCY: 'URGENCY',
   MISDIRECTION: 'MISDIRECTION',
   HIDDENCOST: 'HIDDENCOST',
 }
-
 
 //inicializo los dps en true
 chrome.runtime.onInstalled.addListener(() => {

@@ -55,6 +55,7 @@ function PintarAnalizados() {
         // console.log(`Elementos detectados para ${dpNombre}:`, detectados);
         
         if (detectados && detectados.length > 0) {
+          setCountForType(dpNombre, detectados.length);
           switch (modoSeleccionado) {
             case "TODO":
               // console.log("PINTANDO TODO para", dpNombre);
@@ -97,13 +98,16 @@ function ejecutarDPsSeleccionados() {
         activos.push(dp);
       }
     }
+
+    console.log("LLEGA");
     
-    for (const tipoDP of Object.entries(activos)) {
+    for (const tipoDP of Object.values(activos)) {
       try{
-        await DARK_PATTERNS[tipoDP].check();
-        setCountForType(tipoDP, DARK_PATTERNS[tipoDP].detectados.length);
+        DARK_PATTERNS[tipoDP].check();
+        
+        console.log("chequea ");
       } catch (e) {
-        // console.log(e);
+        console.log(e);
       }
       
     }

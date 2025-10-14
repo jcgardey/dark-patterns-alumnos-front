@@ -15,6 +15,7 @@
   <div class="options-container"></div>
     <div class="option">
       <span>Confirm Shaming</span>
+      <span class="counter" id="ct_SHAMING">0</span>
       <label class="switch">
         <input type="checkbox" id="SHAMING">
         <span class="slider round"></span>
@@ -23,6 +24,7 @@
 
     <div class="option">
       <span>Fake Urgency</span>
+      <span class="counter" id="ct_URGENCY">0</span>
       <label class="switch">
         <input type="checkbox" id="URGENCY">
         <span class="slider round"></span>
@@ -31,6 +33,7 @@
 
     <div class="option">
       <span>Hidden cost</span>
+      <span class="counter" id="ct_HIDDENCOST">0</span>
       <label class="switch">
         <input type="checkbox" id="HIDDENCOST">
         <span class="slider round"></span>
@@ -39,11 +42,36 @@
 
     <div class="option">
       <span>Misdirection</span>
+      <span class="counter" id="ct_MISDIRECTION">0</span>
       <label class="switch">
         <input type="checkbox" id="MISDIRECTION">
         <span class="slider round"></span>
       </label>
     </div>
+  </div>
+
+  <div style="font-family:sans-serif; padding:10px;">
+    <span style="display:block; font-weight:bold; margin-bottom:10px; font-size:14px; color:#ffffff;">
+      Modo de aviso
+    </span>
+  
+    <label style="display:flex; align-items:center; margin-bottom:8px; cursor:pointer; font-size:13px; color:#cccccc;">
+      <input type="radio" id="TODO" name="modo" value="TODO"
+        style="appearance:none; -webkit-appearance:none; width:16px; height:16px; border:2px solid #cccccc; border-radius:50%; margin-right:8px; cursor:pointer; position:relative;">
+      <span>Carteles + Marcado</span>
+    </label>
+  
+    <label style="display:flex; align-items:center; margin-bottom:8px; cursor:pointer; font-size:13px; color:#cccccc;">
+      <input type="radio" id="MARCA" name="modo" value="MARCA"
+        style="appearance:none; -webkit-appearance:none; width:16px; height:16px; border:2px solid #cccccc; border-radius:50%; margin-right:8px; cursor:pointer; position:relative;">
+      <span>Solo marcado</span>
+    </label>
+  
+    <label style="display:flex; align-items:center; margin-bottom:8px; cursor:pointer; font-size:13px; color:#cccccc;">
+      <input type="radio" id="NADA" name="modo" value="NADA"
+        style="appearance:none; -webkit-appearance:none; width:16px; height:16px; border:2px solid #cccccc; border-radius:50%; margin-right:8px; cursor:pointer; position:relative;">
+      <span>Solo en este pop up</span>
+    </label>
   </div>
 
   <div class="bottom-icons">

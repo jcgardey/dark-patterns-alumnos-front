@@ -1,6 +1,7 @@
 // Objeto a usar en extension.js
 const FakeUrgency = {
   tipo: DP_TYPES.URGENCY,
+  detectados: [],
   check: function() {
     let elements_urgency = segments(document.body);
     let filtered_elements_urgency = [];
@@ -24,11 +25,9 @@ const FakeUrgency = {
         else console.log(error);
         }
       else {
-        let nodes = [];
         data.forEach((item) => {
-          nodes.push(XPATHINTERPRETER.getElementByXPath(item.path[0], document.body));
+          this.detectados.push(XPATHINTERPRETER.getElementByXPath(item.path[0], document.body));
         });
-        nodes.forEach((node) => resaltarElementoConTexto(node, this.tipo));
       }
     });
   },

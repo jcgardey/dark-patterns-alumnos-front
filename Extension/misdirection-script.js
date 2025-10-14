@@ -197,6 +197,7 @@ const Misdirection = {
   umbralCantidadDestacados: 0.5,
   clickeables: ['a', 'button'],
   tipo: DP_TYPES.MISDIRECTION,
+  detectados: [],
   check: function() {
     console.log("ENTRA A MISDIRECTION")
     // obtencion de padres especiales
@@ -226,10 +227,7 @@ const Misdirection = {
     contrastesFiltrados.forEach((idx) => {
       //TO-DO: eliminar este if
       if (specialParents[idx].id !== 'root') {
-        resaltarElementoConTexto(
-          specialParents[idx], 
-          this.tipo
-        );
+        this.detectados.push(specialParents[idx]);
       }
     });
   },

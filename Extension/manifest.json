@@ -15,6 +15,7 @@
       "matches": ["<all_urls>"],
       "js": [
         "globals.js",
+        "counter.js",
         "XPathInterpreter.js",
         "page_segmentation/common.js",
         "page_segmentation/block_segment.js",

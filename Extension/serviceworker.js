@@ -1,8 +1,10 @@
 // Service Worker, se ejecuta en segundo plano y no tiene acceso al DOM directamente.
-
-
-//let DP_TYPES;
-
+const DP_TYPES = {
+  SHAMING: 'SHAMING',
+  URGENCY: 'URGENCY',
+  MISDIRECTION: 'MISDIRECTION',
+  HIDDENCOST: 'HIDDENCOST',
+}
 
 //inicializo los dps en true
 chrome.runtime.onInstalled.addListener(() => {
@@ -12,21 +14,20 @@ chrome.runtime.onInstalled.addListener(() => {
     HIDDENCOST: true,
     MISDIRECTION: true
   };
-  chrome.storage.sync.set({ dpActivos: valoresPorDefecto }, () => {
+  const modoSeleccionado = "TODO";
+  chrome.storage.sync.set({ dpActivos: valoresPorDefecto, modoSeleccionado: modoSeleccionado }, () => {
     console.info("Valores por defecto de DP activos guardados.");
   });
 });
-
-
 
 // Listener para mensajes entrantes desde otras partes de la extensión
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   // Código comentado para cargar constantes desde un mensaje, se puede habilitar si es necesario
    if (message.tipo === "CONSTANTES") {
       DP_TYPES = message.DP_TYPES;
-     console.info("Constantes cargadas.");
-     sendResponse();
-  }
+      console.info("Constantes cargadas.");
+      sendResponse();
+    }
 
   // Maneja el mensaje cuando se seleccionan Dark Patterns en la popup
   if (message.tipo === "DARK_PATTERNS_SELECTED") {
@@ -35,6 +36,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         tipo: "ACTUALIZAR_DP",
       });
     sendResponse({ status: "Ok" });
+  }
+
+  if (message.tipo === "MODO_AVISO") {
+    sendMessageCurrentTab({tipo: "MODO_AVISO"});
+    sendResponse("Ok 2");
   }
 });
 

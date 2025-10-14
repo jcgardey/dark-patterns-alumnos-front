@@ -95,20 +95,32 @@ function sizeCheck(elementos) {
   }
 }
 
+/**
+ * Utilizando los precios y precios principales, se obtienen aquellos precios que no se encuentren tachados
+ * 
+ * @param {NodeListOf | Element[]} elementos  - Lista de elementos HTML a comprobar.
+ * @returns {Element[]} - Array de elementos cuyo estilo  "textDecorationLine" no es "line-through" 
+ */
+function tachadoCheck(elementos){
+  return Array.from(elementos).filter(el => {
+      const styles = window.getComputedStyle(el);
+      return styles.textDecorationLine !== "line-through" || text-decoration !== "line-through";
+    });
+}
+
 // Objeto a usar en extension.js
 const HiddenCost = {
   hiddenCostMaxDistance: 40,
   tipo: DP_TYPES.HIDDENCOST,
+  detectados: [],
   check: function() {
     const elementos = document.querySelectorAll('p,span,h5'); //Esto es temporal porque podrían aparecer precios con varios tipos de tags HTML. Estamos viendo como incluir distintos tags
-    const precios = sizeCheck(elementos);
+    const filtrados = tachadoCheck(elementos);
+    const precios = sizeCheck(filtrados);
     const hiddens = distanceCheck(precios.prices, precios.principalPrices, this.hiddenCostMaxDistance);
-    
+
     hiddens.forEach((hiddenCost) => {
-      resaltarElementoConTexto(
-        hiddenCost,
-        this.tipo
-      );
+      this.detectados.push(hiddenCost);
     });
   },
   clear: function() {

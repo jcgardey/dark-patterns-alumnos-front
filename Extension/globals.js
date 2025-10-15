@@ -46,7 +46,37 @@ function resaltarBorde(elemento, tipo) {
  * @param {string} tipo Usar DP_TYPES para no tener errores
  * @returns 
  */
+
+// Función para obtener un selector único para un elemento
+function getUniqueSelector(elemento) {
+  if (elemento.id) return `#${elemento.id}`;
+  let path = '';
+  let el = elemento;
+  while (el && el.nodeType === 1 && el !== document.body) {
+    let index = 1;
+    let sibling = el.previousElementSibling;
+    while (sibling) {
+      if (sibling.tagName === el.tagName) index++;
+      sibling = sibling.previousElementSibling;
+    }
+    path = `/${el.tagName.toLowerCase()}[${index}]` + path;
+    el = el.parentElement;
+  }
+  return '/html/body' + path;
+}
+
 function resaltarElementoConTexto(elemento, tipo) {
+  let ignoreList = [];
+  try {
+    ignoreList = JSON.parse(localStorage.getItem('ignoreDP')) || [];
+  } catch (e) {
+    ignoreList = [];
+  }
+  const selector = getUniqueSelector(elemento);
+  if (ignoreList.includes(selector)) {
+    console.info("Elemento ignorado: ", elemento, "Tipo: " + tipo);
+    return;
+  }
   if (elemento == undefined || elemento.classList.contains(tipo)) return;
 
   // console.info("Resaltando elemento: ", elemento, "Tipo: " + tipo);
@@ -88,10 +118,37 @@ function resaltarElementoConTexto(elemento, tipo) {
 
   // Función para cerrar el globo
   botonCerrar.addEventListener('click', function () {
-    if (globoTexto.parentNode) {
-      globoTexto.parentNode.removeChild(globoTexto);
+    
+    const respuesta = confirm("¿Queres que este caso no se detecte más?");
+    // Si el usuario confirma, se elimina el resaltado y se guarda en localStorage para no detectarlo más
+    if (respuesta) {
+      // Quitar borde y clase solo de este tipo
+      elemento.style.border = '';
+      elemento.classList.remove(tipo);
+      // Eliminar el globo de texto
+      if (globoTexto.parentNode === elemento) {
+        elemento.removeChild(globoTexto);
+      }
+
+      // Traigo la lista de ignorados del localStorage
+      let ignoreList = [];
+      try {
+        ignoreList = JSON.parse(localStorage.getItem('ignoreDP')) || [];
+      } catch (e) {
+        ignoreList = [];
+      }
+      const selector = getUniqueSelector(elemento);
+      ignoreList.push(selector);
+      // Guardar la lista de ignorados en localStorage
+      localStorage.setItem('ignoreDP', JSON.stringify(ignoreList));
+    } else {
+      // Solo cierra el globo, pero deja el resaltado
+      globoTexto.removeChild(p);
+      globoTexto.removeChild(botonCerrar);
+      if (!globoTexto.hasChildNodes()) elemento.removeChild(globoTexto);
     }
-  });
+  })
+  
 
   const rect = elemento.getBoundingClientRect();
 

@@ -1,63 +1,50 @@
 /**
- * Luminancia según el estándar de contraste de luminancia basado en la fórmula de luminosidad relativa del W3C.
- * LINK: https://www.w3.org/WAI/GL/wiki/Relative_luminance
- * @param {number} r 
- * @param {number} g 
- * @param {number} b 
- * @returns {number}
+ * Luminancia según W3C
  */
 function getLuminance(r, g, b) {
   const a = [r, g, b].map((v) => {
-    v /= 255; // v = v / 255
+    v /= 255;
     return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
   });
   return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
 }
 
 /**
- * Calculo del contraste entre dos colores.
- * @param {number[]} color1 
- * @param {number[]} color2 
- * @returns {number}
+ * Contraste entre dos colores
  */
 function getContrast(color1, color2) {
   const luminance1 = getLuminance(color1[0], color1[1], color1[2]);
   const luminance2 = getLuminance(color2[0], color2[1], color2[2]);
-
-  return (
-    (Math.max(luminance1, luminance2) + 0.05) /
-    (Math.min(luminance1, luminance2) + 0.05)
-  );
+  return (Math.max(luminance1, luminance2) + 0.05) / (Math.min(luminance1, luminance2) + 0.05);
 }
 
 /**
- * Comprueba si un elemento está oculto subiendo por él hasta la raiz.
- * @param {ChildNode} element 
- * @returns {boolean}
+ * Convierte "rgb(r,g,b)" a [r,g,b]
+ */
+function rgbToArray(rgbString) {
+  const result = rgbString.match(/\d+/g);
+  return result ? result.map(Number) : null;
+}
+
+/**
+ * Comprueba si un elemento está oculto
  */
 function isHidden(element) {
   let actual = element;
-  let raiz = document.body;
-  let isHidden = false;
-
-  while (actual !== raiz && actual != null && !isHidden) {
+  while (actual && actual !== document.body) {
     if (
       (actual.classList && actual.classList.contains('hidden')) ||
-      actual.getAttribute('hidden') === 'true' // Verificar si 'hidden' es exactamente 'true'
-    ) {
-      isHidden = true;
-    }
-    actual = actual.parentNode; // Subir al elemento padre
+      actual.getAttribute('hidden') === 'true' ||
+      window.getComputedStyle(actual).display === 'none' ||
+      window.getComputedStyle(actual).visibility === 'hidden'
+    ) return true;
+    actual = actual.parentNode;
   }
-
-  return isHidden;
+  return false;
 }
- 
+
 /**
- * Comprueba si un elemento es clickeable y no está oculto.
- * @param {ChildNode} element
- * @param {string[]} especiales Arreglo de strings con las etiquetas que se consideran especiales
- * @returns {boolean}
+ * Comprueba si un elemento es clickeable y visible
  */
 function isSpecial(element, especiales) {
   try {
@@ -68,172 +55,116 @@ function isSpecial(element, especiales) {
         element.getAttribute('href') != null ||
         especiales.includes(element.nodeName.toLowerCase())
       )
-    ) {
-      return true;
-    }
-  } catch (e) {
-    //console.log(e);
-  }
+    ) return true;
+  } catch (e) {}
   return false;
 }
- 
+
 /**
- * Dado un elemento recupera todos los nodos raiz de subarboles con 2 o más hijos especiales.
- * @param {ChildNode} element
- * @param {string[]} especiales Arreglo de strings con las etiquetas que se consideran especiales
- * @returns {{arr: ChildNode[],isSpecial:boolean}}
+ * Devuelve los padres con 2 o más hijos especiales
  */
 function getParentOfSpecialNodes(element, especiales) {
-  let arrReturn = []; // nodos con hijos especiales
-  let special = false; // flag de especialidad del nodo actual
-
-  let specialChildCounter = 0; // contador de hijos especiales
+  let arrReturn = [];
+  let specialChildCounter = 0;
+  let special = false;
 
   if (element.hasChildNodes()) {
-    // si mi nodo tiene hijos los analizo
     element.childNodes.forEach((hijo) => {
-      rta = getParentOfSpecialNodes(hijo);
-      if (rta.isSpecial) {
-        specialChildCounter++;
-      }
+      const rta = getParentOfSpecialNodes(hijo, especiales);
+      if (rta.isSpecial) specialChildCounter++;
       arrReturn = arrReturn.concat(rta.arr);
     });
-
-    // si tengo 2 o más hijos especiales, soy un nodo padre de especiales
     if (specialChildCounter >= 2) arrReturn.push(element);
   }
 
-  // solo si soy especial o tengo un hijo especial, "soy especial"
-  if (isSpecial(element, especiales) || specialChildCounter == 1) special = true;
+  if (isSpecial(element, especiales) || specialChildCounter === 1) special = true;
 
-  return { 
-    arr: arrReturn, 
-    isSpecial: special 
-  }; // retorno padres especiales y flag de especialidad actual
+  return { arr: arrReturn, isSpecial: special };
 }
 
- 
 /**
- * Dado un elemento, se identifican los primeros hijos que se consideran especiales.
- * @param {ChildNode} element
- * @param {string[]} especiales Arreglo de strings con las etiquetas que se consideran especiales
- * @returns {ChildNode[]}
+ * Obtiene los primeros hijos especiales de un elemento
  */
 function getSpecialNodes(element, especiales) {
-  // arreglo acumulador de especiales por debajo element
   let arrReturn = [];
-
   if (element.hasChildNodes()) {
-    // si tengo hijos los analizo
     element.childNodes.forEach((hijo) => {
-      // si es especial lo guardo y no sigo,
-      // solo quiero los primeros hijos especiales
-      if (isSpecial(hijo, especiales)) {
-        arrReturn.push(hijo);
-      } else {
-        // si no es especial, arrastro el arreglo de especiales
-        arrReturn = getSpecialNodes(hijo).concat(arrReturn);
-      }
+      if (isSpecial(hijo, especiales)) arrReturn.push(hijo);
+      else arrReturn = getSpecialNodes(hijo, especiales).concat(arrReturn);
     });
   }
-  // retorno especiales acumulados
   return arrReturn;
 }
 
 /**
- * Convierte un string del tipo **"rgb(r,g,b)"** a un arreglo numérico **[r, g, b]**.
- * @param {string} rgbString 
- * @returns {number[] | null}
- */
-function rgbToArray(rgbString) {
-  const result = rgbString.match(/\d+/g);
-  return result ? result.map(Number) : null;
-}
-
- 
-/**
- * Dada la raiz de un árbol o subarbol y una hoja, se recorre la rama desde abajo hacia arriba
- * obteniendo los contrastes en cada nodo para luego obtener un acumulado de la totalidad de
- * contrastes de la rama.
- * @param {ChildNode} raiz
- * @param {ChildNode} hoja
- * @returns {number}
+ * Contraste acumulado de hoja a raíz
  */
 function contrastarNiveles(raiz, hoja) {
   let actual = hoja;
-  let contrastes = [];
-  while (actual !== raiz) {
-    const computedStyles = window.getComputedStyle(actual);
-    contrastes.push(
-      getContrast(
-        rgbToArray(computedStyles.color),
-        rgbToArray(computedStyles.backgroundColor)
-      )
-    );
+  const contrastes = [];
+  while (actual && actual !== raiz) {
+    const styles = window.getComputedStyle(actual);
+    const fg = rgbToArray(styles.color);
+    const bg = rgbToArray(styles.backgroundColor);
+    if (fg && bg) contrastes.push(getContrast(fg, bg));
     actual = actual.parentNode;
   }
-  return contrastes.reduce((acumulador, num) => acumulador + num, 0);
+  return contrastes.reduce((acc, num) => acc + num, 0);
 }
- 
+
 /**
- * Dado un arreglo numérico y un porcentaje entre 1.0 y 0.0,
- * se comprueba cuantos números del arreglo están por encima del
- * promedio + promedio * porcentaje
- * @param {number[]} contrastes
- * @param {number} porcentaje 
- * @returns {number}
+ * Calcula cuántos valores están por encima del promedio + porcentaje
  */
 function cantidadDestacados(contrastes, porcentaje) {
-  promedio = contrastes.reduce((acc, cont) => acc + cont) / contrastes.length;
+  const promedio = contrastes.reduce((a, b) => a + b, 0) / contrastes.length;
   return contrastes.reduce((acc, actual) => {
     if (actual > promedio + promedio * porcentaje) return acc + 1;
-    else return acc;
+    return acc;
   }, 0);
 }
 
-// Objeto a usar en extension.js
+/**
+ * Evalúa lenguaje persuasivo / frase "No deseo elegir mi asiento"
+ */
+function evaluarLenguaje(hijos) {
+  const patronesPersuasivos = /(continuar|aceptar|obtener|mejor opción|recomendado|no deseo elegir mi asiento)/i;
+  const patronesEvasivos = /(rechazar|cancelar|no|mantener gratis)/i;
+  let score = 0;
+
+  hijos.forEach(hijo => {
+    const texto = hijo.textContent.toLowerCase();
+    if (patronesPersuasivos.test(texto)) score += 1;
+    if (patronesEvasivos.test(texto)) score -= 1;
+  });
+  return score;
+}
+
+/**
+ * Detector de Misdirection
+ */
 const Misdirection = {
   destacadosEncimaPromedio: 0.2,
   umbralCantidadDestacados: 0.5,
   clickeables: ['a', 'button'],
   tipo: DP_TYPES.MISDIRECTION,
   check: function() {
-    console.log("ENTRA A MISDIRECTION")
-    // obtencion de padres especiales
-    specialParents = getParentOfSpecialNodes(document.body, this.clickeables).arr;
+    console.log("Analizando misdirection...");
+    const specialParents = getParentOfSpecialNodes(document.body, this.clickeables).arr;
 
-    // contrastes por rama de hijo a padre
-    contrastesXRama = [];
+    specialParents.forEach(parent => {
+      const hijos = getSpecialNodes(parent, this.clickeables);
+      if (hijos.length < 2) return;
 
-    specialParents.forEach((parent) => {
-      contraste_hijos = [];
-      getSpecialNodes(parent, this.clickeables).forEach((hijo) => {
-        contraste_hijos.push(contrastarNiveles(parent, hijo));
-      });
-      contrastesXRama.push(contraste_hijos);
-    });
+      const contrastes = hijos.map(h => contrastarNiveles(parent, h));
+      const destacados = cantidadDestacados(contrastes, this.destacadosEncimaPromedio);
+      const scoreTexto = evaluarLenguaje(hijos);
 
-    // filtrado de elementos segun si la cantidad de elementos destacados encima de cierto umbral
-    contrastesFiltrados = [];
-
-    contrastesXRama.forEach((elems, idx) => {
-      if (cantidadDestacados(elems, this.destacadosEncimaPromedio) >= elems.length * this.umbralCantidadDestacados) {
-        contrastesFiltrados.push(idx);
-      }
-    });
-
-    // marcando las coincidencias
-    contrastesFiltrados.forEach((idx) => {
-      //TO-DO: eliminar este if
-      if (specialParents[idx].id !== 'root') {
-        resaltarElementoConTexto(
-          specialParents[idx], 
-          this.tipo
-        );
+      if (destacados >= hijos.length * this.umbralCantidadDestacados && scoreTexto > 0) {
+        resaltarElementoConTexto(parent, this.tipo);
       }
     });
   },
   clear: function() {
     desresaltarElementoConTipo(this.tipo);
   }
-}
+};

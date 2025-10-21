@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { TextInput } from '../../components/CarRent/TextInput';
 import { FinishedTask } from '../../components/FinishedTask';
+import { CheckboxInput } from '../../components/CarRent/CheckBoxInput';
 
 const Reservation = () => {
   const reservation = JSON.parse(localStorage.getItem('reservation'));
@@ -63,7 +64,7 @@ export const Review = ({}) => {
     formState: { errors },
   } = useForm();
 
-  const autocompleteCard = () => {
+  /*const autocompleteCard = () => {
     console.log('autocomplete');
     setShowAutocompleteCard(false);
     setValue('card.number', '5490 4234 4899 4324');
@@ -72,7 +73,7 @@ export const Review = ({}) => {
     setValue('card.year', '2026');
     setValue('card.code', '322');
   };
-
+*/
   const inputClass = 'w-full h-10 border-2 border-sky-800 rounded p-2';
 
   return (
@@ -128,7 +129,7 @@ export const Review = ({}) => {
                   name={'card.number'}
                   className={inputClass}
                   register={register}
-                  onFocus={() => setShowAutocompleteCard(true)}
+                  /*onFocus={() => setShowAutocompleteCard(true)}*/
                   rules={{
                     required: true,
                   }}
@@ -202,6 +203,12 @@ export const Review = ({}) => {
                 />
               </div>
             </div>
+            <div>
+              <CheckboxInput save={true} label="Guardar tarjeta para futuras reservaciones" 
+                                
+                  ></CheckboxInput>
+            </div>
+
           </div>
           <button className="w-1/4 bg-sky-800 hover:bg-sky-700 text-white text-xl rounded p-2">
             {t('Rental.Review.Book')}

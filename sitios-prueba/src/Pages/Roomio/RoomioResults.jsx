@@ -67,14 +67,11 @@ const useFlashTimer = (minH = 1, maxH = 7) => {
 const FlashBadge = () => {
   const phrases = useMemo(
     () => [
-      '⚡️ ¡Flash sale!',
-      '⏳ Oferta limitada',
-      '🔥 No te quedes afuera',
-      '🏷️ Descuento por tiempo limitado',
-      '💥 Promoción exclusiva hoy',
-      '🚀 Últimas horas',
-      '🎯 Precio relámpago',
-      '🕒 Solo por hoy',
+      'Flash sale',
+      'Oferta especial',
+      'No se quede afuera',
+      'Solo hoy',
+      'Promoción limitada',
     ],
     []
   );

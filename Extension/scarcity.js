@@ -25,8 +25,9 @@ const FakeScarcity = {
         else console.log(error);
         }
       else {
-        data.forEach((item) => {
-          this.detectados.add(XPATHINTERPRETER.getElementByXPath(item.path[0], document.body));
+        data.forEach((instancia) => {
+          if (instancia.has_scarcity)
+            this.detectados.add(XPATHINTERPRETER.getElementByXPath(instancia.path, document.body));
         });
       }
     });

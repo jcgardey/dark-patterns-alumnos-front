@@ -2,12 +2,25 @@ const DARK_PATTERNS = {
   MISDIRECTION: Misdirection,
   HIDDENCOST: HiddenCost,
   SHAMING: ConfirmShaming,
-  URGENCY: FakeUrgency
+  URGENCY: FakeUrgency,
+  SCARCITY: FakeScarcity,
+  PRESELECTION: Preselection,
 }
 
 // Al cargar la página, ejecutar los patrones activos
 document.addEventListener("DOMContentLoaded", () => {
+  DARK_PATTERNS.PRESELECTION.init();
+  console.log('Disparando DPs');
   ejecutarDPsSeleccionados();
+});
+
+document.addEventListener('visibilitychange', async () => {
+  if (document.visibilityState === 'visible') {
+    for(const dpNombre of Object.keys(DARK_PATTERNS)){
+      desresaltarElementoConTipo(dpNombre);
+    }
+    PintarAnalizados();
+  }
 });
 
 // Recibir patrones activos desde el popup a través del service worker
@@ -20,10 +33,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       for (const [dpNombre, boolActivo] of Object.entries(dpActivos)) {
         if (!boolActivo) {
           desresaltarElementoConTipo(dpNombre);
-        }else{
-          PintarAnalizados();
         }
       }
+      PintarAnalizados();
     });
 
     sendResponse({ status: "ejecutando patrones activos" });
@@ -35,15 +47,15 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       for (const [dpNombre, boolActivo] of Object.entries(dpActivos)) {
         if (boolActivo) {
           desresaltarElementoConTipo(dpNombre);
-          PintarAnalizados();
         }
       }
+      PintarAnalizados();
     });
   }
 });
 
 function PintarAnalizados() {
-  chrome.storage.sync.get(["dpActivos", "modoSeleccionado"], (result) => {
+  chrome.storage.sync.get(["dpActivos", "modoSeleccionado"], async (result) => {
     const dpActivos = result.dpActivos || {};
     const modoSeleccionado = result.modoSeleccionado || "TODO";
     
@@ -51,11 +63,11 @@ function PintarAnalizados() {
     
     for (const [dpNombre, boolActivo] of Object.entries(dpActivos)) {
       if (boolActivo && DARK_PATTERNS[dpNombre]) {
-        const detectados = DARK_PATTERNS[dpNombre].detectados;
+        const detectados = [...DARK_PATTERNS[dpNombre].detectados];
         // console.log(`Elementos detectados para ${dpNombre}:`, detectados);
         
         if (detectados && detectados.length > 0) {
-          setCountForType(dpNombre, detectados.length);
+          await setCountForType(dpNombre, detectados.length);
           switch (modoSeleccionado) {
             case "TODO":
               // console.log("PINTANDO TODO para", dpNombre);
@@ -98,8 +110,6 @@ function ejecutarDPsSeleccionados() {
         activos.push(dp);
       }
     }
-
-    console.log("LLEGA");
     
     for (const tipoDP of Object.values(activos)) {
       try{
@@ -122,10 +132,24 @@ function ejecutarDPsSeleccionados() {
 let previousURL = '';
 let timer;
 const observer = new MutationObserver(function (mutation) {
+  // Necesario para preselection
+  let newElems = false;
+  mutation.addedNodes?.forEach(node => {
+    if (node.nodeType === Node.ELEMENT_NODE) {
+      if (node.matches && node.matches("input[type='checkbox'], input[type='radio'], select option")) {
+        newElems = true;
+      }
+      if (node.querySelector && node.querySelector("input[type='checkbox'], input[type='radio'], select option")) {
+        newElems = true;
+      }
+    }
+  });
+  if (newElems) DARK_PATTERNS.PRESELECTION.init();
+  
   if (timer) clearTimeout(timer);
   timer = setTimeout(() => {
     ejecutarDPsSeleccionados();
-  }, 500); // 5 segundos para menos ejecuciones
+  }, 500); // 1 segundos para menos ejecuciones
 });
 
 observer.observe(document, { childList: true, subtree: true });

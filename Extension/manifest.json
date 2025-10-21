@@ -21,6 +21,8 @@
         "page_segmentation/block_segment.js",
         "hiddenCosts.js",
         "urgency.js",
+        "scarcity.js",
+        "preselection.js",
         "confirmshaming.js",
         "misdirection-script.js",
         "extension.js"

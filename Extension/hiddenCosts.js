@@ -112,7 +112,7 @@ function tachadoCheck(elementos){
 const HiddenCost = {
   hiddenCostMaxDistance: 40,
   tipo: DP_TYPES.HIDDENCOST,
-  detectados: [],
+  detectados: new Set(),
   check: function() {
     const elementos = document.querySelectorAll('p,span,h5'); //Esto es temporal porque podrían aparecer precios con varios tipos de tags HTML. Estamos viendo como incluir distintos tags
     const filtrados = tachadoCheck(elementos);
@@ -120,7 +120,7 @@ const HiddenCost = {
     const hiddens = distanceCheck(precios.prices, precios.principalPrices, this.hiddenCostMaxDistance);
 
     hiddens.forEach((hiddenCost) => {
-      this.detectados.push(hiddenCost);
+      this.detectados.add(hiddenCost);
     });
   },
   clear: function() {

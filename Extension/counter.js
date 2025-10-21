@@ -7,7 +7,8 @@ function initCounts() {
     [DP_TYPES.URGENCY]: 0,
     [DP_TYPES.MISDIRECTION]: 0,
     [DP_TYPES.HIDDENCOST]: 0,
-    total: 0,
+    [DP_TYPES.SCARCITY]: 0,
+    [DP_TYPES.PRESELECTION]: 0
   };
 }
 
@@ -17,16 +18,15 @@ function computeTotal(counts) {
 
 // Lee el contador completo
 async function getCounts() {
-  const { dpCounts } = await chrome.storage.local.get({ dpCounts: initCounts() });
+  const dpCounts = await chrome.storage.local.get({ ...initCounts() });
   return dpCounts;
 }
 
 // Setea el contador completo
 async function setCounts(counts) {
-  counts.total = computeTotal(counts);
-  await chrome.storage.local.set({ dpCounts: counts });
+  await chrome.storage.local.set(counts);
   // Notifica a popup y otros contextos para refrescar UI
-  chrome.runtime.sendMessage({ action: 'dpCountsUpdated', counts });
+  chrome.runtime.sendMessage({ action: 'dpCountsUpdated', counts: counts });
 }
 
 // Actualiza parcialmente (por ejemplo, solo HIDDENCOST)

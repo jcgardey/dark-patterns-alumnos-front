@@ -7,20 +7,26 @@ const DP_TYPES = {
     URGENCY: 'URGENCY',
     MISDIRECTION: 'MISDIRECTION',
     HIDDENCOST: 'HIDDENCOST',
+    PRESELECTION: 'PRESELECTION',
+    SCARCITY: 'SCARCITY'
 }
 
 const DP_TEXT = {
   SHAMING: 'Posible forma de persuasión',
-  URGENCY: 'Podría no ser cierto',
+  URGENCY: 'Podría no ser falso',
   MISDIRECTION: 'Posible acción oculta',
   HIDDENCOST: 'Posible precio oculto',
+  PRESELECTION: 'Cuidado, opción preseleccionada',
+  SCARCITY: 'Podria no ser cierto'
 };
 
 const DP_COLORS = {
-  SHAMING: 'FF9500',
-  URGENCY: 'FF0000',
-  MISDIRECTION: '0400FF',
-  HIDDENCOST: '1AFF00',
+  SHAMING: 'FF9500', // #FF9500
+  URGENCY: 'FF0000', // #FF0000
+  MISDIRECTION: '0400FF', // #0400FF
+  HIDDENCOST: '1AFF00', // #1AFF00
+  PRESELECTION: 'EE82EE', // #EE82EE
+  SCARCITY: 'FFFF00' // #FFFF00
 }
 
 /**

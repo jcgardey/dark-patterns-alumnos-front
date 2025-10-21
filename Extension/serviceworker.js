@@ -4,15 +4,19 @@ const DP_TYPES = {
   URGENCY: 'URGENCY',
   MISDIRECTION: 'MISDIRECTION',
   HIDDENCOST: 'HIDDENCOST',
+  SCARCITY: 'SCARCITY',
+  PRESELECTION: 'PRESELECTION'
 }
 
 //inicializo los dps en true
 chrome.runtime.onInstalled.addListener(() => {
   const valoresPorDefecto = {
-    SHAMING: true,
-    URGENCY: true,
+    SHAMING: false,
+    URGENCY: false,
     HIDDENCOST: true,
-    MISDIRECTION: true
+    MISDIRECTION: true,
+    PRESELECTION: true,
+    SCARCITY: false
   };
   const modoSeleccionado = "TODO";
   chrome.storage.sync.set({ dpActivos: valoresPorDefecto, modoSeleccionado: modoSeleccionado }, () => {
@@ -92,11 +96,11 @@ function sendRequest(url, data, callback) {
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.pattern === DP_TYPES.SHAMING){
     sendRequest("http://localhost:5000/shaming", { tokens: request.data }, sendResponse);
-    return true;
-  }
-  if (request.pattern === DP_TYPES.URGENCY){
+  }else if (request.pattern === DP_TYPES.URGENCY){
     sendRequest("http://localhost:5000/urgency", { tokens: request.data }, sendResponse);
-    return true;
+  }else if (request.pattern === DP_TYPES.SHAMING){
+    sendRequest("https://localhost:5000/shaming", { tokens: request.data }, sendResponse);
   }
+  return true;
 });
 

@@ -26,13 +26,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 3. Pintar contadores iniciales desde storage.local
   async function paintCounts() {
-    const { dpCounts } = await chrome.storage.local.get({ dpCounts: null });
-    if (!dpCounts) return;
-    document.getElementById("ct_SHAMING").textContent = dpCounts.SHAMING ?? 0;
-    document.getElementById("ct_URGENCY").textContent = dpCounts.URGENCY ?? 0;
-    document.getElementById("ct_HIDDENCOST").textContent = dpCounts.HIDDENCOST ?? 0;
-    document.getElementById("ct_MISDIRECTION").textContent = dpCounts.MISDIRECTION ?? 0;
-    document.getElementById("ct_total").textContent = dpCounts.total ?? 0;
+    const cts = await chrome.storage.local.get({ 
+      SHAMING: 0, 
+      URGENCY: 0,
+      SCARCITY: 0,
+      HIDDENCOST: 0, 
+      MISDIRECTION: 0, 
+      PRESELECTION: 0 
+    });
+    
+    let total = 0;
+
+    for (const [k, c] of Object.entries(cts)){
+      document.getElementById(`ct_${k}`).textContent = c;
+      total += c;
+    }
+
+    document.getElementById("ct_total").textContent = total;
   }
 
   paintCounts();
@@ -41,11 +51,12 @@ document.addEventListener('DOMContentLoaded', () => {
   chrome.runtime.onMessage.addListener((msg) => {
     if (msg?.action === "dpCountsUpdated") {
       const counts = msg.counts;
-      document.getElementById("ct_SHAMING").textContent = counts.SHAMING ?? 0;
-      document.getElementById("ct_URGENCY").textContent = counts.URGENCY ?? 0;
-      document.getElementById("ct_HIDDENCOST").textContent = counts.HIDDENCOST ?? 0;
-      document.getElementById("ct_MISDIRECTION").textContent = counts.MISDIRECTION ?? 0;
-      document.getElementById("ct_total").textContent = counts.total ?? 0;
+      let total = 0;
+      for (const [k, c] of Object.entries(counts)) {
+        document.getElementById(`ct_${k}`).textContent = c;
+        total += c;
+      }
+      document.getElementById("ct_total").textContent = total;
     }
   });
 

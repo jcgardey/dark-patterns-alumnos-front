@@ -1,7 +1,7 @@
 // Objeto a usar en extension.js
 const ConfirmShaming = {
   tipo: DP_TYPES.SHAMING,
-  detectados: [],
+  detectados: new Set(),
   check: function () {
     const invalidTags = ["INPUT"];
     let elements_shaming = segments(document.body);
@@ -34,7 +34,7 @@ const ConfirmShaming = {
       }
       else {
         data.forEach((item) => {
-          this.detectados.push(XPATHINTERPRETER.getElementByXPath(item.path[0], document.body));
+          this.detectados.add(XPATHINTERPRETER.getElementByXPath(item.path[0], document.body));
         });
       }
     });

@@ -13,9 +13,9 @@ chrome.runtime.onInstalled.addListener(() => {
   const valoresPorDefecto = {
     SHAMING: false,
     URGENCY: false,
-    HIDDENCOST: true,
-    MISDIRECTION: true,
-    PRESELECTION: true,
+    HIDDENCOST: false,
+    PRESELECTION: false,
+    MISDIRECTION: false,
     SCARCITY: false
   };
   const modoSeleccionado = "TODO";
@@ -72,6 +72,7 @@ function getCurrentTab(callback) {
 
 function sendRequest(url, data, callback) {
   // TODO: REVISAR SI LA CONVERSIÓN DESDE AXIOS A FETCH ES CORRECTA.
+  console.log(data);
   fetch(url, {
     method: 'POST',
     headers: {
@@ -80,6 +81,7 @@ function sendRequest(url, data, callback) {
     body: JSON.stringify(data),
   }).then(async (response) => {
     const responseData = await response.json();
+    console.log(responseData);
     if (response.ok) {
       callback?.({ data: responseData });
     } else {
@@ -94,11 +96,11 @@ function sendRequest(url, data, callback) {
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.pattern === DP_TYPES.SHAMING){
-    sendRequest("http://localhost:5000/shaming", { tokens: request.data }, sendResponse);
+    sendRequest("http://localhost:5000/shaming", { Version:'1.0', tokens: request.data }, sendResponse);
   }else if (request.pattern === DP_TYPES.URGENCY){
-    sendRequest("http://localhost:5000/urgency", { tokens: request.data }, sendResponse);
+    sendRequest("http://localhost:5000/urgency", { version:'1.0', texts: request.data }, sendResponse);
   }else if (request.pattern === DP_TYPES.SCARCITY){
-    sendRequest("https://localhost:5000/scarcity", { tokens: request.data }, sendResponse);
+    sendRequest("http://localhost:5000/scarcity", { version:'1.0', texts: request.data }, sendResponse);
   }
   return true;
 });

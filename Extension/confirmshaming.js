@@ -22,8 +22,8 @@ const ConfirmShaming = {
       if (text.length == 0) {
         continue;
       }
-      let path = XPATHINTERPRETER.getPath(element, document.body);
-      filtered_elements_shaming.push({ text, path });
+      let path = XPATHINTERPRETER.getPath(element, document.body)?.[0];
+      filtered_elements_shaming.push({ text:text, path:path });
     }
 
     chrome.runtime.sendMessage({ pattern: this.tipo, data: filtered_elements_shaming }, (response) => {
@@ -33,10 +33,9 @@ const ConfirmShaming = {
         else console.log("ConfirmShaming>check: " ,error);
       }
       else {
-        console.log("ConfirmShaming>check: ", instancia);
-        data.forEach((instancia) => {
-          if (instancia.HasShaming)
-            this.detectados.add(XPATHINTERPRETER.getElementByXPath(instancia.path, document.body));
+        console.log("ConfirmShaming>check: ", data);
+        data.forEach((res) => {
+          this.detectados.add(XPATHINTERPRETER.getElementByXPath(res.path, document.body));
         });
       }
     });

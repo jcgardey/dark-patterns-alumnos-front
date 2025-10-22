@@ -14,7 +14,7 @@ const FakeScarcity = {
       if (text.length == 0) {
         continue;
       }
-      let path = XPATHINTERPRETER.getPath(elements_scarcity[i], document.body);
+      let path = XPATHINTERPRETER.getPath(elements_scarcity[i], document.body)?.[0];
       filtered_elements_scarcity.push({ text, path });
     }
 
@@ -26,7 +26,7 @@ const FakeScarcity = {
         }
       else {
         console.log("Scarcity>check: ",data);
-        data.forEach((instancia) => {
+        data.instances.forEach((instancia) => {
           if (instancia.has_scarcity)
             this.detectados.add(XPATHINTERPRETER.getElementByXPath(instancia.path, document.body));
         });

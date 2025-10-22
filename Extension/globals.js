@@ -13,7 +13,7 @@ const DP_TYPES = {
 
 const DP_TEXT = {
   SHAMING: 'Posible forma de persuasión',
-  URGENCY: 'Podría no ser falso',
+  URGENCY: 'Podría ser falso',
   MISDIRECTION: 'Posible acción oculta',
   HIDDENCOST: 'Posible precio oculto',
   PRESELECTION: 'Cuidado, opción preseleccionada',

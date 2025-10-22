@@ -30,6 +30,7 @@ const FakeScarcity = {
           if (instancia.has_scarcity)
             this.detectados.add(XPATHINTERPRETER.getElementByXPath(instancia.path, document.body));
         });
+        chrome.runtime.sendMessage({tipo: "MODO_AVISO"});
       }
     });
   },

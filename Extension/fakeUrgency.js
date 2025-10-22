@@ -31,6 +31,7 @@ const FakeUrgency = {
             this.detectados.add(XPATHINTERPRETER.getElementByXPath(item.path, document.body));
         });
         console.log(this.detectados);
+        chrome.runtime.sendMessage({tipo: "MODO_AVISO"})
       }
     });
     },

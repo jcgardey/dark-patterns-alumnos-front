@@ -37,6 +37,7 @@ const ConfirmShaming = {
         data.forEach((res) => {
           this.detectados.add(XPATHINTERPRETER.getElementByXPath(res.path, document.body));
         });
+        chrome.runtime.sendMessage({tipo: "MODO_AVISO"});
       }
     });
   },

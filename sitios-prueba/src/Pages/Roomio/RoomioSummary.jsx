@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { formatCurrency } from '../../utils/currency';
 import { useTranslation } from 'react-i18next';
 import { FinishedTask } from '../../components/FinishedTask';
+import { CheckboxInput } from '../../components/CarRent/CheckBoxInput';
 
 const Input = forwardRef(
   ({ id, type = 'text', placeholder, errors, ...props }, ref) => (
@@ -79,13 +80,13 @@ export const RoomioSummary = () => {
 
   const onSubmit = () => setConfirmed(true);
 
-  const autocompleteCard = () => {
+  /*const autocompleteCard = () => {
     setShowAutocompleteCard(false);
     setValue('x-number', '5490 4234 4899 4324');
     setValue('x-name', getValues('fullName') || 'Miriam Flores');
     setValue('x-expiry', '12/28');
     setValue('x-code', '322');
-  };
+  };*/
 
   const nights = parseInt(localStorage.getItem('hotel-nights')) ?? 0;
   const price = (parseFloat(localStorage.getItem('hotel-price')) ?? 0) * nights;
@@ -143,8 +144,8 @@ export const RoomioSummary = () => {
                     <Input
                       type="text"
                       placeholder="XXXX XXXX XXXX XXXX"
-                      onFocus={() => setShowAutocompleteCard(true)}
-                      onBlur={() => setShowAutocompleteCard(false)}
+                      /*onFocus={() => setShowAutocompleteCard(true)}
+                      onBlur={() => setShowAutocompleteCard(false)} */
                       {...register('x-number', { required: true })}
                       errors={errors['x-number']}
                     />
@@ -198,6 +199,9 @@ export const RoomioSummary = () => {
                     />
                   </div>
                 </div>
+                <CheckboxInput save={true} label="Guardar tarjeta para futuras reservaciones" 
+                ></CheckboxInput>
+                
               </div>
             </div>
 

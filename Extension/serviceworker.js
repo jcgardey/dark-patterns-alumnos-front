@@ -98,6 +98,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.pattern === DP_TYPES.SHAMING){
     sendRequest("http://localhost:5000/shaming", { Version:'1.0', tokens: request.data }, sendResponse);
   }else if (request.pattern === DP_TYPES.URGENCY){
+    console.log(request.pattern, request.data);
     sendRequest("http://localhost:5000/urgency", { version:'1.0', texts: request.data }, sendResponse);
   }else if (request.pattern === DP_TYPES.SCARCITY){
     sendRequest("http://localhost:5000/scarcity", { version:'1.0', texts: request.data }, sendResponse);

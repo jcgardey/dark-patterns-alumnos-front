@@ -66,8 +66,7 @@ function getCurrentTab(callback) {
       callback(tab);
     });
   } catch (err) {
-    console.log('exception');
-    console.log(err);
+    console.log("ServiceWorker>getCurrentTab: ",err);
   }
 }
 
@@ -98,8 +97,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     sendRequest("http://localhost:5000/shaming", { tokens: request.data }, sendResponse);
   }else if (request.pattern === DP_TYPES.URGENCY){
     sendRequest("http://localhost:5000/urgency", { tokens: request.data }, sendResponse);
-  }else if (request.pattern === DP_TYPES.SHAMING){
-    sendRequest("https://localhost:5000/shaming", { tokens: request.data }, sendResponse);
+  }else if (request.pattern === DP_TYPES.SCARCITY){
+    sendRequest("https://localhost:5000/scarcity", { tokens: request.data }, sendResponse);
   }
   return true;
 });

@@ -149,7 +149,7 @@ const Misdirection = {
   tipo: DP_TYPES.MISDIRECTION,
   detectados: new Set(),
   check: function() {
-    console.log("Analizando misdirection...");
+    // console.log("Analizando misdirection...");
     const specialParents = getParentOfSpecialNodes(document.body, this.clickeables).arr;
 
     specialParents.forEach(parent => {

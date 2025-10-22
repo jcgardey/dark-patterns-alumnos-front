@@ -10,7 +10,7 @@ const DARK_PATTERNS = {
 // Al cargar la página, ejecutar los patrones activos
 document.addEventListener("DOMContentLoaded", () => {
   DARK_PATTERNS.PRESELECTION.init();
-  console.log('Disparando DPs');
+  // console.log('Disparando DPs');
   ejecutarDPsSeleccionados();
 });
 
@@ -115,9 +115,9 @@ function ejecutarDPsSeleccionados() {
       try{
         DARK_PATTERNS[tipoDP].check();
         
-        console.log("chequea ");
+        // console.log("chequea ");
       } catch (e) {
-        console.log(e);
+        console.log("Extension>ejecutarDPsSeleccionados: ", e);
       }
       
     }

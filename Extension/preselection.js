@@ -68,7 +68,7 @@ const Preselection = {
   },
 
   check: function () {
-    console.log("🔍 Ejecutando detección de PRESELECTION...");
+    // console.log("🔍 Ejecutando detección de PRESELECTION...");
 
     const preselectedElems = getPreselectedElements();
 

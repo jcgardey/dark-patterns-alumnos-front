@@ -5,7 +5,11 @@
 
   "description": "Detector de ciertos DP",
 
-  "permissions": ["activeTab", "storage"], 
+  "permissions": ["activeTab", "storage", "webRequest"],
+  "host_permissions": [
+    "http://localhost:5000/*"
+  ],
+
   "action":{
     "default_popup": "menu/pop-up.html",
     "default_icon": "menu/imagenes/icono.png"

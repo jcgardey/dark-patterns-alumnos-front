@@ -25,14 +25,15 @@ const ConfirmShaming = {
       let path = XPATHINTERPRETER.getPath(element, document.body);
       filtered_elements_shaming.push({ text, path });
     }
-    
+
     chrome.runtime.sendMessage({ pattern: this.tipo, data: filtered_elements_shaming }, (response) => {
       const { error, data } = response;
       if (error) {
-        if (error.code === "ERR_NETWORK") console.log("El servidor no responde.");
-        else console.log(error);
+        if (error.code === "ERR_NETWORK") console.log("ConfirmShaming>check: El servidor no responde.", error);
+        else console.log("ConfirmShaming>check: " ,error);
       }
       else {
+        console.log("ConfirmShaming>check: ", instancia);
         data.forEach((instancia) => {
           if (instancia.HasShaming)
             this.detectados.add(XPATHINTERPRETER.getElementByXPath(instancia.path, document.body));

@@ -19,7 +19,15 @@ chrome.runtime.onInstalled.addListener(() => {
     SCARCITY: false
   };
   const modoSeleccionado = "TODO";
-  chrome.storage.sync.set({ dpActivos: valoresPorDefecto, modoSeleccionado: modoSeleccionado }, () => {
+  const coloresPorDefecto = {
+    SHAMING: '#FF9500', // #FF9500
+    URGENCY: '#FF0000', // #FF0000
+    MISDIRECTION: '#0400FF', // #0400FF
+    HIDDENCOST: '#1AFF00', // #1AFF00
+    PRESELECTION: '#EE82EE', // #EE82EE
+    SCARCITY: '#FFFF00' // #FFFF00
+  }
+  chrome.storage.sync.set({ dpActivos: valoresPorDefecto, modoSeleccionado: modoSeleccionado, dpColores: coloresPorDefecto }, () => {
     console.info("Valores por defecto de DP activos guardados.");
   });
 });

@@ -20,29 +20,20 @@ const DP_TEXT = {
   SCARCITY: 'Podria no ser cierto'
 };
 
-const DP_COLORS = {
-  SHAMING: 'FF9500', // #FF9500
-  URGENCY: 'FF0000', // #FF0000
-  MISDIRECTION: '0400FF', // #0400FF
-  HIDDENCOST: '1AFF00', // #1AFF00
-  PRESELECTION: 'EE82EE', // #EE82EE
-  SCARCITY: 'FFFF00' // #FFFF00
-}
-
 /**
  * 
  * @param {Element} elemento 
  * @param {string} tipo - Usar DP_TYPES para no tener errores
  * @returns 
  */
-function resaltarBorde(elemento, tipo) {
+async function resaltarBorde(elemento, tipo) {
   // Chequeo simple para saber si ya fue resaltado
   if (elemento == undefined || elemento.classList.contains(tipo)) return;
   
   // console.log("Resaltando borde:", elemento, "Tipo:", tipo);
   
   // Aplica el estilo al borde del elemento
-  elemento.style.border = `3px dashed #${DP_COLORS[tipo]}`;
+  elemento.style.border = `3px dashed ${(await chrome.storage.sync.get('dpColores')).dpColores[tipo]}`;
   elemento.classList.add(tipo);
 }
 
@@ -71,7 +62,7 @@ function getUniqueSelector(elemento) {
   return '/html/body' + path;
 }
 
-function resaltarElementoConTexto(elemento, tipo) {
+async function resaltarElementoConTexto(elemento, tipo) {
   let ignoreList = [];
   try {
     ignoreList = JSON.parse(localStorage.getItem('ignoreDP')) || [];
@@ -164,7 +155,7 @@ function resaltarElementoConTexto(elemento, tipo) {
     left: '0',
     zIndex: '10000', // Asegurar que esté por encima de otros elementos
     padding: '10px',
-    backgroundColor: `#${DP_COLORS[tipo]}`,
+    backgroundColor: `${(await chrome.storage.sync.get('dpColores')).dpColores[tipo]}`,
     color: 'black',
     borderRadius: '5px',
     boxShadow: '0 2px 5px rgba(0, 0, 0, 0.3)',

@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   const switches = document.querySelectorAll('input[type=checkbox]');
+  const colorSelectors = document.querySelectorAll('input[type=color]');
 
   // 1. Setear switches con lo que haya en sync
   chrome.storage.sync.get("dpActivos", (result) => {
@@ -9,12 +10,24 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // 2. Manejar cambios de switches
+  // 2. Setear selectores de color con lo que haya en sync
+  chrome.storage.sync.get("dpColores", (result) => {
+    const colores = result.dpColores || {};
+    colorSelectors.forEach(async (colorSelector) => {
+      let dpTipo = colorSelector.id.replace("color_", "");
+      colorSelector.value = colores[dpTipo];
+      ActualizarColorFila(dpTipo, (await chrome.storage.sync.get('dpColores')).dpColores[dpTipo]);
+    });
+  });
+
+  // 3. Manejar cambios de switches
   switches.forEach((checkbox) => {
-    checkbox.addEventListener('change', () => {
+    checkbox.addEventListener('change', async () => {
       const nuevosEstados = {};
-      switches.forEach((item) => {
-        nuevosEstados[item.id] = item.checked;
+      await switches.forEach(async (item) => {
+        let dpTipo = item.id;
+        nuevosEstados[dpTipo] = item.checked;
+        ActualizarColorFila(dpTipo, (await chrome.storage.sync.get('dpColores')).dpColores[dpTipo]);
       });
       chrome.storage.sync.set({ dpActivos: nuevosEstados });
 
@@ -24,7 +37,27 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // 3. Pintar contadores iniciales desde storage.local
+  // 4. Manejar cambios de selectores de color
+  colorSelectors.forEach((colorSelector) => {
+    colorSelector.addEventListener('input', () => {
+      colorSelectors.forEach((item) => {
+        let dpTipo = item.id.replace("color_", "");
+        ActualizarColorFila(dpTipo, item.value);
+      });
+    });
+  });
+  colorSelectors.forEach((colorSelector) => {
+    colorSelector.addEventListener('change', async () => {
+      const nuevosEstados = {};
+      await colorSelectors.forEach((item) => {
+        let dpTipo = item.id.replace("color_", "");
+        nuevosEstados[dpTipo] = item.value;
+      });
+      chrome.storage.sync.set({ dpColores: nuevosEstados });
+    });
+  });
+
+  // 5. Pintar contadores iniciales desde storage.local
   async function paintCounts() {
     const cts = await chrome.storage.local.get({ 
       SHAMING: 0, 
@@ -47,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   paintCounts();
 
-  // 4. Escuchar mensajes de actualización
+  // 6. Escuchar mensajes de actualización
   chrome.runtime.onMessage.addListener((msg) => {
     if (msg?.action === "dpCountsUpdated") {
       const counts = msg.counts;
@@ -60,14 +93,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // 5. Manejo del modo seleccionado para aviso
+  // 7. Manejo del modo seleccionado para aviso
   chrome.storage.sync.get("modoSeleccionado", (result) => {
       const radio = document.getElementById(result.modoSeleccionado);
       radio.checked = true;
       PintarRadio(radio);
   });
 
-  // 6. Pintar los radio buttons del modo de aviso
+  // 8. Pintar los radio buttons del modo de aviso
   document.querySelectorAll('input[type=radio]').forEach(radio => {
     radio.addEventListener('change', () => {
       document.querySelectorAll('input[type=radio]').forEach(r => {
@@ -85,7 +118,18 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-function PintarRadio(radio){
+async function ActualizarColorFila(dpTipo, color) {
+  const dpSwitch = document.querySelector(`input[id=${dpTipo}]`);
+  let parent = dpSwitch.parentElement;
+  while (parent != document.documentElement && !parent.classList.contains("option")) {
+    parent = parent.parentElement;
+  }
+  if (parent.classList.contains("option")) {
+    parent.style.boxShadow = dpSwitch.checked ? `inset 0 0 20px ${color}60` : "none";
+  }
+}
+
+function PintarRadio(radio) {
     radio.style.background = '#3b82f6'; // azul
     radio.style.borderColor = '#3b82f6';
   }

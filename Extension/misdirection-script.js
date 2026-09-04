@@ -124,19 +124,91 @@ function cantidadDestacados(contrastes, porcentaje) {
 }
 
 /**
- * Evalúa lenguaje persuasivo / frase "No deseo elegir mi asiento"
+ * Calcula propiedades visuales de un elemento (peso visual)
  */
-function evaluarLenguaje(hijos) {
-  const patronesPersuasivos = /(continuar|aceptar|obtener|mejor opción|recomendado|no deseo elegir mi asiento)/i;
-  const patronesEvasivos = /(rechazar|cancelar|no|mantener gratis)/i;
-  let score = 0;
+function calcularPesoVisual(elemento) {
+  const styles = window.getComputedStyle(elemento);
+  let pesoVisual = 0;
 
-  hijos.forEach(hijo => {
-    const texto = hijo.textContent.toLowerCase();
-    if (patronesPersuasivos.test(texto)) score += 1;
-    if (patronesEvasivos.test(texto)) score -= 1;
-  });
-  return score;
+  // Font-size: elementos más grandes son más destacados
+  const fontSize = parseFloat(styles.fontSize);
+  pesoVisual += fontSize * 0.5;
+
+  // Font-weight: texto más grueso es más prominente
+  const fontWeight = parseFloat(styles.fontWeight) || 400;
+  pesoVisual += (fontWeight / 700) * 20;
+
+  // Box-shadow: efectos visuales indican énfasis
+  const boxShadow = styles.boxShadow;
+  if (boxShadow && boxShadow !== 'none') {
+    pesoVisual += 15;
+  }
+
+  // Z-index: capas superiores son más destacadas
+  const zIndex = parseInt(styles.zIndex) || 0;
+  if (zIndex > 0) pesoVisual += Math.min(zIndex, 50);
+
+  // Área del elemento: botones grandes son más destacados
+  const rect = elemento.getBoundingClientRect();
+  const area = rect.width * rect.height;
+  pesoVisual += Math.min(area / 1000, 30);
+
+  // Padding/espaciado: más padding indica más importancia
+  const paddingTop = parseFloat(styles.paddingTop) || 0;
+  const paddingBottom = parseFloat(styles.paddingBottom) || 0;
+  const paddingTotal = paddingTop + paddingBottom;
+  pesoVisual += paddingTotal * 0.3;
+
+  // Contraste de color: colores más contrastantes son más visibles
+  const fgColor = rgbToArray(styles.color);
+  const bgColor = rgbToArray(styles.backgroundColor);
+  if (fgColor && bgColor) {
+    const contraste = getContrast(fgColor, bgColor);
+    pesoVisual += contraste * 5; // Mayor contraste = más peso visual
+  }
+
+  // Opacidad: elementos más opacos son más visibles
+  const opacity = parseFloat(styles.opacity) || 1;
+  pesoVisual *= opacity;
+
+  // Background color diferente del fondo: indica más énfasis
+  const bg = styles.backgroundColor;
+  if (bg && bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent') {
+    pesoVisual += 20;
+  }
+
+  return pesoVisual;
+}
+
+/**
+ * Detecta false hierarchy: compara pesos visuales entre elementos
+ */
+function detectarFalseHierarchy(hijos) {
+  if (hijos.length < 2) return 0;
+
+  const pesosVisuales = hijos.map(h => ({
+    elemento: h,
+    peso: calcularPesoVisual(h)
+  }));
+
+  // Ordenar por peso visual
+  pesosVisuales.sort((a, b) => b.peso - a.peso);
+
+  // El elemento más destacado vs el segundo más destacado
+  const maxPeso = pesosVisuales[0].peso;
+  const minPeso = pesosVisuales[pesosVisuales.length - 1].peso;
+
+  // Si hay gran diferencia, hay false hierarchy
+  const diferencia = maxPeso - minPeso;
+  const ratioMaxMin = maxPeso > 0 ? maxPeso / (minPeso > 0 ? minPeso : 1) : 0;
+
+  return {
+    diferencia: diferencia,
+    ratio: ratioMaxMin,
+    maxPeso: maxPeso,
+    minPeso: minPeso,
+    pesosVisuales: pesosVisuales
+  };
 }
 
 /**
@@ -145,6 +217,8 @@ function evaluarLenguaje(hijos) {
 const Misdirection = {
   destacadosEncimaPromedio: 0.2,
   umbralCantidadDestacados: 0.5,
+  umbralDiferenciaVisual: 15, // Diferencia mínima de peso visual (más sensible a sutilezas)
+  umbralRatioVisual: 1.2, // Ratio mínimo entre elemento más y menos destacado
   clickeables: ['a', 'button'],
   tipo: DP_TYPES.MISDIRECTION,
   detectados: new Set(),
@@ -156,11 +230,36 @@ const Misdirection = {
       const hijos = getSpecialNodes(parent, this.clickeables);
       if (hijos.length < 2) return;
 
+      // Analisis de contraste visual que estaba en el código original
       const contrastes = hijos.map(h => contrastarNiveles(parent, h));
       const destacados = cantidadDestacados(contrastes, this.destacadosEncimaPromedio);
-      const scoreTexto = evaluarLenguaje(hijos);
 
-      if (destacados >= hijos.length * this.umbralCantidadDestacados && scoreTexto > 0) {
+      // Analisis de false hierarchy comparando el peso visual de los hijos con cosas como el tamaño de letra y cosas asi
+      const falseHierarchy = detectarFalseHierarchy(hijos);
+      
+      // Con los dos analisis ahora usamos la heuristica mejorada
+      // 1. Hay suficientes elementos con alto contraste por encima del promedio (destaque visual)
+      const hayAltoContraste = destacados >= hijos.length * this.umbralCantidadDestacados;
+      
+      // 2. Hay diferencia visual significativa entre elementos teniendo en cuenta el peso entre el más y menos destacado (false hierarchy)
+      const hayFalseHierarchy = falseHierarchy.diferencia >= this.umbralDiferenciaVisual &&
+                                falseHierarchy.ratio >= this.umbralRatioVisual;
+
+      // Imprimir info si hay algo interesante que reportar
+      if (hijos.length === 2 || hayFalseHierarchy) {
+        console.log(`Misdirection Check - ${hijos.length} elementos:`, {
+          hayAltoContraste,
+          hayFalseHierarchy,
+          diferencia: falseHierarchy.diferencia.toFixed(2),
+          ratio: falseHierarchy.ratio.toFixed(2),
+          destacados,
+          textos: hijos.map(h => h.textContent.trim().substring(0, 30)),
+          pesos: falseHierarchy.pesosVisuales.map(p => p.peso.toFixed(2))
+        });
+      }
+
+      // Se detecta misdirection si cumple ambas condiciones
+      if (hayFalseHierarchy && hayAltoContraste) {
         // resaltarElementoConTexto(parent, this.tipo);
         this.detectados.add(parent);
       }

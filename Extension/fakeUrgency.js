@@ -33,6 +33,30 @@ const FakeUrgency = {
     
     return contenedor || elemento.parentElement;
   },
+
+  // Trata de agarrar el texto alrededor del temporizador para enviar al backend y que lo analice
+  // la forma puede llegar a ser algo como <p>Oferta <span class="countdown">00:10</span> Relampago</p>
+  // o el clasico <p>Oferta Relampago</p> y ahora deberia de poder detectar ambos
+  obtenerTextoAlrededor: function(elemento, bloque) {
+    const partes = [];
+    const agregarTexto = (nodo) => {
+      if (nodo && nodo.textContent) partes.push(nodo.textContent);
+    };
+
+    agregarTexto(bloque);
+    agregarTexto(elemento.parentElement);
+
+    let hermanoAnterior = elemento.previousSibling;
+    let hermanosPosteriores = elemento.nextSibling;
+    for (let i = 0; i < 2 && hermanoAnterior; i++, hermanoAnterior = hermanoAnterior.previousSibling) {
+      agregarTexto(hermanoAnterior);
+    }
+    for (let i = 0; i < 2 && hermanosPosteriores; i++, hermanosPosteriores = hermanosPosteriores.nextSibling) {
+      agregarTexto(hermanosPosteriores);
+    }
+
+    return partes.join(" ").replace(/\s+/g, " ").trim();
+  },
   
   check: function() {
     const selectores = this.getSelectoresTemporizadores();
@@ -45,10 +69,10 @@ const FakeUrgency = {
         // Obtener el bloque contenedor del temporizador
         const bloque = this.obtenerContenedorBloque(temporizador);
         
-        if (!bloque || !bloque.innerText) return null;
+        if (!bloque) return null;
         
         return {
-          text: bloque.innerText.trim().replace(/\t/g, " "), 
+          text: this.obtenerTextoAlrededor(temporizador, bloque),
           path: XPATHINTERPRETER.getPath(bloque, document.body)?.[0],
           timerPath: XPATHINTERPRETER.getPath(temporizador, document.body)?.[0]
         };

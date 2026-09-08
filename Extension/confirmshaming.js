@@ -4,11 +4,14 @@ const ConfirmShaming = {
   detectados: new Set(),
   check: function () {
     const invalidTags = ["INPUT"];
+    const buttonTags = ["BUTTON", "A"]; //botones y links
     let elements_shaming = segments(document.body);
     let filtered_elements_shaming = [];
 
     for (let i = 0; i < elements_shaming.length; i++) {
       const element = elements_shaming[i];
+
+      if(!buttonTags.includes(element.nodeName)) continue; //solo revisar botones y links
       let invalidElement = false;
 
       if (invalidTags.includes(element.nodeName)) invalidElement = true;

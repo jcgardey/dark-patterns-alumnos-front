@@ -104,10 +104,24 @@ function sizeCheck(elementos) {
 function tachadoCheck(elementos){
   return Array.from(elementos).filter(el => {
       const styles = window.getComputedStyle(el);
-      return styles.textDecorationLine !== "line-through" || text-decoration !== "line-through";
+      const notachado = styles.textDecorationLine !== "line-through"; // || styles.textDecoration !== "line-through" es redundante?;
+      return notachado && esVisible(el); //elementos que no están tachados y son visibles
     });
 }
+/**
+ * chequea si un elemento es visible, para ignorar elementos ocultos
+ * @param {Element} element
+ * @returns {boolean}
+ */
+function esVisible(element) {
+  if (element.hasAttribute('hidden')) return false;
 
+  const styles = window.getComputedStyle(element);
+  if (styles.display === "none" || styles.visibility === "hidden") return false;
+  if (parseFloat(styles.opacity) === 0) return false;
+
+  return true;
+}
 // Objeto a usar en extension.js
 const HiddenCost = {
   hiddenCostMaxDistance: 40,

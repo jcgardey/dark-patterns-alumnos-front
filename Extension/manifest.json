@@ -35,6 +35,12 @@
   ],
   "background":{
     "service_worker": "serviceworker.js"
-  }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["menu/imagenes/icono.png", "fonts/SpaceMono-Regular.ttf", "fonts/SpaceMono-Bold.ttf"],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }
 

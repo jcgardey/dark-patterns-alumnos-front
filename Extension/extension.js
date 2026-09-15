@@ -145,10 +145,16 @@ const observer = new MutationObserver(function (mutation) {
     }
   });
   if (newElems) DARK_PATTERNS.PRESELECTION.init();
-  
+
   if (timer) clearTimeout(timer);
   timer = setTimeout(() => {
-    ejecutarDPsSeleccionados();
+    if (window.requestIdleCallback) {
+      window.requestIdleCallback(() => {
+        ejecutarDPsSeleccionados();
+      }, { timeout: 2000 });
+    } else {
+      ejecutarDPsSeleccionados();
+    }
   }, 500); // 1 segundos para menos ejecuciones
 });
 

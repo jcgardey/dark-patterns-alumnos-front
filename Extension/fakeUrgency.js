@@ -7,7 +7,7 @@ const FakeUrgency = {
     return '[class*="timer"], [class*="countdown"], [class*="count"], [class*="clock"], ' +
            '[class*="time"], [class*="remaining"], [class*="expires"], ' +
            '[id*="timer"], [id*="countdown"], [data-timer], [data-countdown], ' +
-           '[class*="deadline"], [class*="stopwatch"]';
+           '[class*="deadline"], [class*="stopwatch"], [class*=tabular-nums]';
   },
   
   // Busca el contenedor de bloque más apropiado (offer, deal, product, etc)
@@ -228,17 +228,14 @@ const FakeUrgency = {
             const elemento = XPATHINTERPRETER.getElementByXPath(item.path, document.body);
             if (elemento) {
               this.detectados.add(elemento);
-              
-              const index = bloquesNuevos.findIndex(bloque => bloque.path === item.path);
-              if (index > -1) { // only splice array when item is found
-                bloquesNuevos.splice(index, 1); // 2nd parameter means remove one item only
-              }
 
               console.log("FakeUrgency: Elemento añadido a detectados:", item.path);
             }
+          }else{
+            this.rechazados.add(item.path);
+            console.log("FakeUrgency: Elemento añadido a rechazados:", item.path);
           }
         });
-        bloquesNuevos.forEach((item) => { this.rechazados.add(item.path); });
         console.log("Elementos con urgencia detectados:", this.detectados);
         chrome.runtime.sendMessage({tipo: "MODO_AVISO"})
       }

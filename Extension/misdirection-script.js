@@ -68,24 +68,53 @@ function getParentOfSpecialNodes(element, especiales) {
   let specialChildCounter = 0;
   let special = false;
 
+  // Si este contenedor debe ignorarse, no seguimos recorriendo su árbol
+  if (isIgnoredContainer(element)) {
+    return {
+      arr: [],
+      isSpecial: false
+    };
+  }
+
   if (element.hasChildNodes()) {
     element.childNodes.forEach((hijo) => {
       const rta = getParentOfSpecialNodes(hijo, especiales);
-      if (rta.isSpecial) specialChildCounter++;
+
+      if (rta.isSpecial) {
+        specialChildCounter++;
+      }
+
       arrReturn = arrReturn.concat(rta.arr);
     });
-    if (specialChildCounter >= 2) arrReturn.push(element);
+
+    if (specialChildCounter >= 2) {
+      arrReturn.push(element);
+    }
   }
 
-  if (isSpecial(element, especiales) || specialChildCounter === 1) special = true;
+  if (
+    isSpecial(element, especiales) ||
+    specialChildCounter === 1
+  ) {
+    special = true;
+  }
 
-  return { arr: arrReturn, isSpecial: special };
+  return {
+    arr: arrReturn,
+    isSpecial: special
+  };
 }
 
 /**
  * Obtiene los primeros hijos especiales de un elemento
  */
 function getSpecialNodes(element, especiales) {
+  // No buscar elementos especiales dentro
+  // de contenedores ignorados.
+  if (isIgnoredContainer(element)) {
+    return [];
+  }
+
   let arrReturn = [];
   if (element.hasChildNodes()) {
     element.childNodes.forEach((hijo) => {
@@ -211,11 +240,90 @@ function detectarFalseHierarchy(hijos) {
   };
 }
 
+function isIgnoredContainer(element) {
+  if (!element || element.nodeType !== Node.ELEMENT_NODE) {
+    return false;
+  }
+
+  const tag = element.nodeName.toLowerCase();
+
+  // Tags que no queremos analizar
+  const ignoredTags = [
+    'nav',
+    'header',
+    'footer'
+  ];
+
+  if (ignoredTags.includes(tag)) {
+    return true;
+  }
+
+  // Revisamos atributos relevantes
+  const id = (element.id || '').toLowerCase();
+
+  const className =
+    typeof element.className === 'string'
+      ? element.className.toLowerCase()
+      : '';
+
+  const role = (
+    element.getAttribute('role') || ''
+  ).toLowerCase();
+
+  const ariaLabel = (
+    element.getAttribute('aria-label') || ''
+  ).toLowerCase();
+
+  const testId = (
+    element.getAttribute('data-testid') || ''
+  ).toLowerCase();
+
+  const dataTest = (
+    element.getAttribute('data-test') || ''
+  ).toLowerCase();
+
+  const dataCy = (
+    element.getAttribute('data-cy') || ''
+  ).toLowerCase();
+
+  const attributes = [
+    id,
+    className,
+    role,
+    ariaLabel,
+    testId,
+    dataTest,
+    dataCy
+  ].join(' ');
+
+  // Usamos palabras/segmentos relacionados con contenedores
+  const ignoredPatterns = [
+    /\bnav\b/,
+    /\bnavbar\b/,
+    /\bnav-bar\b/,
+    /\bnavigation\b/,
+    /\bmenu\b/,
+    /\btoolbar\b/,
+    /\bsidebar\b/,
+    /\bside-bar\b/,
+    /\bfilter\b/,
+    /\bfilters\b/,
+    /\bfiltro\b/,
+    /\bfiltros\b/,
+    /\bbreadcrumb\b/,
+    /\bbreadcrumbs\b/
+  ];
+
+  return ignoredPatterns.some(pattern =>
+    pattern.test(attributes)
+  );
+} 
+
 /**
  * Detector de Misdirection
  */
 const Misdirection = {
-  destacadosEncimaPromedio: 0.2,
+  destacadosEncimaPromedio: 0,
   umbralCantidadDestacados: 0.5,
   umbralDiferenciaVisual: 15, // Diferencia mínima de peso visual (más sensible a sutilezas)
   umbralRatioVisual: 1.2, // Ratio mínimo entre elemento más y menos destacado
@@ -224,7 +332,19 @@ const Misdirection = {
   detectados: new Set(),
   check: function() {
     // console.log("Analizando misdirection...");
-    const specialParents = getParentOfSpecialNodes(document.body, this.clickeables).arr;
+    const specialParents = [
+      ...new Set(
+        getParentOfSpecialNodes(
+          document.body,
+          this.clickeables
+        ).arr
+      )
+    ];
+
+    const index = specialParents.findIndex(elem => elem === document.body);
+    if (index > -1) { // only splice array when item is found
+      specialParents.splice(index, 1); // 2nd parameter means remove one item only
+    }
 
     specialParents.forEach(parent => {
       const hijos = getSpecialNodes(parent, this.clickeables);
@@ -259,7 +379,7 @@ const Misdirection = {
       }
 
       // Se detecta misdirection si cumple ambas condiciones
-      if (hayFalseHierarchy && hayAltoContraste) {
+      if (hayFalseHierarchy /* && hayAltoContraste */) {
         // resaltarElementoConTexto(parent, this.tipo);
         this.detectados.add(parent);
       }

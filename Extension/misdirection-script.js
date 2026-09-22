@@ -298,20 +298,22 @@ function isIgnoredContainer(element) {
 
   // Usamos palabras/segmentos relacionados con contenedores
   const ignoredPatterns = [
-    /\bnav\b/,
-    /\bnavbar\b/,
-    /\bnav-bar\b/,
-    /\bnavigation\b/,
-    /\bmenu\b/,
-    /\btoolbar\b/,
-    /\bsidebar\b/,
-    /\bside-bar\b/,
-    /\bfilter\b/,
-    /\bfilters\b/,
-    /\bfiltro\b/,
-    /\bfiltros\b/,
-    /\bbreadcrumb\b/,
-    /\bbreadcrumbs\b/
+    // Menús y Navegación
+    /\bnav\b/i, /\bnavbar\b/i, /\bnav-bar\b/i, /\bnavigation\b/i,
+    /\bmenu\b/i, /\btoolbar\b/i, /\bsidebar\b/i, /\bside-bar\b/i,
+    /\bheader\b/i, /\bfooter\b/i, /\bfootnote\b/i, /\bfootnotes\b/i,
+    /\bfoot-bar\b/i, /\bfootbar\b/i, /\bfootnav\b/i, /\bfoot-nav\b/i,
+    /\bfoot-menu\b/i, /\bfootmenu\b/i, /\bbreadcrumb\b/i, /\bbreadcrumbs\b/i,
+
+    // Filtros y Búsqueda
+    /\bfilter\b/i, /\bfilters\b/i, /\bfiltro\b/i, /\bfiltros\b/i,
+    /\bsort\b/i, /\bsorting\b/i, /\bordered\b/i, /\bsearch\b/i,
+
+    // Paginación y Controles genéricos
+    /\bpaginat(ion|ed|ing|or)\b/i, /\bpaginac(ion|ion|es)\b/i,
+    /\bpager\b/i, /\bpage-list\b/i, /\bpage-numbers?\b/i,
+    /\bprev(ious)?\b/i, /\bnext\b/i, /\bsiguiente\b/i, /\banterior\b/i,
+    /\bload-more\b/i, /\bcargar-mas\b/i, /\bver-mas\b/i
   ];
 
   return ignoredPatterns.some(pattern =>
@@ -347,7 +349,25 @@ const Misdirection = {
     }
 
     specialParents.forEach(parent => {
-      const hijos = getSpecialNodes(parent, this.clickeables);
+      const hijosRaw = getSpecialNodes(parent, this.clickeables);
+      if (hijosRaw.length < 2) return;
+
+      const seenHrefs = new Set();
+      const hijos = hijosRaw.filter(el => {
+        const href = el.getAttribute('href') || el.href;
+        
+        if (!href) {
+          return true;
+        }
+
+        if (seenHrefs.has(href)) {
+          return false;
+        }
+
+        seenHrefs.add(href);
+        return true;
+      });
+
       if (hijos.length < 2) return;
 
       // Analisis de contraste visual que estaba en el código original

@@ -21,16 +21,17 @@ const DP_TEXT = {
 };
 
 const DP_DESCRIPTION = {
-  SHAMING: 'Posible forma de persuasión',
-  URGENCY: 'Podría ser falso',
-  MISDIRECTION: 'Posible acción oculta',
+  SHAMING: '«Descripción para Shaming»',
+  URGENCY: '«Descripción para Urgency»',
+  MISDIRECTION: '«Descripción para Misdirection»',
   HIDDENCOST: 'Este precio podría ser más alto de lo que se indica',
-  PRESELECTION: 'Cuidado, opción preseleccionada',
-  SCARCITY: 'Podria no ser cierto'
+  PRESELECTION: '«Descripción para Preselection»',
+  SCARCITY: '«Descripción para Scarcity»'
 }
 
 let elementosResaltados = [];
 let cartelInfoDarkPattern = crearCartelInfoDarkPattern();
+let mouseEstáAdentroDeElemento = false; // Bandera para simular mouseenter y mouseleave
 alApuntarHaciaAlgúnResaltadoMostrarCartel(elementosResaltados, cartelInfoDarkPattern);
 
 /**
@@ -41,13 +42,13 @@ alApuntarHaciaAlgúnResaltadoMostrarCartel(elementosResaltados, cartelInfoDarkPa
  */
 async function resaltarBorde(elemento, tipo) {
   // Chequeo simple para saber si ya fue resaltado
-  if (elemento == undefined || elemento.dataset.tipoDeDarkPattern === tipo) return;
+  if (elemento == undefined || elemento.dataset.darkPattern === tipo) return;
   
   // console.log("Resaltando borde:", elemento, "Tipo:", tipo);
   
   // Aplica el estilo al borde del elemento
   elemento.style.border = `3px dashed ${(await chrome.storage.sync.get('dpColores')).dpColores[tipo]}`;
-  elemento.dataset.tipoDeDarkPattern = tipo;
+  elemento.dataset.darkPattern = tipo;
 }
 
 /**
@@ -87,12 +88,11 @@ function resaltarElementoConTexto(elemento, tipo) {
     console.info("Elemento ignorado: ", elemento, "Tipo: " + tipo);
     return;
   }
-  if (elemento == undefined || elemento.dataset.tipoDeDarkPattern === tipo) return;
+  if (elemento == undefined || elemento.dataset.darkPattern === tipo) return;
 
   // console.info("Resaltando elemento: ", elemento, "Tipo: " + tipo);
   
   resaltarBorde(elemento, tipo);
-  elemento.style.position = 'relative'; // Para posicionar el globo correctamente
 
   elementosResaltados.push(elemento);
 }
@@ -101,16 +101,16 @@ function resaltarElementoConTexto(elemento, tipo) {
  *
  * @param {string} tipo Patrón a desresaltar
  */
-function desresaltarElementoConTipo(tipo) {
+async function desresaltarElementoConTipo(tipo) {
   // console.log("Desresaltando elementos del tipo:", tipo);
   
   // Buscar todos los elementos que fueron resaltados con este tipo
-  const elementos = document.querySelectorAll(`.${tipo}`);
+  const elementos = document.querySelectorAll(`[data-dark-pattern=${tipo}]`);
   
   elementos.forEach((elemento) => {
     // Quitar borde y clase
     elemento.style.border = '';
-    elemento.dataset.tipoDeDarkPattern = '';
+    elemento.dataset.darkPattern = '';
 
     //// Buscar y eliminar el globo de texto relacionado
     //const hijos = Array.from(elemento.children);
@@ -120,6 +120,9 @@ function desresaltarElementoConTipo(tipo) {
     //  }
     //});
   });
+  if ((await chrome.storage.sync.get('modoSeleccionado')).modoSeleccionado != 'TODO') {
+    ocultarCartel(cartelInfoDarkPattern);
+  }
 }
 
 function inyectarFuenteEnCSS() {
@@ -148,6 +151,8 @@ function crearCartelInfoDarkPattern() {
   const logo = document.createElement('img');
   logo.src = chrome.runtime.getURL('menu/imagenes/icono.png');
   Object.assign(logo.style, {
+    display: 'inline',
+    boxSizing: 'border-box',
     width: '3em',
     marginTop: '-2em',
     padding: '0.2em',
@@ -202,7 +207,7 @@ function crearCartelInfoDarkPattern() {
       if (respuesta) {
         // Quitar borde y clase solo de este tipo
         elementoApuntado.style.border = '';
-        elementoApuntado.dataset.tipoDeDarkPattern = '';
+        elementoApuntado.dataset.darkPattern = '';
         // Eliminar el globo de texto
         if (cartelNuevo.parentNode === elementoApuntado) {
           elementoApuntado.removeChild(cartelNuevo);
@@ -230,6 +235,8 @@ function crearCartelInfoDarkPattern() {
 
   Object.assign(cartelNuevo.style, {
     position: 'absolute',
+    left: '0',
+    top: '0',
     zIndex: '10000', // Asegurar que esté por encima de otros elementos
     padding: '10px',
     color: 'black',
@@ -253,9 +260,8 @@ function crearCartelInfoDarkPattern() {
 }
 
 function alApuntarHaciaAlgúnResaltadoMostrarCartel(elementosResaltados, cartelInfoDarkPattern) {
-  let mouseInside = false; // Bandera para simular mouseenter y mouseleave
 
-  window.addEventListener('mousemove', (event) => {
+  window.addEventListener('mousemove', async (event) => {
     // Coordenadas del cursor
     const x = event.clientX;
     const y = event.clientY;
@@ -264,24 +270,28 @@ function alApuntarHaciaAlgúnResaltadoMostrarCartel(elementosResaltados, cartelI
     const cartelApuntadoPorMouse = coordenadasCoincidenConElemento(x, y, cartelInfoDarkPattern);
 
     // Simula el evento 'mouseenter'
-    if (resaltadoApuntadoPorMouse && !mouseInside) {
-      mouseInside = true;
+    if ((await chrome.storage.sync.get('modoSeleccionado')).modoSeleccionado === "TODO" && (!cartelApuntadoPorMouse || (cartelInfoDarkPattern.style.visibility == 'hidden')) && resaltadoApuntadoPorMouse && (resaltadoApuntadoPorMouse != mouseEstáAdentroDeElemento)) {
+      mouseEstáAdentroDeElemento = resaltadoApuntadoPorMouse;
       console.log('¡Simulación de mouseenter activa!');
       actualizarTipoYPosiciónDeCartel(cartelInfoDarkPattern, resaltadoApuntadoPorMouse);
     }
 
     // Simula el evento 'mouseleave'
-    if (!resaltadoApuntadoPorMouse && !cartelApuntadoPorMouse && mouseInside) {
-      mouseInside = false;
+    if (!resaltadoApuntadoPorMouse && !cartelApuntadoPorMouse && mouseEstáAdentroDeElemento) {
+      mouseEstáAdentroDeElemento = false;
       console.log('¡Simulación de mouseleave activa!');
       ocultarCartel(cartelInfoDarkPattern);
     }
 
     // Simula el evento 'mouseover'
-    if (resaltadoApuntadoPorMouse && mouseInside) {
+    if (resaltadoApuntadoPorMouse == mouseEstáAdentroDeElemento) {
 
     }
   });
+  document.addEventListener('mouseleave', () => {
+    mouseEstáAdentroDeElemento = false;
+    ocultarCartel(cartelInfoDarkPattern);
+  })
   function coordenadasCoincidenConElemento(x, y, elemento) {
       // Obtiene la posición exacta del elemento en la pantalla actual
       const rect = elemento.getBoundingClientRect();
@@ -297,7 +307,7 @@ function alApuntarHaciaAlgúnResaltadoMostrarCartel(elementosResaltados, cartelI
 }
 
 async function actualizarTipoYPosiciónDeCartel(cartel, elemento) {
-  const tipo = elemento.dataset.tipoDeDarkPattern;
+  const tipo = elemento.dataset.darkPattern;
   let titulo = cartel.querySelector('#TituloDP');
   titulo.textContent = DP_TEXT[tipo];
   let descripcion = cartel.querySelector('#DescripcionDP');
@@ -305,13 +315,13 @@ async function actualizarTipoYPosiciónDeCartel(cartel, elemento) {
   const cartelRect = cartel.getBoundingClientRect();
   const rect = elemento.getBoundingClientRect();
   const centroElemento = rect.left + (rect.width) / 2;
-  const posiciónFinalX = Math.max(centroElemento - (cartelRect.width / 2) + window.scrollX, window.scrollX);
-  const posiciónFinalY = Math.max(rect.top - cartelRect.height + window.scrollY, window.scrollY);
+  const posiciónFinalX = Math.max(centroElemento - (cartelRect.width / 2) + window.scrollX, window.scrollX); // Para que no se salga del borde izquierdo de la pantalla
+  const posiciónFinalY = Math.max(rect.top - cartelRect.height + window.scrollY, window.scrollY); // Para que no se salga del borde superior de la pantalla
   const backgroundColor = `${ajustarBrilloDeColor((await chrome.storage.sync.get('dpColores')).dpColores[tipo], 180)}`;
   const border = `2px solid ${ajustarBrilloDeColor((await chrome.storage.sync.get('dpColores')).dpColores[tipo], -100)}`;
   Object.assign(cartel.style, {
-    left: `${posiciónFinalX}px`, // Para que no se salga del borde izquierdo de la pantalla
-    top: `${posiciónFinalY}px`, // Para que no se salga del borde superior de la pantalla
+    left: `${posiciónFinalX}px`,
+    top: posiciónFinalY == window.scrollY ? `calc(${window.scrollY}px + 1em)` : `${posiciónFinalY}px`,
     color: `${ajustarBrilloDeColor((await chrome.storage.sync.get('dpColores')).dpColores[tipo], -100)}`,
     backgroundColor: backgroundColor,
     border: border
@@ -323,12 +333,12 @@ async function actualizarTipoYPosiciónDeCartel(cartel, elemento) {
   });
   cartel.elementoApuntado = elemento;
 
-  setTimeout(() => {
+  //setTimeout(() => {
     Object.assign(cartel.style, {
       opacity: 1,
       visibility: 'visible'
     });
-  }, 1);
+  //}, 1);
 }
 
 function ocultarCartel(cartel) {

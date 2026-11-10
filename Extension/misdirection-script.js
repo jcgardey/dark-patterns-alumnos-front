@@ -30,17 +30,15 @@ function rgbToArray(rgbString) {
  * Comprueba si un elemento está oculto
  */
 function isHidden(element) {
-  let actual = element;
-  while (actual && actual !== document.body) {
-    if (
-      (actual.classList && actual.classList.contains('hidden')) ||
-      actual.getAttribute('hidden') === 'true' ||
-      window.getComputedStyle(actual).display === 'none' ||
-      window.getComputedStyle(actual).visibility === 'hidden'
-    ) return true;
-    actual = actual.parentNode;
+  if (!element || element.nodeType !== Node.ELEMENT_NODE) return false;
+  if (typeof element.checkVisibility === 'function') {
+    return !element.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true });
   }
-  return false;
+  if (element.hasAttribute('hidden') || element.getAttribute('aria-hidden') === 'true') return true;
+  if (element.classList && element.classList.contains('hidden')) return true;
+  const styles = window.getComputedStyle(element);
+  if (styles.display === 'none' || styles.visibility === 'hidden' || parseFloat(styles.opacity) === 0) return true;
+  return element.offsetParent === null && styles.position !== 'fixed';
 }
 
 /**
@@ -56,7 +54,7 @@ function isSpecial(element, especiales) {
         especiales.includes(element.nodeName.toLowerCase())
       )
     ) return true;
-  } catch (e) {}
+  } catch (e) { }
   return false;
 }
 
@@ -152,10 +150,23 @@ function cantidadDestacados(contrastes, porcentaje) {
   }, 0);
 }
 
+function obtenerColorFondoEfectivo(elemento, parent) {
+  let actual = elemento;
+  while (actual && actual !== document.body) {
+    const bg = window.getComputedStyle(actual).backgroundColor;
+    if (bg && bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent') {
+      const arr = rgbToArray(bg);
+      if (arr) return arr;
+    }
+    actual = actual.parentElement;
+  }
+  return [255, 255, 255];
+}
+
 /**
  * Calcula propiedades visuales de un elemento (peso visual)
  */
-function calcularPesoVisual(elemento) {
+function calcularPesoVisual(elemento, parent) {
   const styles = window.getComputedStyle(elemento);
   let pesoVisual = 0;
 
@@ -188,17 +199,20 @@ function calcularPesoVisual(elemento) {
   const paddingTotal = paddingTop + paddingBottom;
   pesoVisual += paddingTotal * 0.3;
 
-  // Contraste de color: colores más contrastantes son más visibles
+  // Contraste de color efectivo: resuelve fondos transparentes contra el contenedor
   const fgColor = rgbToArray(styles.color);
-  const bgColor = rgbToArray(styles.backgroundColor);
-  if (fgColor && bgColor) {
-    const contraste = getContrast(fgColor, bgColor);
-    pesoVisual += contraste * 5; // Mayor contraste = más peso visual
+  let bgArr = rgbToArray(styles.backgroundColor);
+  if (!bgArr || styles.backgroundColor === 'rgba(0, 0, 0, 0)' || styles.backgroundColor === 'transparent') {
+    bgArr = obtenerColorFondoEfectivo(elemento, parent);
+  }
+  if (fgColor && bgArr) {
+    const contraste = getContrast(fgColor, bgArr);
+    pesoVisual += contraste * 6; // Mayor contraste sobre el fondo real = más peso visual
   }
 
   // Opacidad: elementos más opacos son más visibles
   const opacity = parseFloat(styles.opacity) || 1;
-  pesoVisual *= opacity;
+  pesoV0isual *= opacity;
 
   // Background color diferente del fondo: indica más énfasis
   const bg = styles.backgroundColor;
@@ -212,12 +226,12 @@ function calcularPesoVisual(elemento) {
 /**
  * Detecta false hierarchy: compara pesos visuales entre elementos
  */
-function detectarFalseHierarchy(hijos) {
+function detectarFalseHierarchy(hijos, parent) {
   if (hijos.length < 2) return 0;
 
   const pesosVisuales = hijos.map(h => ({
     elemento: h,
-    peso: calcularPesoVisual(h)
+    peso: calcularPesoVisual(h, parent)
   }));
 
   // Ordenar por peso visual
@@ -319,7 +333,7 @@ function isIgnoredContainer(element) {
   return ignoredPatterns.some(pattern =>
     pattern.test(attributes)
   );
-} 
+}
 
 /**
  * Detector de Misdirection
@@ -332,7 +346,7 @@ const Misdirection = {
   clickeables: ['a', 'button'],
   tipo: DP_TYPES.MISDIRECTION,
   detectados: new Set(),
-  check: function() {
+  check: function () {
     // console.log("Analizando misdirection...");
     const specialParents = [
       ...new Set(
@@ -355,7 +369,7 @@ const Misdirection = {
       const seenHrefs = new Set();
       const hijos = hijosRaw.filter(el => {
         const href = el.getAttribute('href') || el.href;
-        
+
         if (!href) {
           return true;
         }
@@ -370,48 +384,27 @@ const Misdirection = {
 
       if (hijos.length < 2) return;
 
-      // Analisis de contraste visual que estaba en el código original
-      const contrastes = hijos.map(h => contrastarNiveles(parent, h));
-      const destacados = cantidadDestacados(contrastes, this.destacadosEncimaPromedio);
+      // Analisis de false hierarchy con contraste efectivo integrado en los pesos visuales
+      const falseHierarchy = detectarFalseHierarchy(hijos, parent);
 
-      // Analisis de false hierarchy comparando el peso visual de los hijos con cosas como el tamaño de letra y cosas asi
-      const falseHierarchy = detectarFalseHierarchy(hijos);
-      
-      // Con los dos analisis ahora usamos la heuristica mejorada
-      // 1. Hay suficientes elementos con alto contraste por encima del promedio (destaque visual)
-      const hayAltoContraste = destacados >= hijos.length * this.umbralCantidadDestacados;
-      
-      // 2. Hay diferencia visual significativa entre elementos teniendo en cuenta el peso entre el más y menos destacado (false hierarchy)
       const hayFalseHierarchy = falseHierarchy.diferencia >= this.umbralDiferenciaVisual &&
-                                falseHierarchy.ratio >= this.umbralRatioVisual;
+        falseHierarchy.ratio >= this.umbralRatioVisual;
 
-      // Imprimir info si hay algo interesante que reportar
-      if (hijos.length === 2 || hayFalseHierarchy) {
-        console.log(`Misdirection Check - ${hijos.length} elementos:`, {
-          hayAltoContraste,
-          hayFalseHierarchy,
-          diferencia: falseHierarchy.diferencia.toFixed(2),
-          ratio: falseHierarchy.ratio.toFixed(2),
-          destacados,
-          textos: hijos.map(h => h.textContent.trim().substring(0, 30)),
-          pesos: falseHierarchy.pesosVisuales.map(p => p.peso.toFixed(2))
-        });
-      }
-
-      // Se detecta misdirection si cumple ambas condiciones
-      if (hayFalseHierarchy && hayAltoContraste) {
+      // Se detecta misdirection si existe falsa jerarquía significativa (potenciada por el contraste)
+      if (hayFalseHierarchy) {
         if (!this.detectados.has(parent)) {
           this.detectados.add(parent);
           console.log("%c[DP Detector] MISDIRECTION detectado:", "color: #0400FF; font-weight: bold; font-size: 11px;", parent, {
             hijos: hijos.length,
             diferencia: falseHierarchy.diferencia.toFixed(2),
+            ratio: falseHierarchy.ratio.toFixed(2),
             textos: hijos.map(h => h.textContent.trim().substring(0, 30))
           });
         }
       }
     });
   },
-  clear: function() {
+  clear: function () {
     this.detectados.clear();
     desresaltarElementoConTipo(this.tipo);
   }

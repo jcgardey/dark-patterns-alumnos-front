@@ -127,6 +127,26 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
+
+  // 9. Abrir pestaña de opciones / quiénes somos
+  function abrirPestañaOpciones(hash) {
+    const url = browserAPI.runtime.getURL(`options/options.html#${hash}`);
+    if (browserAPI.tabs && browserAPI.tabs.create) {
+      browserAPI.tabs.create({ url });
+    } else if (browserAPI.runtime.openOptionsPage) {
+      browserAPI.runtime.openOptionsPage();
+    } else {
+      window.open(url);
+    }
+  }
+
+  document.getElementById("btnConfiguracion")?.addEventListener("click", () => {
+    abrirPestañaOpciones("configuracion");
+  });
+
+  document.getElementById("btnQuienesSomos")?.addEventListener("click", () => {
+    abrirPestañaOpciones("quienes-somos");
+  });
 });
 
 function ActualizarColorFila(dpTipo, color) {

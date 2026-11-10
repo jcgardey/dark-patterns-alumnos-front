@@ -128,8 +128,11 @@ const HiddenCost = {
   tipo: DP_TYPES.HIDDENCOST,
   detectados: new Set(),
   check: function() {
-    const elementos = document.querySelectorAll('p,span,h5'); //Esto es temporal porque podrían aparecer precios con varios tipos de tags HTML. Estamos viendo como incluir distintos tags
-    const filtrados = tachadoCheck(elementos);
+    const rePrice = /[$]\s*\d+/;
+    const todos = document.querySelectorAll('p,span,h5');
+    // Pre-filtrar por texto antes de getComputedStyle para evitar layout thrashing masivo
+    const conPrecio = Array.from(todos).filter(el => rePrice.test(el.textContent));
+    const filtrados = tachadoCheck(conPrecio);
     const precios = sizeCheck(filtrados);
     const hiddens = distanceCheck(precios.prices, precios.principalPrices, this.hiddenCostMaxDistance);
 

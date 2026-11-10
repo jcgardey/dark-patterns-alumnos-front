@@ -15,6 +15,10 @@
     "default_popup": "menu/pop-up.html",
     "default_icon": "menu/imagenes/icono.png"
   },
+  "options_ui": {
+    "page": "options/options.html",
+    "open_in_tab": true
+  },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],

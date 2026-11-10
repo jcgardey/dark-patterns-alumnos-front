@@ -11,8 +11,8 @@ const ConfirmShaming = {
 
   check: function () {
     const invalidTags = ["INPUT"];
-    const buttonTags = ["BUTTON", "A"];
-    const rawElements = segments(document.body);
+    // Selección directa de elementos interactivos sin requerir la costosa segmentación de todo el DOM
+    const rawElements = Array.from(document.querySelectorAll('button, a, [role="button"]'));
     if (!rawElements || rawElements.length === 0) return;
 
     const bloquesParaEnviar = [];
@@ -21,8 +21,7 @@ const ConfirmShaming = {
     for (let i = 0; i < rawElements.length; i++) {
       const element = rawElements[i];
       if (!element || !element.isConnected) continue;
-
-      if (!buttonTags.includes(element.nodeName)) continue;
+      if (typeof element.checkVisibility === 'function' && !element.checkVisibility()) continue;
 
       let invalidElement = false;
       if (invalidTags.includes(element.nodeName)) invalidElement = true;
@@ -30,6 +29,11 @@ const ConfirmShaming = {
         if (invalidTags.includes(child.nodeName)) invalidElement = true;
       }
       if (invalidElement) continue;
+
+      // Descartar tarjetas o contenedores complejos (imágenes, encabezados o precios)
+      if (element.querySelector('img, h1, h2, h3, h4, h5, h6') || /[$]\s*\d+/.test(element.textContent)) {
+        continue;
+      }
 
       if (this.elementosEvaluados.has(element) && !this.detectados.has(element)) continue;
 

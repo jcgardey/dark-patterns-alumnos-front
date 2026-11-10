@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dark Patterns - Configuración</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+
+<body>
+  <div class="panel-wrapper">
+    <!-- Encabezado estilo Popup -->
+    <header class="main-header">
+      <div class="main-icon">
+        <img src="../menu/imagenes/icono.png" alt="Icono Dark Patterns">
+      </div>
+      <h1>DARK PATTERNS</h1>
+      <p class="header-subtitle">Panel de Configuración y Documentación</p>
+
+      <!-- Selector de vistas estilo Pills -->
+      <nav class="tabs-nav">
+        <button type="button" class="tab-pill active" id="tabBtnConfig" data-view="configuracion">
+          <img src="../menu/imagenes/configuracion.png" alt="" class="tab-pill-icon">
+          <span>Configuración</span>
+        </button>
+        <button type="button" class="tab-pill" id="tabBtnAbout" data-view="quienes-somos">
+          <img src="../menu/imagenes/quienes-somos.png" alt="" class="tab-pill-icon">
+          <span>Quiénes Somos</span>
+        </button>
+      </nav>
+    </header>
+
+    <hr>
+
+    <main class="main-content">
+      <!-- VISTA 1: CONFIGURACIÓN Y PATRONES -->
+      <div id="viewConfig" class="view-content active">
+        <!-- Lista de Patrones con Explicación -->
+        <section class="section-block">
+          <h2 class="section-title">PATRONES DETECTADOS</h2>
+          <div class="patterns-list">
+
+            <!-- Confirm Shaming -->
+            <div class="dp-item" id="item_SHAMING">
+              <div class="dp-item-header">
+                <label class="switch">
+                  <input type="checkbox" id="SHAMING">
+                  <span class="slider round"></span>
+                </label>
+                <span class="dp-name">Confirm Shaming <small class="dp-alias">(Avergonzar para confirmar)</small></span>
+                <div class="dp-color-picker">
+                  <input type="color" id="color_SHAMING" value="#FF9500" title="Elegir color">
+                </div>
+              </div>
+              <div class="dp-item-desc">
+                <p><strong>Qué es:</strong> Utiliza frases que buscan hacerte sentir culpable o avergonzado por rechazar
+                  una oferta, promoción o suscripción.</p>
+                <p><strong>Detección:</strong> Analiza botones y enlaces de descarte o cancelación evaluando expresiones
+                  en primera persona con tono despectivo mediante procesamiento del lenguaje natural y aprendizaje
+                  automático (ej. <em>"No gracias, prefiero pagar precio completo"</em>).</p>
+              </div>
+            </div>
+
+            <!-- Fake Urgency -->
+            <div class="dp-item" id="item_URGENCY">
+              <div class="dp-item-header">
+                <label class="switch">
+                  <input type="checkbox" id="URGENCY">
+                  <span class="slider round"></span>
+                </label>
+                <span class="dp-name">Fake Urgency <small class="dp-alias">(Falsa urgencia)</small></span>
+                <div class="dp-color-picker">
+                  <input type="color" id="color_URGENCY" value="#FF0000" title="Elegir color">
+                </div>
+              </div>
+              <div class="dp-item-desc">
+                <p><strong>Qué es:</strong> Presiona a tomar una decisión de compra rápida simulando un límite de tiempo
+                  artificial o una cuenta regresiva engañosa.</p>
+                <p><strong>Detección:</strong> Detecta temporizadores regresivos y frases de apuro alrededor de ellos
+                  (ej. <em>"Oferta por tiempo limitado"</em>, <em>"Termina pronto"</em>).</p>
+              </div>
+            </div>
+
+            <!-- Fake Scarcity -->
+            <div class="dp-item" id="item_SCARCITY">
+              <div class="dp-item-header">
+                <label class="switch">
+                  <input type="checkbox" id="SCARCITY">
+                  <span class="slider round"></span>
+                </label>
+                <span class="dp-name">Fake Scarcity <small class="dp-alias">(Falsa escasez)</small></span>
+                <div class="dp-color-picker">
+                  <input type="color" id="color_SCARCITY" value="#FFFF00" title="Elegir color">
+                </div>
+              </div>
+              <div class="dp-item-desc">
+                <p><strong>Qué es:</strong> Hace creer que quedan pocas unidades o cupos disponibles para forzar la
+                  compra antes de que supuestamente se agoten.</p>
+                <p><strong>Detección:</strong> Identifica avisos de bajo inventario o existencias limitadas (ej.
+                  <em>"¡Solo quedan 2 unidades disponibles!"</em>, <em>"Últimos lugares"</em>) y analiza su contexto.
+                </p>
+              </div>
+            </div>
+
+            <!-- Hidden Cost -->
+            <div class="dp-item" id="item_HIDDENCOST">
+              <div class="dp-item-header">
+                <label class="switch">
+                  <input type="checkbox" id="HIDDENCOST">
+                  <span class="slider round"></span>
+                </label>
+                <span class="dp-name">Hidden Cost <small class="dp-alias">(Costos ocultos)</small></span>
+                <div class="dp-color-picker">
+                  <input type="color" id="color_HIDDENCOST" value="#1AFF00" title="Elegir color">
+                </div>
+              </div>
+              <div class="dp-item-desc">
+                <p><strong>Qué es:</strong> Oculta costos o tarifas obligatorias mostrando un precio principal llamativo
+                  y relegando cargos extra a letra chica o elementos visualmente disimulados.</p>
+                <p><strong>Detección:</strong> Compara importes secundarios de menor tamaño ubicados cerca de precios
+                  destacados o tachados, evaluando su proximidad física y jerarquía tipográfica.</p>
+              </div>
+            </div>
+
+            <!-- Misdirection -->
+            <div class="dp-item" id="item_MISDIRECTION">
+              <div class="dp-item-header">
+                <label class="switch">
+                  <input type="checkbox" id="MISDIRECTION">
+                  <span class="slider round"></span>
+                </label>
+                <span class="dp-name">Misdirection <small class="dp-alias">(Desvío de atención)</small></span>
+                <div class="dp-color-picker">
+                  <input type="color" id="color_MISDIRECTION" value="#0400FF" title="Elegir color">
+                </div>
+              </div>
+              <div class="dp-item-desc">
+                <p><strong>Qué es:</strong> Utiliza falsas jerarquías visuales para orientar la atención hacia la opción
+                  que conviene al sitio web mientras disimula u oculta la alternativa.</p>
+                <p><strong>Detección:</strong> Compara los elementos interactivos del mismo contenedor calculando su
+                  peso visual (área, espaciado interno, tipografía y contraste de color frente al fondo real) para
+                  alertar sobre jerarquías engañosas.</p>
+              </div>
+            </div>
+
+            <!-- Preselection -->
+            <div class="dp-item" id="item_PRESELECTION">
+              <div class="dp-item-header">
+                <label class="switch">
+                  <input type="checkbox" id="PRESELECTION">
+                  <span class="slider round"></span>
+                </label>
+                <span class="dp-name">Preselection <small class="dp-alias">(Preselección involuntaria)</small></span>
+                <div class="dp-color-picker">
+                  <input type="color" id="color_PRESELECTION" value="#EE82EE" title="Elegir color">
+                </div>
+              </div>
+              <div class="dp-item-desc">
+                <p><strong>Qué es:</strong> Deja seleccionadas por defecto opciones adicionales (suscripciones, seguros,
+                  donaciones) aprovechando que muchos usuarios continúan sin desmarcarlas.</p>
+                <p><strong>Detección:</strong> Rastrea casillas de verificación, botones de opción y selectores marcados
+                  por defecto antes de que el usuario interactúe con el formulario.</p>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <hr>
+
+        <!-- Modo de Aviso (Reutilizado del Popup) -->
+        <section class="section-block">
+          <h2 class="section-title">MODO DE AVISO</h2>
+
+          <div class="mode-container">
+            <label class="mode-radio" for="TODO">
+              <input type="radio" class="radio-input" id="TODO" name="modo" value="TODO" />
+              <span class="radio-tile">
+                <span class="radio-icon">
+                  <svg width="192" height="192" viewBox="0 0 600 600">
+                    <g id="svg_1">
+                      <path stroke="currentColor" stroke-linejoin="round" stroke-width="0.25" fill-rule="evenodd"
+                        fill="currentColor"
+                        d="m452.33007,80.4488c0,51.18843 0,102.38109 0,153.56952c-0.40111,1.34606 -0.34735,2.93265 -0.51276,4.37576c-0.40938,3.5234 -0.93455,7.02992 -1.66647,10.49846c-2.43561,11.52383 -7.41849,22.65102 -14.55578,31.93844c-13.06712,16.9967 -32.96967,27.49516 -53.71166,30.77382c-11.03676,1.74271 -22.35057,1.11398 -33.48244,1.11398c-34.59893,0 -69.19372,0 -103.79265,0c-10.75143,0 -21.50286,0 -32.25429,0c-3.58519,0 -7.16624,0 -10.75143,0c-1.34806,0 -2.99799,-0.26584 -4.30884,0.05907c-1.84428,0.4515 -7.86922,5.10576 -9.82929,6.44339c-7.27376,4.96651 -14.593,9.85708 -21.86262,14.82781c-20.72545,14.17377 -41.53774,28.21672 -62.33348,42.28922c-6.62867,4.48126 -13.26975,8.94141 -19.8612,13.48174c-2.90702,2.00433 -5.94223,4.6416 -9.16766,6.00877c-0.08684,-27.97198 -0.17368,-55.94819 -0.26052,-83.92017c-2.34877,-0.51058 -4.79679,-0.69624 -7.17451,-1.12242c-5.31369,-0.95364 -10.58189,-2.30392 -15.62679,-4.27449c-20.35742,-7.94558 -36.712,-24.27558 -44.7673,-45.00244c-2.43148,-6.2535 -4.31711,-12.67579 -5.41293,-19.3175c-0.5169,-3.14363 -0.41765,-7.31263 -1.32739,-10.20731c0,-50.93947 0,-101.88317 0,-152.82264c0.63682,-2.09716 0.52103,-4.7049 0.79395,-6.92865c0.46314,-3.82299 1.21574,-7.62489 2.12548,-11.36349c3.44046,-14.11469 11.02435,-27.22511 21.37467,-37.19611c13.43515,-12.94585 31.23291,-20.55808 49.47312,-22.8198c6.58318,-0.81439 13.20358,-0.66248 19.82398,-0.66248c8.27033,0 16.54066,0 24.81099,0c54.30713,0 108.61839,0 162.92552,0c22.87987,0 45.76388,0 68.64375,0c21.93292,0 40.65695,-0.93254 60.68769,9.91193c19.07552,10.33389 31.96896,28.76106 38.24615,49.54277c1.36047,4.50657 2.2578,9.19881 2.90289,13.86573c0.31014,2.23219 0.20262,4.83149 0.85184,6.93709l-0.00002,0zm-356.98884,274.9221c2.5514,-0.73844 5.2558,-3.25334 7.49292,-4.80195c4.84228,-3.36305 9.73831,-6.67547 14.63849,-9.94991c17.14026,-11.43944 34.14406,-23.10674 51.21402,-34.66011c5.29715,-3.58669 10.59843,-7.1776 15.90798,-10.75586c1.59204,-1.07179 4.53214,-3.71328 6.28959,-4.08883c1.53415,-0.32913 3.36189,-0.06329 4.92912,-0.06329c3.85811,0 7.72035,0 11.57846,0c11.57846,0 23.15693,0 34.73539,0c36.66651,0 73.32889,0 109.9954,0c9.52329,0 19.13341,0.5148 28.52851,-1.33341c21.65586,-4.2534 40.21035,-17.0389 47.18637,-39.12449c4.57349,-14.46492 3.39497,-30.03961 3.39497,-45.01932c0,-22.9253 0,-45.85481 0,-68.78011c0,-11.67574 0,-23.34726 0,-35.023c0,-5.87374 0.31841,-11.84874 -0.0703,-17.70982c-0.99657,-15.03035 -5.46255,-30.20417 -14.96516,-41.96852c-8.70452,-10.77696 -21.34159,-17.19503 -34.74366,-19.30907c-8.05944,-1.26589 -16.24293,-0.97052 -24.36853,-0.97052c-9.37442,0 -18.74471,0 -28.11913,0c-70.02076,0 -140.04565,0 -210.06641,0c-8.27033,0 -16.54066,0 -24.81099,0c-5.64864,0 -11.33035,-0.20676 -16.95418,0.45572c-17.04515,2.00011 -34.6775,9.53216 -45.01128,24.08148c-11.4296,16.10214 -11.33449,33.01445 -11.33449,52.04502c0,14.06405 0,28.13233 0,42.19638c0,19.69305 0,39.38188 0,59.07494c0,6.46871 0,12.94163 0,19.41034c0,4.76819 -0.13646,9.57014 0.459,14.31301c2.71267,21.73958 12.45098,41.69425 32.48173,51.54288c7.86095,3.86519 16.80118,5.66275 25.47262,6.03408c5.31782,0.22786 10.88376,-0.49792 16.13955,0.26584c0,21.38091 0,42.7576 0,64.1385l0.00001,0.00002z"
+                        id="svg_2" />
+                    </g>
+                    <g stroke="currentColor" id="svg_3">
+                      <g stroke="currentColor" fill="currentColor" id="svg_4">
+                        <polygon stroke="currentColor" id="svg_12"
+                          points="588.5945434570312,581.9614868164062 588.5945434570312,587.9076538085938 582.4703369140625,587.9076538085938 582.4703369140625,599.7999877929688 601,599.7999877929688 601,581.9614868164062 " />
+                        <path stroke="currentColor" id="svg_11"
+                          d="m230.56328,587.90765l-6.20273,0l0,11.89237l6.20273,0l0,-11.89237zm37.6875,0l-25.36054,0l0,11.89237l25.36054,0l0,-11.89237zm37.76602,0l-25.36054,0l0,11.89237l25.36054,0l0,-11.89237zm37.6875,0l-25.36054,0l0,11.89237l25.36054,0l0,-11.89237zm37.76602,0l-25.36054,0l0,11.89237l25.36054,0l0,-11.89237zm37.05937,0l-24.73242,0l0,11.89237l24.73242,0l0,-11.89237zm37.76602,0l-25.36054,0l0,11.89237l25.36054,0l0,-11.89237zm37.6875,0l-25.36054,0l0,11.89237l25.36054,0l0,-11.89237zm37.76602,0l-25.36054,0l0,11.89237l25.36054,0l0,-11.89237zm37.6875,0l-25.36054,0l0,11.89237l25.36054,0l0,-11.89237z" />
+                        <polygon stroke="currentColor" id="svg_10"
+                          points="217.52967834472656,587.9076538085938 211.40545654296875,587.9076538085938 211.40545654296875,581.9614868164062 198.99998474121094,581.9614868164062 198.99998474121094,599.7999877929688 217.52967834472656,599.7999877929688 " />
+                        <path stroke="currentColor" id="svg_9"
+                          d="m211.40546,389.27493l0,-17.76329l-12.40547,0l0,17.76329l12.40547,0zm0,36.20399l0,-24.31163l-12.40547,0l0,24.31163l12.40547,0zm0,36.12872l0,-24.23636l-12.40547,0l0,24.31163l12.40547,0l0,-0.07527zm0,36.20399l0,-24.31163l-12.40547,0l0,24.31163l12.40547,0zm0,36.12872l0,-24.31163l-12.40547,0l0,24.31163l12.40547,0zm0,36.20399l0,-24.31163l-12.40547,0l0,24.31163l12.40547,0z" />
+                        <polygon stroke="currentColor" id="svg_8"
+                          points="211.40545654296875,365.0386047363281 211.40545654296875,359.0923767089844 217.52967834472656,359.0923767089844 217.52967834472656,347.20001220703125 198.99998474121094,347.20001220703125 198.99998474121094,365.0386047363281 " />
+                        <path stroke="currentColor" id="svg_7"
+                          d="m569.43671,359.09239l6.20273,0l0,-11.89237l-6.20273,0l0,11.89237zm-37.6875,0l25.36054,0l0,-11.89237l-25.36054,0l0,11.89237zm-37.76602,0l25.36054,0l0,-11.89237l-25.36054,0c0,0 0,11.89237 0,11.89237zm-37.6875,0l25.36054,0l0,-11.89237l-25.36054,0l0,11.89237zm-37.76602,0l25.36054,0l0,-11.89237l-25.36054,0l0,11.89237zm-37.05937,0l24.73242,0l0,-11.89237l-24.73242,0l0,11.89237zm-37.76602,0l25.36054,0l0,-11.89237l-25.36054,0l0,11.89237zm-37.6875,0l25.36054,0l0,-11.89237l-25.36054,0l0,11.89237zm-37.76602,0l25.36054,0l0,-11.89237l-25.36054,0l0,11.89237zm-37.6875,0l25.36054,0l0,-11.89237l-25.36054,0l0,11.89237z" />
+                        <polygon stroke="currentColor" id="svg_6"
+                          points="582.4703369140625,359.0923767089844 588.5945434570312,359.0923767089844 588.5945434570312,365.0386047363281 601,365.0386047363281 601,347.20001220703125 582.4703369140625,347.20001220703125 " />
+                        <path stroke="currentColor" id="svg_5"
+                          d="m588.59451,557.72511l0,17.76329l12.40547,0l0,-17.76329c0,0 -12.40547,0 -12.40547,0zm0,-36.20399l0,24.31163l12.40547,0l0,-24.31163l-12.40547,0zm0,-36.12872l0,24.23636l12.40547,0l0,-24.31163l-12.40547,0l0,0.07527zm0,-36.20399l0,24.31163l12.40547,0l0,-24.31163l-12.40547,0zm0,-36.12872l0,24.31163l12.40547,0l0,-24.31163l-12.40547,0zm0,-35.60185l0,24.31163l12.40547,0l0,-24.31163c0,0 -12.40547,0 -12.40547,0z" />
+                      </g>
+                    </g>
+                  </svg>
+                </span>
+                <span class="radio-label">Carteles + Marcado</span>
+              </span>
+            </label>
+
+            <label class="mode-radio" for="MARCA">
+              <input type="radio" class="radio-input" id="MARCA" name="modo" value="MARCA" />
+              <span class="radio-tile">
+                <span class="radio-icon">
+                  <svg width="192" height="192" viewBox="-32 -32 576 576">
+                    <g stroke="currentColor" fill="currentColor">
+                      <polygon points="496.2,400.1 496.2,408 488.4,408 488.4,423.8 512,423.8 512,400.1" />
+                      <path
+                        d="M40.2,408h-7.9v15.8h7.9V408z M88.2,408H55.9v15.8h32.3V408z M136.3,408H104v15.8h32.3V408z M184.3,408H152 v15.8h32.3V408z M232.4,408h-32.3v15.8h32.3V408z M279.6,408h-31.5v15.8h31.5V408z M327.7,408h-32.3v15.8h32.3V408z M375.7,408 h-32.3v15.8h32.3V408z M423.8,408h-32.3v15.8h32.3V408z M471.8,408h-32.3v15.8h32.3V408z" />
+                      <polygon points="23.6,408 15.8,408 15.8,400.1 0,400.1 0,423.8 23.6,423.8" />
+                      <path
+                        d="M15.8,144.1v-23.6H0v23.6H15.8z M15.8,192.2v-32.3H0v32.3H15.8z M15.8,240.2V208H0v32.3H15.8z M15.8,288.3 V256H0v32.3H15.8z M15.8,336.3V304H0v32.3H15.8z M15.8,384.4v-32.3H0v32.3H15.8z" />
+                      <polygon points="15.8,111.9 15.8,104 23.6,104 23.6,88.2 0,88.2 0,111.9" />
+                      <path
+                        d="M471.8,104h7.9V88.2h-7.9V104z M423.8,104h32.3V88.2h-32.3V104z M375.7,104H408V88.2h-32.3 C375.7,88.2,375.7,104,375.7,104z M327.7,104H360V88.2h-32.3V104z M279.6,104h32.3V88.2h-32.3V104z M232.4,104h31.5V88.2h-31.5V104 z M184.3,104h32.3V88.2h-32.3V104z M136.3,104h32.3V88.2h-32.3V104z M88.2,104h32.3V88.2H88.2V104z M40.2,104h32.3V88.2H40.2V104z" />
+                      <polygon points="488.4,104 496.2,104 496.2,111.9 512,111.9 512,88.2 488.4,88.2" />
+                      <path
+                        d="M496.2,367.9v23.6H512v-23.6C512,367.9,496.2,367.9,496.2,367.9z M496.2,319.8v32.3H512v-32.3H496.2z M496.2,271.8V304H512v-32.3H496.2z M496.2,223.7V256H512v-32.3H496.2z M496.2,175.7V208H512v-32.3H496.2z M496.2,128.4v32.3H512 v-32.3C512,128.4,496.2,128.4,496.2,128.4z" />
+                    </g>
+                  </svg>
+                </span>
+                <span class="radio-label">Solo marcado</span>
+              </span>
+            </label>
+
+            <label class="mode-radio" for="NADA">
+              <input type="radio" class="radio-input" id="NADA" name="modo" value="NADA" />
+              <span class="radio-tile">
+                <span class="radio-icon">
+                  <svg width="128" height="128" viewBox="0 0 256 256">
+                    <path fill="currentColor"
+                      d="M128,234.15 c-58.6,0 -106.15,-47.55 -106.15,-106.15 C21.85,69.4 69.4,21.85 128,21.85 c58.6,0 106.15,47.55 106.15,106.15 C234.15,186.6 186.6,234.15 128,234.15z M128,33.7 c-52.1,0 -94.3,42.2 -94.3,94.3 s42.2,94.3 94.3,94.3 s94.3,-42.2 94.3,-94.3 S180.1,33.7 128,33.7z M181.05,133.85 H74.95 c-3.3,0 -5.85,-2.55 -5.85,-5.85 c0,-3.3 2.55,-5.85 5.85,-5.85 h106.1 c3.3,0 5.85,2.55 5.85,5.85 C186.9,131.3 184.35,133.85 181.05,133.85z" />
+                  </svg>
+                </span>
+                <span class="radio-label">Ninguno</span>
+              </span>
+            </label>
+          </div>
+        </section>
+
+        <hr>
+
+        <!-- Servidor API -->
+        <section class="section-block">
+          <h2 class="section-title">SERVIDOR DE DETECCIÓN (API DE PROCESAMIENTO DE LENGUAJE)</h2>
+          <div class="api-box">
+            <input type="url" id="apiUrlInput" placeholder="http://localhost:5000" class="api-input">
+            <button type="button" id="btnGuardarApiUrl" class="btn-api">Guardar</button>
+            <span id="apiStatusMessage" class="api-msg"></span>
+          </div>
+        </section>
+      </div>
+
+      <!-- VISTA 2: QUIÉNES SOMOS -->
+      <div id="viewAbout" class="view-content">
+        <section class="section-block about-panel">
+          <div class="about-icon-header">
+            <img src="../menu/imagenes/quienes-somos.png" alt="Quiénes somos" class="about-main-img">
+            <h2 class="section-title">QUIÉNES SOMOS</h2>
+          </div>
+
+          <div class="about-card">
+            <p class="about-text-highlight">
+              Esta herramienta nace en el marco de un <strong>proyecto de extensión universitaria</strong> de la
+              <strong>Facultad de Informática</strong> de la <strong>Universidad Nacional de La Plata (UNLP)</strong>,
+              desarrollado y articulado por el <strong>LIFIA</strong> (Laboratorio de Investigación y Formación en
+              Informática Avanzada). Su objetivo es proteger la autonomía de las personas en entornos digitales,
+              brindando transparencia frente a las prácticas de diseño engañoso en la web.
+            </p>
+
+            <div class="about-stats">
+              <div class="about-stat-card">
+                <div class="about-stat-number">3</div>
+                <div class="about-stat-label">Ediciones del proyecto</div>
+              </div>
+              <div class="about-stat-card">
+                <div class="about-stat-number">6</div>
+                <div class="about-stat-label">Patrones cubiertos</div>
+              </div>
+              <div class="about-stat-card">
+                <div class="about-stat-number">Híbrido</div>
+                <div class="about-stat-label">Estructura visual + Lenguaje</div>
+              </div>
+              <div class="about-stat-card">
+                <div class="about-stat-number">LIFIA / UNLP</div>
+                <div class="about-stat-label">Investigación y extensión</div>
+              </div>
+            </div>
+
+            <hr class="inner-hr">
+
+            <div class="about-details">
+              <div class="about-info-block">
+                <h3>Construcción Colaborativa con Estudiantes</h3>
+                <p>
+                  A lo largo de 3 ediciones consecutivas, los y las estudiantes que participaron tuvieron un rol
+                  protagónico: exploraron e identificaron patrones engañosos en sitios reales de comercio electrónico y
+                  suscripciones, confeccionaron las heurísticas algorítmicas de inspección visual y participaron en el
+                  etiquetado y entrenamiento de los modelos de detección.
+                </p>
+              </div>
+
+              <div class="about-info-block">
+                <h3>Transparencia y Defensa del Usuario</h3>
+                <p>
+                  Los patrones oscuros (<em>Dark Patterns</em> o diseños engañosos) explotan sesgos cognitivos para
+                  manipular la toma de decisiones, induciendo compras involuntarias, suscripciones ocultas o
+                  sentimientos de culpa. Esta extensión funciona como un asistente pedagógico y defensivo que advierte
+                  sobre estas prácticas en tiempo real y devuelve el control a la persona usuaria.
+                </p>
+              </div>
+
+              <div class="about-info-block">
+                <h3>Enfoque Tecnológico Híbrido</h3>
+                <p>
+                  Combina análisis dinámico en cliente (evaluando jerarquías visuales, contraste, selecciones
+                  involuntarias y temporizadores en el navegador) con un servidor de procesamiento del lenguaje natural
+                  mediante clasificadores de aprendizaje automático para interpretar lenguaje persuasivo o de
+                  manipulación psicológica (como en <em>Confirm Shaming</em> o <em>Fake Urgency</em>).
+                </p>
+              </div>
+
+              <div class="about-info-block">
+                <h3>Laboratorio de Investigación LIFIA</h3>
+                <p>
+                  El <strong>LIFIA</strong> lidera proyectos en Interacción Persona-Ordenador, ingeniería de software y
+                  accesibilidad web. Mediante proyectos de extensión como este, la universidad pública pone la
+                  investigación y el desarrollo tecnológico al servicio de la comunidad y la soberanía digital de los
+                  ciudadanos.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="main-footer">
+      <hr>
+      <div class="footer-icons">
+        <img src="../menu/imagenes/icono.png" alt="Dark Patterns" height="24">
+      </div>
+    </footer>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+
+</html>

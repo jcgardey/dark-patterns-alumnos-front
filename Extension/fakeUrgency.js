@@ -42,18 +42,25 @@ const FakeUrgency = {
   obtenerTextoAlrededor: function (elemento, bloque) {
     const partes = [];
     const agregarTexto = (nodo) => {
-      if (nodo && nodo.textContent) partes.push(nodo.textContent);
+      if (!nodo) return;
+      if (nodo.nodeType === Node.ELEMENT_NODE) {
+        const tag = nodo.tagName.toLowerCase();
+        if (['script', 'style', 'noscript', 'template'].includes(tag)) return;
+        if (nodo.hasAttribute && nodo.hasAttribute('hidden')) return;
+      }
+      const t = nodo.textContent?.trim();
+      if (t) partes.push(t);
     };
 
     agregarTexto(bloque);
     agregarTexto(elemento.parentElement);
 
-    let hermanoAnterior = elemento.previousSibling;
-    let hermanosPosteriores = elemento.nextSibling;
-    for (let i = 0; i < 2 && hermanoAnterior; i++, hermanoAnterior = hermanoAnterior.previousSibling) {
+    let hermanoAnterior = elemento.previousElementSibling;
+    let hermanosPosteriores = elemento.nextElementSibling;
+    for (let i = 0; i < 2 && hermanoAnterior; i++, hermanoAnterior = hermanoAnterior.previousElementSibling) {
       agregarTexto(hermanoAnterior);
     }
-    for (let i = 0; i < 2 && hermanosPosteriores; i++, hermanosPosteriores = hermanosPosteriores.nextSibling) {
+    for (let i = 0; i < 2 && hermanosPosteriores; i++, hermanosPosteriores = hermanosPosteriores.nextElementSibling) {
       agregarTexto(hermanosPosteriores);
     }
 

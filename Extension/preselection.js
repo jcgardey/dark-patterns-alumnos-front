@@ -83,11 +83,17 @@ const Preselection = {
         target = elem.closest("select");
       }
 
-      //resaltarElementoConTexto(target, this.tipo);
-      this.detectados.add(target);
+      if (!this.detectados.has(target)) {
+        this.detectados.add(target);
+        console.log("%c[DP Detector] PRESELECTION detectado:", "color: #8B5CF6; font-weight: bold; font-size: 11px;", target, {
+          valor: elem.value || elem.textContent?.trim()
+        });
+      }
     });
   },
 
   clear: function () {
+    this.detectados.clear();
+    desresaltarElementoConTipo(this.tipo);
   },
 };

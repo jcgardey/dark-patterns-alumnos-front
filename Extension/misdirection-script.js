@@ -399,13 +399,20 @@ const Misdirection = {
       }
 
       // Se detecta misdirection si cumple ambas condiciones
-      if (hayFalseHierarchy /* && hayAltoContraste */) {
-        // resaltarElementoConTexto(parent, this.tipo);
-        this.detectados.add(parent);
+      if (hayFalseHierarchy && hayAltoContraste) {
+        if (!this.detectados.has(parent)) {
+          this.detectados.add(parent);
+          console.log("%c[DP Detector] MISDIRECTION detectado:", "color: #0400FF; font-weight: bold; font-size: 11px;", parent, {
+            hijos: hijos.length,
+            diferencia: falseHierarchy.diferencia.toFixed(2),
+            textos: hijos.map(h => h.textContent.trim().substring(0, 30))
+          });
+        }
       }
     });
   },
   clear: function() {
+    this.detectados.clear();
     desresaltarElementoConTipo(this.tipo);
   }
 };

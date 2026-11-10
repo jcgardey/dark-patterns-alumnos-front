@@ -1,9 +1,11 @@
+const browserAPI = typeof browser !== 'undefined' ? browser : chrome;
+
 document.addEventListener('DOMContentLoaded', () => {
   const switches = document.querySelectorAll('input[type=checkbox]');
   const colorSelectors = document.querySelectorAll('input[type=color]');
 
   // 1. Setear switches con lo que haya en sync
-  chrome.storage.sync.get("dpActivos", (result) => {
+  browserAPI.storage.sync.get("dpActivos", (result) => {
     const activos = result.dpActivos || {};
     switches.forEach((checkbox) => {
       checkbox.checked = !!activos[checkbox.id];
@@ -11,28 +13,35 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // 2. Setear selectores de color con lo que haya en sync
-  chrome.storage.sync.get("dpColores", (result) => {
+  browserAPI.storage.sync.get("dpColores", (result) => {
     const colores = result.dpColores || {};
-    colorSelectors.forEach(async (colorSelector) => {
+    colorSelectors.forEach((colorSelector) => {
       let dpTipo = colorSelector.id.replace("color_", "");
-      colorSelector.value = colores[dpTipo];
-      ActualizarColorFila(dpTipo, (await chrome.storage.sync.get('dpColores')).dpColores[dpTipo]);
+      if (colores[dpTipo]) {
+        colorSelector.value = colores[dpTipo];
+        ActualizarColorFila(dpTipo, colores[dpTipo]);
+      }
     });
   });
 
   // 3. Manejar cambios de switches
   switches.forEach((checkbox) => {
-    checkbox.addEventListener('change', async () => {
-      const nuevosEstados = {};
-      await switches.forEach(async (item) => {
-        let dpTipo = item.id;
-        nuevosEstados[dpTipo] = item.checked;
-        ActualizarColorFila(dpTipo, (await chrome.storage.sync.get('dpColores')).dpColores[dpTipo]);
-      });
-      chrome.storage.sync.set({ dpActivos: nuevosEstados });
-
-      chrome.runtime.sendMessage({
-        tipo: "DARK_PATTERNS_SELECTED",
+    checkbox.addEventListener('change', () => {
+      browserAPI.storage.sync.get(["dpActivos", "dpColores"], (result) => {
+        const nuevosEstados = result.dpActivos || {};
+        const colores = result.dpColores || {};
+        switches.forEach((item) => {
+          let dpTipo = item.id;
+          nuevosEstados[dpTipo] = item.checked;
+          if (colores[dpTipo]) {
+            ActualizarColorFila(dpTipo, colores[dpTipo]);
+          }
+        });
+        browserAPI.storage.sync.set({ dpActivos: nuevosEstados }, () => {
+          browserAPI.runtime.sendMessage({
+            tipo: "DARK_PATTERNS_SELECTED",
+          }).catch(() => {});
+        });
       });
     });
   });
@@ -40,26 +49,23 @@ document.addEventListener('DOMContentLoaded', () => {
   // 4. Manejar cambios de selectores de color
   colorSelectors.forEach((colorSelector) => {
     colorSelector.addEventListener('input', () => {
-      colorSelectors.forEach((item) => {
-        let dpTipo = item.id.replace("color_", "");
-        ActualizarColorFila(dpTipo, item.value);
-      });
+      let dpTipo = colorSelector.id.replace("color_", "");
+      ActualizarColorFila(dpTipo, colorSelector.value);
     });
-  });
-  colorSelectors.forEach((colorSelector) => {
-    colorSelector.addEventListener('change', async () => {
+
+    colorSelector.addEventListener('change', () => {
       const nuevosEstados = {};
-      await colorSelectors.forEach((item) => {
+      colorSelectors.forEach((item) => {
         let dpTipo = item.id.replace("color_", "");
         nuevosEstados[dpTipo] = item.value;
       });
-      chrome.storage.sync.set({ dpColores: nuevosEstados });
+      browserAPI.storage.sync.set({ dpColores: nuevosEstados });
     });
   });
 
   // 5. Pintar contadores iniciales desde storage.local
   async function paintCounts() {
-    const cts = await chrome.storage.local.get({ 
+    const cts = await browserAPI.storage.local.get({ 
       SHAMING: 0, 
       URGENCY: 0,
       SCARCITY: 0,
@@ -69,35 +75,40 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     let total = 0;
-
-    for (const [k, c] of Object.entries(cts)){
-      document.getElementById(`ct_${k}`).textContent = c;
+    for (const [k, c] of Object.entries(cts)) {
+      const el = document.getElementById(`ct_${k}`);
+      if (el) el.textContent = c;
       total += c;
     }
-
-    document.getElementById("ct_total").textContent = total;
+    const elTotal = document.getElementById("ct_total");
+    if (elTotal) elTotal.textContent = total;
   }
 
   paintCounts();
 
   // 6. Escuchar mensajes de actualización
-  chrome.runtime.onMessage.addListener((msg) => {
+  browserAPI.runtime.onMessage.addListener((msg) => {
     if (msg?.action === "dpCountsUpdated") {
       const counts = msg.counts;
       let total = 0;
       for (const [k, c] of Object.entries(counts)) {
-        document.getElementById(`ct_${k}`).textContent = c;
+        const el = document.getElementById(`ct_${k}`);
+        if (el) el.textContent = c;
         total += c;
       }
-      document.getElementById("ct_total").textContent = total;
+      const elTotal = document.getElementById("ct_total");
+      if (elTotal) elTotal.textContent = total;
     }
   });
 
   // 7. Manejo del modo seleccionado para aviso
-  chrome.storage.sync.get("modoSeleccionado", (result) => {
-      const radio = document.getElementById(result.modoSeleccionado);
+  browserAPI.storage.sync.get("modoSeleccionado", (result) => {
+    const modo = result.modoSeleccionado || "TODO";
+    const radio = document.getElementById(modo);
+    if (radio) {
       radio.checked = true;
       PintarRadio(radio);
+    }
   });
 
   // 8. Pintar los radio buttons del modo de aviso
@@ -109,27 +120,30 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       if (radio.checked) {
         PintarRadio(radio);
-        chrome.storage.sync.set({modoSeleccionado: radio.value})
-        chrome.runtime.sendMessage({
+        browserAPI.storage.sync.set({ modoSeleccionado: radio.value });
+        browserAPI.runtime.sendMessage({
           tipo: "MODO_AVISO",
-        }, (response) => console.log("Rta del worker ", response))
+        }).catch(() => {});
       }
     });
   });
 });
 
-async function ActualizarColorFila(dpTipo, color) {
+function ActualizarColorFila(dpTipo, color) {
   const dpSwitch = document.querySelector(`input[id=${dpTipo}]`);
+  if (!dpSwitch) return;
   let parent = dpSwitch.parentElement;
-  while (parent != document.documentElement && !parent.classList.contains("option")) {
+  while (parent && parent !== document.documentElement && !parent.classList.contains("option")) {
     parent = parent.parentElement;
   }
-  if (parent.classList.contains("option")) {
+  if (parent && parent.classList.contains("option")) {
     parent.style.boxShadow = dpSwitch.checked ? `inset 0 0 20px ${color}60` : "none";
   }
 }
 
 function PintarRadio(radio) {
-    radio.style.background = '#3b82f6'; // azul
+  if (radio) {
+    radio.style.background = '#3b82f6';
     radio.style.borderColor = '#3b82f6';
   }
+}

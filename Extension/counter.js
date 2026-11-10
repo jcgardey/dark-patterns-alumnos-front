@@ -1,4 +1,5 @@
 const COUNTS_KEY = 'dpCounts';
+const browserAPICounter = typeof browser !== 'undefined' ? browser : chrome;
 
 // Estructura base del contador (vector) por tipo
 function initCounts() {
@@ -18,15 +19,15 @@ function computeTotal(counts) {
 
 // Lee el contador completo
 async function getCounts() {
-  const dpCounts = await chrome.storage.local.get({ ...initCounts() });
+  const dpCounts = await browserAPICounter.storage.local.get({ ...initCounts() });
   return dpCounts;
 }
 
 // Setea el contador completo
 async function setCounts(counts) {
-  await chrome.storage.local.set(counts);
+  await browserAPICounter.storage.local.set(counts);
   // Notifica a popup y otros contextos para refrescar UI
-  chrome.runtime.sendMessage({ action: 'dpCountsUpdated', counts: counts });
+  browserAPICounter.runtime.sendMessage({ action: 'dpCountsUpdated', counts: counts }).catch(() => {});
 }
 
 // Actualiza parcialmente (por ejemplo, solo HIDDENCOST)

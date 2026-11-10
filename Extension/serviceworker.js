@@ -1,4 +1,6 @@
-// Service Worker, se ejecuta en segundo plano y no tiene acceso al DOM directamente.
+// Service Worker compatible con Chromium y Firefox Gecko
+const browserAPI = typeof browser !== 'undefined' ? browser : chrome;
+
 const DP_TYPES = {
   SHAMING: 'SHAMING',
   URGENCY: 'URGENCY',
@@ -6,10 +8,12 @@ const DP_TYPES = {
   HIDDENCOST: 'HIDDENCOST',
   SCARCITY: 'SCARCITY',
   PRESELECTION: 'PRESELECTION'
-}
+};
 
-//inicializo los dps en true
-chrome.runtime.onInstalled.addListener(() => {
+const DEFAULT_API_URL = "http://localhost:5000";
+
+// Inicializa valores por defecto al instalar
+browserAPI.runtime.onInstalled.addListener(() => {
   const valoresPorDefecto = {
     SHAMING: false,
     URGENCY: false,
@@ -20,97 +24,126 @@ chrome.runtime.onInstalled.addListener(() => {
   };
   const modoSeleccionado = "TODO";
   const coloresPorDefecto = {
-    SHAMING: '#FF9500', // #FF9500
-    URGENCY: '#FF0000', // #FF0000
-    MISDIRECTION: '#0400FF', // #0400FF
-    HIDDENCOST: '#1AFF00', // #1AFF00
-    PRESELECTION: '#EE82EE', // #EE82EE
-    SCARCITY: '#FFFF00' // #FFFF00
-  }
-  chrome.storage.sync.set({ dpActivos: valoresPorDefecto, modoSeleccionado: modoSeleccionado, dpColores: coloresPorDefecto }, () => {
-    console.info("Valores por defecto de DP activos guardados.");
+    SHAMING: '#FF9500',
+    URGENCY: '#FF0000',
+    MISDIRECTION: '#0400FF',
+    HIDDENCOST: '#1AFF00',
+    PRESELECTION: '#EE82EE',
+    SCARCITY: '#FFFF00'
+  };
+
+  browserAPI.storage.sync.get(["dpActivos", "modoSeleccionado", "dpColores", "apiUrl"], (result) => {
+    browserAPI.storage.sync.set({
+      dpActivos: result.dpActivos || valoresPorDefecto,
+      modoSeleccionado: result.modoSeleccionado || modoSeleccionado,
+      dpColores: result.dpColores || coloresPorDefecto,
+      apiUrl: result.apiUrl || DEFAULT_API_URL
+    }, () => {
+      console.info("Configuración por defecto de Dark Patterns guardada.");
+    });
   });
 });
 
-// Listener para mensajes entrantes desde otras partes de la extensión
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  // Código comentado para cargar constantes desde un mensaje, se puede habilitar si es necesario
-   if (message.tipo === "CONSTANTES") {
-      DP_TYPES = message.DP_TYPES;
-      console.info("Constantes cargadas.");
-      sendResponse();
-    }
-
-  // Maneja el mensaje cuando se seleccionan Dark Patterns en la popup
+// Listener para mensajes de control de la UI (popup)
+browserAPI.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.tipo === "DARK_PATTERNS_SELECTED") {
-    sendMessageCurrentTab(
-      {
-        tipo: "ACTUALIZAR_DP",
-      });
+    sendMessageCurrentTab({ tipo: "ACTUALIZAR_DP" });
     sendResponse({ status: "Ok" });
+    return true;
   }
 
   if (message.tipo === "MODO_AVISO") {
-    sendMessageCurrentTab({tipo: "MODO_AVISO"});
-    sendResponse("Ok 2");
+    sendMessageCurrentTab({ tipo: "MODO_AVISO" });
+    sendResponse({ status: "Ok" });
+    return true;
+  }
+
+  // Peticiones a la API de NLP desde los content scripts
+  if (requestPatterns.includes(message.pattern)) {
+    getApiUrl((baseUrl) => {
+      let endpoint = "";
+      let payload = {};
+
+      if (message.pattern === DP_TYPES.SHAMING) {
+        endpoint = `${baseUrl}/shaming`;
+        payload = { Version: '1.0', tokens: message.data };
+      } else if (message.pattern === DP_TYPES.URGENCY) {
+        endpoint = `${baseUrl}/urgency`;
+        payload = { version: '1.0', texts: message.data };
+      } else if (message.pattern === DP_TYPES.SCARCITY) {
+        endpoint = `${baseUrl}/scarcity`;
+        payload = { version: '1.0', texts: message.data };
+      }
+
+      sendRequest(endpoint, payload, sendResponse);
+    });
+    return true; // Respuesta asíncrona
   }
 });
 
-// Envía un mensaje al contenido de la pestaña actual
-function sendMessageCurrentTab(data) {
-  getCurrentTab(function (tab) {
-    chrome.tabs.sendMessage(tab.id, data);
+const requestPatterns = [DP_TYPES.SHAMING, DP_TYPES.URGENCY, DP_TYPES.SCARCITY];
+
+function getApiUrl(callback) {
+  browserAPI.storage.sync.get({ apiUrl: DEFAULT_API_URL }, (res) => {
+    let url = res.apiUrl || DEFAULT_API_URL;
+    callback(url.replace(/\/+$/, ""));
   });
 }
 
-// Obtiene la pestaña actual activa y ejecuta el callback con la información de la pestaña
+function sendMessageCurrentTab(data) {
+  getCurrentTab((tab) => {
+    if (tab && tab.id) {
+      browserAPI.tabs.sendMessage(tab.id, data).catch((err) => {
+        // Pestaña en segundo plano o no receptiva
+      });
+    }
+  });
+}
+
 function getCurrentTab(callback) {
   try {
     let queryOptions = { active: true, lastFocusedWindow: true };
-    chrome.tabs.query(queryOptions, ([tab]) => {
-      if (chrome.runtime.lastError)
-        console.error(chrome.runtime.lastError);
-      // `tab` será una instancia de `tabs.Tab` o `undefined`.
+    browserAPI.tabs.query(queryOptions, ([tab]) => {
+      if (browserAPI.runtime.lastError) {
+        console.error(browserAPI.runtime.lastError);
+      }
       callback(tab);
     });
   } catch (err) {
-    console.log("ServiceWorker>getCurrentTab: ",err);
+    console.error("ServiceWorker>getCurrentTab:", err);
   }
 }
 
 function sendRequest(url, data, callback) {
-  // TODO: REVISAR SI LA CONVERSIÓN DESDE AXIOS A FETCH ES CORRECTA.
-  console.log(data);
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 8000); // 8s timeout
+
   fetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(data),
+    signal: controller.signal
   }).then(async (response) => {
-    const responseData = await response.json();
-    console.log(responseData);
-    if (response.ok) {
-      callback?.({ data: responseData });
-    } else {
-      callback?.({ error: responseData });
+    clearTimeout(timeoutId);
+    try {
+      const responseData = await response.json();
+      if (response.ok) {
+        callback?.({ data: responseData });
+      } else {
+        callback?.({ error: responseData });
+      }
+    } catch (parseError) {
+      callback?.({ error: { code: "ERR_PARSE", message: parseError.message } });
     }
   }).catch((error) => {
-    error.code = "ERR_NETWORK";
-    callback?.({ error });
+    clearTimeout(timeoutId);
+    callback?.({
+      error: {
+        code: error.name === 'AbortError' ? 'ERR_TIMEOUT' : 'ERR_NETWORK',
+        message: error.message
+      }
+    });
   });
 }
-
-
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.pattern === DP_TYPES.SHAMING){
-    sendRequest("http://localhost:5000/shaming", { Version:'1.0', tokens: request.data }, sendResponse);
-  }else if (request.pattern === DP_TYPES.URGENCY){
-    console.log(request.pattern, request.data);
-    sendRequest("http://localhost:5000/urgency", { version:'1.0', texts: request.data }, sendResponse);
-  }else if (request.pattern === DP_TYPES.SCARCITY){
-    sendRequest("http://localhost:5000/scarcity", { version:'1.0', texts: request.data }, sendResponse);
-  }
-  return true;
-});
-

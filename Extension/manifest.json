@@ -1,16 +1,17 @@
 {
   "manifest_version": 3,
   "name": "DP_extension",
-  "version": "1.1",
+  "version": "1.2",
+  "description": "Detector de ciertos patrones oscuros (Dark Patterns)",
 
-  "description": "Detector de ciertos DP",
-
-  "permissions": ["activeTab", "storage", "webRequest"],
+  "permissions": ["activeTab", "storage"],
   "host_permissions": [
-    "http://localhost:5000/*"
+    "http://localhost:5000/*",
+    "http://*/*",
+    "https://*/*"
   ],
 
-  "action":{
+  "action": {
     "default_popup": "menu/pop-up.html",
     "default_icon": "menu/imagenes/icono.png"
   },
@@ -33,14 +34,23 @@
       ]
     }
   ],
-  "background":{
+  "background": {
     "service_worker": "serviceworker.js"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "darkpatterns-detector@extension.local",
+      "strict_min_version": "109.0"
+    }
   },
   "web_accessible_resources": [
     {
-      "resources": ["menu/imagenes/icono.png", "fonts/SpaceMono-Regular.ttf", "fonts/SpaceMono-Bold.ttf"],
+      "resources": [
+        "menu/imagenes/icono.png",
+        "fuentes/SpaceMono-Regular.ttf",
+        "fuentes/SpaceMono-Bold.ttf"
+      ],
       "matches": ["<all_urls>"]
     }
   ]
 }
-

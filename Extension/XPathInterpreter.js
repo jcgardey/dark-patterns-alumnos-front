@@ -20,8 +20,9 @@ XPathInterpreter.prototype.addEngine = function(engine) {
 
 // borrar un engine de busqueda de xpaths
 XPathInterpreter.prototype.removeEngine = function(engine) {
-    if (this.engines.inlude(engine)){
-        this.engines.remove(this.engines.indexOf(engine));
+    if (this.engines && this.engines.includes(engine)){
+        const index = this.engines.indexOf(engine);
+        if (index > -1) this.engines.splice(index, 1);
     }
 };
 

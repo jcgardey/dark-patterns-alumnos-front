@@ -1,72 +1,112 @@
-// Objeto a usar en extension.js
+// Objeto detector de Fake Scarcity optimizado
+const browserAPIScarcity = typeof browser !== 'undefined' ? browser : chrome;
+
 const FakeScarcity = {
   tipo: DP_TYPES.SCARCITY,
   detectados: new Set(),
+  cacheTextos: new Map(), // Caché global de texto normalizado -> bool (has_scarcity)
+  elementosEvaluados: new WeakSet(), // Referencias a elementos del DOM ya procesados
   bloquesPendientes: [],
   esperandoRta: false,
 
   check: function () {
-    let elements_scarcity = segments(document.body);
-    let filtered_elements_scarcity = [];
+    const rawElements = segments(document.body);
+    if (!rawElements || rawElements.length === 0) return;
 
-    // 1. Recopilar todos los elementos válidos del DOM
-    for (let i = 0; i < elements_scarcity.length; i++) {
-      if (elements_scarcity[i].innerText === undefined) continue;
+    const bloquesParaEnviar = [];
+    let huboCambiosLocales = false;
 
-      let text = elements_scarcity[i].innerText.trim().replace(/\t/g, " ");
-      if (text.length === 0) continue;
+    for (let i = 0; i < rawElements.length; i++) {
+      const el = rawElements[i];
+      if (!el || !el.isConnected) continue;
 
-      let path = XPATHINTERPRETER.getPath(elements_scarcity[i], document.body)?.[0];
-      if (path) {
-        filtered_elements_scarcity.push({ text, path });
+      // Si el elemento ya fue procesado y no dio positivo, no lo volvemos a evaluar
+      if (this.elementosEvaluados.has(el) && !this.detectados.has(el)) continue;
+
+      if (el.innerText === undefined) continue;
+      const text = el.innerText.trim().replace(/\s+/g, " ");
+      if (text.length === 0 || text.length > 300) continue; // Descartar bloques vacíos o masivos
+
+      // Comprobar si ya conocemos el veredicto para este texto exacto
+      if (this.cacheTextos.has(text)) {
+        this.elementosEvaluados.add(el);
+        if (this.cacheTextos.get(text)) {
+          if (!this.detectados.has(el)) {
+            this.detectados.add(el);
+            console.log("%c[DP Detector] SCARCITY detectado (caché):", "color: #D97706; font-weight: bold; font-size: 11px;", el, { texto: text });
+            huboCambiosLocales = true;
+          }
+        }
+        continue;
+      }
+
+      // Elemento con texto nuevo no evaluado
+      const path = XPATHINTERPRETER.getPath(el, document.body)?.[0];
+      if (!path) continue;
+
+      // Verificar que no esté ya en cola
+      if (!this.bloquesPendientes.some(p => p.path === path) &&
+          !bloquesParaEnviar.some(b => b.path === path)) {
+        bloquesParaEnviar.push({ text, path, el });
       }
     }
 
-    // Si no hay elementos relevantes en la página, no hacemos nada
-    if (filtered_elements_scarcity.length === 0) return;
+    if (huboCambiosLocales) {
+      browserAPIScarcity.runtime.sendMessage({ tipo: "MODO_AVISO" }).catch(() => {});
+    }
 
-    // 2. Descartar elementos que ya están detectados o que ya están en la cola de pendientes
-    const nuevosSinRepetir = filtered_elements_scarcity.filter(nuevo =>
-      !this.bloquesPendientes.some(existente => existente.path === nuevo.path) &&
-      ![...this.detectados].some(existente => XPATHINTERPRETER.getPath(existente, document.body)?.[0] === nuevo.path)
-    );
-
-    if (nuevosSinRepetir.length === 0) return;
+    if (bloquesParaEnviar.length === 0) return;
 
     if (this.esperandoRta) {
-      console.log("FakeScarcity: Esperando respuesta del background service, encolando bloques");
-      this.bloquesPendientes = [...this.bloquesPendientes, ...nuevosSinRepetir];
+      this.bloquesPendientes = [...this.bloquesPendientes, ...bloquesParaEnviar];
       return;
     }
 
-    this.sendMessage(nuevosSinRepetir);
+    this.sendMessage(bloquesParaEnviar);
   },
 
-  sendMessage: function (data) {
+  sendMessage: function (bloques) {
     this.esperandoRta = true;
-    console.log(`FakeScarcity: Enviando ${data.length} bloques nuevos al background service`);
+    const payload = bloques.map(b => ({ text: b.text, path: b.path }));
 
-    chrome.runtime.sendMessage({ pattern: this.tipo, data: data }, (response) => {
+    browserAPIScarcity.runtime.sendMessage({ pattern: this.tipo, data: payload }, (response) => {
       const { error, data: resData } = response || {};
 
       if (error) {
-        if (error.code === "ERR_NETWORK") console.log("FakeScarcity>check: El servidor no responde.", error);
-        else console.log("FakeScarcity>check: ", error);
+        console.warn("FakeScarcity: Error o servidor no disponible", error.code || error);
       } else if (resData && resData.instances) {
-        console.log("FakeScarcity>check: ", resData);
+        let nuevosDetectados = false;
 
-        // Guardar solo los que den positivos (has_scarcity === true)
         resData.instances.forEach((instancia) => {
+          // Guardar en la caché por texto
+          if (instancia.text) {
+            this.cacheTextos.set(instancia.text, !!instancia.has_scarcity);
+          }
+
           if (instancia.has_scarcity) {
             const el = XPATHINTERPRETER.getElementByXPath(instancia.path, document.body);
-            if (el) this.detectados.add(el);
+            if (el) {
+              if (!this.detectados.has(el)) {
+                console.log("%c[DP Detector] SCARCITY detectado:", "color: #D97706; font-weight: bold; font-size: 11px;", el, { texto: instancia.text });
+              }
+              this.detectados.add(el);
+              this.elementosEvaluados.add(el);
+              nuevosDetectados = true;
+            }
           }
         });
 
-        chrome.runtime.sendMessage({ tipo: "MODO_AVISO" });
+        // Marcar todos los elementos enviados como evaluados
+        bloques.forEach(b => {
+          if (b.el) this.elementosEvaluados.add(b.el);
+        });
+
+        if (nuevosDetectados) {
+          browserAPIScarcity.runtime.sendMessage({ tipo: "MODO_AVISO" }).catch(() => {});
+        }
       }
 
-      // Procesar la cola si llegaron nuevos bloques mientras se esperaba la respuesta
+      // Procesar cola acumulada de manera controlada
       if (this.bloquesPendientes.length > 0) {
         const siguientes = [...this.bloquesPendientes];
         this.bloquesPendientes = [];
@@ -78,6 +118,7 @@ const FakeScarcity = {
   },
 
   clear: function () {
+    this.detectados.clear();
     desresaltarElementoConTipo(this.tipo);
   }
 };

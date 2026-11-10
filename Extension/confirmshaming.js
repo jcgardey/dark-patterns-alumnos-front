@@ -1,19 +1,26 @@
-// Objeto a usar en extension.js
+// Objeto detector de Confirm Shaming optimizado
+const browserAPIShaming = typeof browser !== 'undefined' ? browser : chrome;
+
 const ConfirmShaming = {
   tipo: DP_TYPES.SHAMING,
   detectados: new Set(),
+  cacheTextos: new Map(), // Caché de texto -> bool (has_shaming)
+  elementosEvaluados: new WeakSet(),
   bloquesPendientes: [],
   esperandoRta: false,
 
   check: function () {
     const invalidTags = ["INPUT"];
     const buttonTags = ["BUTTON", "A"];
-    let elements_shaming = segments(document.body);
-    let filtered_elements_shaming = [];
+    const rawElements = segments(document.body);
+    if (!rawElements || rawElements.length === 0) return;
 
-    // 1. Recopilar TODOS los elementos válidos de la página primero
-    for (let i = 0; i < elements_shaming.length; i++) {
-      const element = elements_shaming[i];
+    const bloquesParaEnviar = [];
+    let huboCambiosLocales = false;
+
+    for (let i = 0; i < rawElements.length; i++) {
+      const element = rawElements[i];
+      if (!element || !element.isConnected) continue;
 
       if (!buttonTags.includes(element.nodeName)) continue;
 
@@ -24,63 +31,95 @@ const ConfirmShaming = {
       }
       if (invalidElement) continue;
 
-      if (element.innerText === undefined) continue;
-      let text = element.innerText.trim().replace(/\t/g, " ");
-      if (text.length === 0) continue;
+      if (this.elementosEvaluados.has(element) && !this.detectados.has(element)) continue;
 
-      let path = XPATHINTERPRETER.getPath(element, document.body)?.[0];
-      if (path) {
-        filtered_elements_shaming.push({ text: text, path: path });
+      if (element.innerText === undefined) continue;
+      const text = element.innerText.trim().replace(/\s+/g, " ");
+      if (text.length === 0 || text.length > 250) continue;
+
+      // Consultar caché local
+      if (this.cacheTextos.has(text)) {
+        this.elementosEvaluados.add(element);
+        if (this.cacheTextos.get(text)) {
+          if (!this.detectados.has(element)) {
+            this.detectados.add(element);
+            console.log("%c[DP Detector] SHAMING detectado (caché):", "color: #FF9500; font-weight: bold; font-size: 11px;", element, { texto: text });
+            huboCambiosLocales = true;
+          }
+        }
+        continue;
+      }
+
+      const path = XPATHINTERPRETER.getPath(element, document.body)?.[0];
+      if (!path) continue;
+
+      if (!this.bloquesPendientes.some(p => p.path === path) &&
+          !bloquesParaEnviar.some(b => b.path === path)) {
+        bloquesParaEnviar.push({ text, path, el: element });
       }
     }
 
-    // Si no encontramos elementos válidos, no hacemos nada
-    if (filtered_elements_shaming.length === 0) return;
+    if (huboCambiosLocales) {
+      browserAPIShaming.runtime.sendMessage({ tipo: "MODO_AVISO" }).catch(() => {});
+    }
 
-    // 2. Filtrar descartando los que ya están detectados o en la cola de pendientes
-    const nuevosSinRepetir = filtered_elements_shaming.filter(nuevo =>
-      !this.bloquesPendientes.some(existente => existente.path === nuevo.path) &&
-      ![...this.detectados].some(existente => XPATHINTERPRETER.getPath(existente, document.body)?.[0] === nuevo.path)
-    );
-
-    if (nuevosSinRepetir.length === 0) return;
+    if (bloquesParaEnviar.length === 0) return;
 
     if (this.esperandoRta) {
-      console.log("ConfirmShaming: Esperando respuesta del background service, encolando bloques");
-      this.bloquesPendientes = [...this.bloquesPendientes, ...nuevosSinRepetir];
+      this.bloquesPendientes = [...this.bloquesPendientes, ...bloquesParaEnviar];
       return;
     }
 
-    this.sendMessage(nuevosSinRepetir);
+    this.sendMessage(bloquesParaEnviar);
   },
 
-  sendMessage: function (data) {
+  sendMessage: function (bloques) {
     this.esperandoRta = true;
-    console.log(`ConfirmShaming: Enviando ${data.length} bloques nuevos al background service`);
+    const payload = bloques.map(b => ({ text: b.text, path: b.path }));
 
-    chrome.runtime.sendMessage({ pattern: this.tipo, data: data }, (response) => {
+    browserAPIShaming.runtime.sendMessage({ pattern: this.tipo, data: payload }, (response) => {
       const { error, data: resData } = response || {};
 
       if (error) {
-        if (error.code === "ERR_NETWORK") console.log("ConfirmShaming>check: El servidor no responde.", error);
-        else console.log("ConfirmShaming>check: ", error);
+        console.warn("ConfirmShaming: Error o servidor no disponible", error.code || error);
       } else if (resData) {
-        console.log("ConfirmShaming>check: ", resData);
-
-        // Si el backend devuelve un array directo de elementos confirmados
         const detectadosList = Array.isArray(resData) ? resData : (resData.instances || []);
+        const positivePaths = new Set();
+        let nuevosDetectados = false;
 
         detectadosList.forEach((res) => {
           if (res.has_shaming !== false) {
-            const el = XPATHINTERPRETER.getElementByXPath(res.path || res, document.body);
-            if (el) this.detectados.add(el);
+            const detectedPath = res.path || res;
+            positivePaths.add(detectedPath);
+            if (res.text) this.cacheTextos.set(res.text, true);
+
+            const el = XPATHINTERPRETER.getElementByXPath(detectedPath, document.body);
+            if (el) {
+              if (!this.detectados.has(el)) {
+                console.log("%c[DP Detector] SHAMING detectado:", "color: #FF9500; font-weight: bold; font-size: 11px;", el, { texto: res.text || el.innerText });
+              }
+              this.detectados.add(el);
+              this.elementosEvaluados.add(el);
+              nuevosDetectados = true;
+            }
           }
         });
 
-        chrome.runtime.sendMessage({ tipo: "MODO_AVISO" });
+        // Todos los bloques enviados que no aparecieron en la lista positiva son negativos
+        bloques.forEach(b => {
+          if (!positivePaths.has(b.path)) {
+            if (!this.cacheTextos.has(b.text)) {
+              this.cacheTextos.set(b.text, false);
+            }
+          }
+          if (b.el) this.elementosEvaluados.add(b.el);
+        });
+
+        if (nuevosDetectados) {
+          browserAPIShaming.runtime.sendMessage({ tipo: "MODO_AVISO" }).catch(() => {});
+        }
       }
 
-      // Procesa la cola acumulada durante la espera
       if (this.bloquesPendientes.length > 0) {
         const siguientes = [...this.bloquesPendientes];
         this.bloquesPendientes = [];
@@ -92,6 +131,7 @@ const ConfirmShaming = {
   },
 
   clear: function () {
+    this.detectados.clear();
     desresaltarElementoConTipo(this.tipo);
   }
 };

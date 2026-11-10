@@ -134,10 +134,16 @@ const HiddenCost = {
     const hiddens = distanceCheck(precios.prices, precios.principalPrices, this.hiddenCostMaxDistance);
 
     hiddens.forEach((hiddenCost) => {
-      this.detectados.add(hiddenCost);
+      if (!this.detectados.has(hiddenCost)) {
+        this.detectados.add(hiddenCost);
+        console.log("%c[DP Detector] HIDDENCOST detectado:", "color: #10B981; font-weight: bold; font-size: 11px;", hiddenCost, {
+          precio: hiddenCost.textContent?.trim()
+        });
+      }
     });
   },
   clear: function() {
+    this.detectados.clear();
     desresaltarElementoConTipo(this.tipo);
   }
 }

@@ -1,3 +1,5 @@
+const browserAPIExtension = typeof browser !== 'undefined' ? browser : chrome;
+
 const DARK_PATTERNS = {
   MISDIRECTION: Misdirection,
   HIDDENCOST: HiddenCost,
@@ -5,18 +7,23 @@ const DARK_PATTERNS = {
   URGENCY: FakeUrgency,
   SCARCITY: FakeScarcity,
   PRESELECTION: Preselection,
+};
+
+function iniciarExtension() {
+  inyectarFuenteEnCSS();
+  DARK_PATTERNS.PRESELECTION.init();
+  ejecutarDPsSeleccionados();
 }
 
-// Al cargar la página, ejecutar los patrones activos
-document.addEventListener("DOMContentLoaded", () => {
-  DARK_PATTERNS.PRESELECTION.init();
-  // console.log('Disparando DPs');
-  ejecutarDPsSeleccionados();
-});
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", iniciarExtension);
+} else {
+  iniciarExtension();
+}
 
-document.addEventListener('visibilitychange', async () => {
+document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'visible') {
-    for(const dpNombre of Object.keys(DARK_PATTERNS)){
+    for (const dpNombre of Object.keys(DARK_PATTERNS)) {
       desresaltarElementoConTipo(dpNombre);
     }
     PintarAnalizados();
@@ -24,12 +31,10 @@ document.addEventListener('visibilitychange', async () => {
 });
 
 // Recibir patrones activos desde el popup a través del service worker
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+browserAPIExtension.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.tipo === "ACTUALIZAR_DP") {
-    chrome.storage.sync.get(["dpActivos"], (result) => {
+    browserAPIExtension.storage.sync.get(["dpActivos"], (result) => {
       const dpActivos = result.dpActivos || {};
-      // console.log("dpActivos recibidos:", dpActivos);
-      
       for (const [dpNombre, boolActivo] of Object.entries(dpActivos)) {
         if (!boolActivo) {
           desresaltarElementoConTipo(dpNombre);
@@ -37,13 +42,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       }
       PintarAnalizados();
     });
-
     sendResponse({ status: "ejecutando patrones activos" });
-  }else if (message.tipo === "MODO_AVISO"){
-    chrome.storage.sync.get(["dpActivos"], (result) => {
+    return true;
+  }
+
+  if (message.tipo === "MODO_AVISO") {
+    browserAPIExtension.storage.sync.get(["dpActivos"], (result) => {
       const dpActivos = result.dpActivos || {};
-      // console.log("dpActivos recibidos:", dpActivos);
-      
       for (const [dpNombre, boolActivo] of Object.entries(dpActivos)) {
         if (boolActivo) {
           desresaltarElementoConTipo(dpNombre);
@@ -51,46 +56,41 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       }
       PintarAnalizados();
     });
+    sendResponse({ status: "modo aviso actualizado" });
+    return true;
   }
 });
 
 function PintarAnalizados() {
-  chrome.storage.sync.get(["dpActivos", "modoSeleccionado"], async (result) => {
+  browserAPIExtension.storage.sync.get(["dpActivos", "modoSeleccionado"], async (result) => {
     const dpActivos = result.dpActivos || {};
     const modoSeleccionado = result.modoSeleccionado || "TODO";
-    
-    // console.log("Pintando elementos detectados:", dpActivos, modoSeleccionado);
-    
+
     for (const [dpNombre, boolActivo] of Object.entries(dpActivos)) {
       if (boolActivo && DARK_PATTERNS[dpNombre]) {
         const detectados = [...DARK_PATTERNS[dpNombre].detectados];
-        // console.log(`Elementos detectados para ${dpNombre}:`, detectados);
-        
+
         if (detectados && detectados.length > 0) {
           await setCountForType(dpNombre, detectados.length);
           switch (modoSeleccionado) {
             case "TODO":
-              // console.log("PINTANDO TODO para", dpNombre);
               detectados.forEach(elem => {
-                if (elem) {
+                if (elem && elem.isConnected) {
                   resaltarElementoConTexto(elem, DARK_PATTERNS[dpNombre].tipo);
                 }
               });
               break;
             case "MARCA":
-              // console.log("PINTANDO BORDE para", dpNombre);
               detectados.forEach(elem => {
-                if (elem) {
+                if (elem && elem.isConnected) {
                   resaltarBorde(elem, DARK_PATTERNS[dpNombre].tipo);
                 }
               });
               break;
             default:
-              // console.log("Modo seleccionado desconocido:", modoSeleccionado);
               break;
           }
         } else {
-          // console.log(`No hay elementos detectados para ${dpNombre}`);
           DARK_PATTERNS[dpNombre].clear();
         }
       }
@@ -100,67 +100,93 @@ function PintarAnalizados() {
 
 // Ejecutar solo los DP seleccionados por el usuario
 function ejecutarDPsSeleccionados() {
-  chrome.storage.sync.get("dpActivos", async (result) => {
+  browserAPIExtension.storage.sync.get("dpActivos", (result) => {
     const estadosDp = result.dpActivos || {};
-    let activos = [];
-    
-    // Crear array de DPs a excluir
+    const activos = [];
+
     for (const [dp, valor] of Object.entries(estadosDp)) {
       if (valor) {
         activos.push(dp);
       }
     }
-    
-    for (const tipoDP of Object.values(activos)) {
-      try{
-        DARK_PATTERNS[tipoDP].check();
-        
-        // console.log("chequea ");
-      } catch (e) {
-        console.log("Extension>ejecutarDPsSeleccionados: ", e);
+
+    for (const tipoDP of activos) {
+      if (DARK_PATTERNS[tipoDP] && typeof DARK_PATTERNS[tipoDP].check === "function") {
+        try {
+          DARK_PATTERNS[tipoDP].check();
+        } catch (e) {
+          console.warn("Extension>ejecutarDPsSeleccionados:", e);
+        }
       }
-      
     }
-    
-    // Pintar resultados
+
     PintarAnalizados();
   });
 }
 
-// Observer solo ejecuta el callback 1 segundos después de la ultima mutación
-// En páginas que cambian constantemente no sirve
-let previousURL = '';
-let timer;
-const observer = new MutationObserver(function (mutation) {
-  // Necesario para preselection
-  let newElems = false;
-  mutation.addedNodes?.forEach(node => {
-    if (node.nodeType === Node.ELEMENT_NODE) {
-      if (node.matches && node.matches("input[type='checkbox'], input[type='radio'], select option")) {
-        newElems = true;
+// Observer optimizado: filtra mutaciones internas y ejecuta debounce inteligente
+let timerObserver;
+const observer = new MutationObserver((mutationsList) => {
+  let relevantChange = false;
+  let preselectionChange = false;
+
+  for (let i = 0; i < mutationsList.length; i++) {
+    const mutation = mutationsList[i];
+    const target = mutation.target;
+
+    // Ignorar mutaciones en el propio cartel o atributos aplicados por la extensión
+    if (target) {
+      if (target.id === 'cartelInfoDarkPattern_ext' || (target.closest && target.closest('#cartelInfoDarkPattern_ext'))) {
+        continue;
       }
-      if (node.querySelector && node.querySelector("input[type='checkbox'], input[type='radio'], select option")) {
-        newElems = true;
+      if (mutation.type === 'attributes' && (mutation.attributeName === 'style' || mutation.attributeName?.startsWith('data-dark-pattern'))) {
+        continue;
       }
     }
-  });
-  if (newElems) DARK_PATTERNS.PRESELECTION.init();
 
-  if (timer) clearTimeout(timer);
-  timer = setTimeout(() => {
+    if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+      for (let j = 0; j < mutation.addedNodes.length; j++) {
+        const node = mutation.addedNodes[j];
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          if (node.id === 'cartelInfoDarkPattern_ext') continue;
+          relevantChange = true;
+          if (
+            (node.matches && node.matches("input[type='checkbox'], input[type='radio'], select, option")) ||
+            (node.querySelector && node.querySelector("input[type='checkbox'], input[type='radio'], select, option"))
+          ) {
+            preselectionChange = true;
+          }
+        }
+      }
+    } else if (mutation.type === 'characterData') {
+      relevantChange = true;
+    }
+  }
+
+  if (!relevantChange) return;
+
+  if (preselectionChange) {
+    DARK_PATTERNS.PRESELECTION.init();
+  }
+
+  if (timerObserver) clearTimeout(timerObserver);
+  timerObserver = setTimeout(() => {
     if (window.requestIdleCallback) {
       window.requestIdleCallback(() => {
         ejecutarDPsSeleccionados();
-      }, { timeout: 2000 });
+      }, { timeout: 1500 });
     } else {
       ejecutarDPsSeleccionados();
     }
-  }, 500); // 1 segundos para menos ejecuciones
+  }, 800);
 });
 
-observer.observe(document, { childList: true, subtree: true });
-
-//chrome.runtime.sendMessage({ tipo: "CONSTANTES", DP_TYPES: DP_TYPES });
-
-
-
+if (document.body) {
+  observer.observe(document.body, { childList: true, subtree: true, characterData: true });
+} else {
+  document.addEventListener("DOMContentLoaded", () => {
+    if (document.body) {
+      observer.observe(document.body, { childList: true, subtree: true, characterData: true });
+    }
+  });
+}

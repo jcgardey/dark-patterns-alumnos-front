@@ -1,20 +1,23 @@
-// Objeto a usar en extension.js
+// Objeto detector de Fake Urgency optimizado
+const browserAPIUrgency = typeof browser !== 'undefined' ? browser : chrome;
+
 const FakeUrgency = {
   tipo: DP_TYPES.URGENCY,
   detectados: new Set(),
   rechazados: new Set(),
+  cacheTextos: new Map(), // text -> bool (has_urgency)
+  elementosEvaluados: new WeakSet(),
   bloquesPendientes: [],
   esperandoRta: false,
 
-  // Selectores mejorados para encontrar temporizadores/relojes
+  // Selectores para encontrar temporizadores / cuentas regresivas
   getSelectoresTemporizadores: function () {
     return '[class*="timer"], [class*="countdown"], [class*="count"], [class*="clock"], ' +
            '[class*="time"], [class*="remaining"], [class*="expires"], ' +
            '[id*="timer"], [id*="countdown"], [data-timer], [data-countdown], ' +
-           '[class*="deadline"], [class*="stopwatch"], [class*=tabular-nums]';
+           '[class*="deadline"], [class*="stopwatch"], [class*="tabular-nums"]';
   },
 
-  // Busca el contenedor de bloque más apropiado (offer, deal, product, etc)
   obtenerContenedorBloque: function (elemento) {
     const selectoresContenedor = '[class*="offer"], [class*="deal"], [class*="product"], ' +
                                 '[class*="item"], [class*="card"], [class*="promotion"], ' +
@@ -36,7 +39,6 @@ const FakeUrgency = {
     return contenedor || elemento.parentElement;
   },
 
-  // Trata de agarrar el texto alrededor del temporizador
   obtenerTextoAlrededor: function (elemento, bloque) {
     const partes = [];
     const agregarTexto = (nodo) => {
@@ -77,10 +79,8 @@ const FakeUrgency = {
     return actual;
   },
 
-  // Verificar si el contenedor o alguno de sus ancestros ya está en detectados
   estaYaDetectado: function (bloque) {
     if (!bloque) return false;
-
     for (let elemento of this.detectados) {
       if (elemento === bloque) return true;
     }
@@ -103,8 +103,7 @@ const FakeUrgency = {
   check: function () {
     const selectores = this.getSelectoresTemporizadores();
     const elementos = document.querySelectorAll(selectores);
-
-    console.log(`FakeUrgency: Se encontraron ${elementos.length} supuestos temporizadores`);
+    if (!elementos || elementos.length === 0) return;
 
     const bloquesAgrupados = [];
     const pathsYaMarcados = new Set(
@@ -114,6 +113,8 @@ const FakeUrgency = {
         .filter(Boolean)
     );
 
+    let huboCambiosLocales = false;
+
     Array.from(elementos).forEach(temporizador => {
       const bloque = this.obtenerContenedorBloque(temporizador);
       if (!bloque) return;
@@ -121,21 +122,29 @@ const FakeUrgency = {
       if (this.estaYaDetectado(bloque)) return;
 
       const texto = this.obtenerTextoAlrededor(temporizador, bloque);
-      if (!texto) return;
+      if (!texto || texto.length > 300) return;
+
+      // Consultar caché de texto evaluado
+      if (this.cacheTextos.has(texto)) {
+        this.elementosEvaluados.add(bloque);
+        if (this.cacheTextos.get(texto)) {
+          if (!this.detectados.has(bloque)) {
+            this.detectados.add(bloque);
+            console.log("%c[DP Detector] URGENCY detectado (caché):", "color: #FF0000; font-weight: bold; font-size: 11px;", bloque, { texto });
+            huboCambiosLocales = true;
+          }
+        }
+        return;
+      }
 
       const path = XPATHINTERPRETER.getPath(bloque, document.body)?.[0];
-      if (!path) return;
-
-      if (pathsYaMarcados.has(path)) return;
+      if (!path || pathsYaMarcados.has(path) || this.rechazados.has(path)) return;
 
       const indice = bloquesAgrupados.findIndex(entrada => {
         if (!entrada.elemento) return false;
-
         if (entrada.elemento.contains && entrada.elemento.contains(bloque)) return true;
         if (bloque.contains && bloque.contains(entrada.elemento)) return true;
-
-        const unoAbarcaAlOtro = entrada.path.startsWith(path + "/") || path.startsWith(entrada.path + "/");
-        return unoAbarcaAlOtro;
+        return entrada.path.startsWith(path + "/") || path.startsWith(entrada.path + "/");
       });
 
       if (indice === -1) {
@@ -161,27 +170,27 @@ const FakeUrgency = {
       }
     });
 
+    if (huboCambiosLocales) {
+      browserAPIUrgency.runtime.sendMessage({ tipo: "MODO_AVISO" }).catch(() => {});
+    }
+
     const elemenFormat = bloquesAgrupados
-      .map(entrada => ({ text: entrada.text, path: entrada.path }))
+      .map(entrada => ({ text: entrada.text, path: entrada.path, el: entrada.elemento }))
       .filter(e => e && e.text && e.text.length > 0);
 
     if (elemenFormat.length === 0) return;
 
-    // Filtrar bloques que no estén en detectados o rechazados
     const bloquesNuevos = elemenFormat.filter(item => {
       return !pathsYaMarcados.has(item.path) && !this.rechazados.has(item.path);
     });
 
     if (bloquesNuevos.length === 0) return;
 
-    // Si ya estamos esperando respuesta, guardamos en la cola descartando duplicados
     if (this.esperandoRta) {
-      console.log("FakeUrgency: Esperando respuesta del background service, encolando bloques nuevos");
       const nuevosSinRepetir = bloquesNuevos.filter(nuevo =>
         !this.bloquesPendientes.some(existente => existente.path === nuevo.path) &&
         !pathsYaMarcados.has(nuevo.path)
       );
-
       this.bloquesPendientes = [...this.bloquesPendientes, ...nuevosSinRepetir];
       return;
     }
@@ -191,35 +200,46 @@ const FakeUrgency = {
 
   sendMessage: function (bloques) {
     this.esperandoRta = true;
-    console.log(`FakeUrgency: Enviando ${bloques.length} bloques nuevos al background service`);
+    const payload = bloques.map(b => ({ text: b.text, path: b.path }));
 
-    chrome.runtime.sendMessage({ pattern: this.tipo, data: bloques }, (response) => {
+    browserAPIUrgency.runtime.sendMessage({ pattern: this.tipo, data: payload }, (response) => {
       const { error, data: resData } = response || {};
 
       if (error) {
-        if (error.code === "ERR_NETWORK") console.log("FakeUrgency: El servidor no responde.", error);
-        else console.log("FakeUrgency: Error en mensaje", error);
+        console.warn("FakeUrgency: Error o servidor no disponible", error.code || error);
       } else if (resData) {
-        // Manejar tanto array directo como objeto .urgency_instances o .instances
         const instancias = resData.urgency_instances || resData.instances || (Array.isArray(resData) ? resData : []);
+        let nuevosDetectados = false;
 
         instancias.forEach((item) => {
+          if (item.text) {
+            this.cacheTextos.set(item.text, !!item.has_urgency);
+          }
+
           if (item.has_urgency) {
             const elemento = XPATHINTERPRETER.getElementByXPath(item.path, document.body);
             if (elemento) {
+              if (!this.detectados.has(elemento)) {
+                console.log("%c[DP Detector] URGENCY detectado:", "color: #FF0000; font-weight: bold; font-size: 11px;", elemento, { texto: item.text });
+              }
               this.detectados.add(elemento);
-              console.log("FakeUrgency: Elemento añadido a detectados:", item.path);
+              this.elementosEvaluados.add(elemento);
+              nuevosDetectados = true;
             }
           } else {
             this.rechazados.add(item.path);
-            console.log("FakeUrgency: Elemento añadido a rechazados:", item.path);
           }
         });
 
-        chrome.runtime.sendMessage({ tipo: "MODO_AVISO" });
+        bloques.forEach(b => {
+          if (b.el) this.elementosEvaluados.add(b.el);
+        });
+
+        if (nuevosDetectados) {
+          browserAPIUrgency.runtime.sendMessage({ tipo: "MODO_AVISO" }).catch(() => {});
+        }
       }
 
-      // Vaciar y procesar pendientes independientemente de si hubo error para no bloquear el módulo
       if (this.bloquesPendientes.length > 0) {
         const siguientes = [...this.bloquesPendientes];
         this.bloquesPendientes = [];
@@ -231,6 +251,7 @@ const FakeUrgency = {
   },
 
   clear: function () {
+    this.detectados.clear();
     desresaltarElementoConTipo(this.tipo);
   }
 };

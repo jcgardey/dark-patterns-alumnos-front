@@ -1,33 +1,59 @@
 /**
- * Este archivo tiene la finalidad de definir todas las estructuras y variables globales necesarias a ejecutarse
- * antes que cualquier script para evitar "not defined"
+ * Variables y constantes globales compatibles con Chromium y Firefox.
  */
+const browserAPI = typeof browser !== 'undefined' ? browser : chrome;
+
 const DP_TYPES = {
-    SHAMING: 'SHAMING',
-    URGENCY: 'URGENCY',
-    MISDIRECTION: 'MISDIRECTION',
-    HIDDENCOST: 'HIDDENCOST',
-    PRESELECTION: 'PRESELECTION',
-    SCARCITY: 'SCARCITY'
-}
+  SHAMING: 'SHAMING',
+  URGENCY: 'URGENCY',
+  MISDIRECTION: 'MISDIRECTION',
+  HIDDENCOST: 'HIDDENCOST',
+  PRESELECTION: 'PRESELECTION',
+  SCARCITY: 'SCARCITY'
+};
 
 const DP_TEXT = {
-  SHAMING: 'Posible forma de persuasión',
+  SHAMING: 'Posible forma de persuación',
   URGENCY: 'Podría ser falso',
   MISDIRECTION: 'Posible acción oculta',
   HIDDENCOST: 'Posible precio oculto',
   PRESELECTION: 'Cuidado, opción preseleccionada',
-  SCARCITY: 'Podria no ser cierto'
+  SCARCITY: 'Podría no ser cierto'
 };
 
 const DP_DESCRIPTION = {
-  SHAMING: '«Descripción para Shaming»',
-  URGENCY: '«Descripción para Urgency»',
-  MISDIRECTION: '«Descripción para Misdirection»',
-  HIDDENCOST: 'Este precio podría ser más alto de lo que se indica',
-  PRESELECTION: '«Descripción para Preselection»',
-  SCARCITY: '«Descripción para Scarcity»'
-}
+  SHAMING: 'Usa frases que te hacen sentir culpable por no aceptar una oferta',
+  URGENCY: 'Te apura con límites de tiempo para que decidas rápido',
+  MISDIRECTION: 'Destaca lo que les conviene y oculta la opción que buscás',
+  HIDDENCOST: 'Te muestra precios parciales y revela cargos extra al final',
+  PRESELECTION: 'Opciones preseleccionadas que no elegiste para que las aceptes sin darte cuenta',
+  SCARCITY: 'Te hace creer que quedan pocas unidades para presionar tu decisión'
+};
+
+// Caché en memoria de configuración para eliminar lecturas asíncronas en eventos como mousemove
+let modoSeleccionadoLocal = "TODO";
+let dpColoresLocal = {
+  SHAMING: '#FF9500',
+  URGENCY: '#FF0000',
+  MISDIRECTION: '#0400FF',
+  HIDDENCOST: '#1AFF00',
+  PRESELECTION: '#EE82EE',
+  SCARCITY: '#FFFF00'
+};
+
+browserAPI.storage.sync.get(["modoSeleccionado", "dpColores"], (res) => {
+  if (res) {
+    if (res.modoSeleccionado) modoSeleccionadoLocal = res.modoSeleccionado;
+    if (res.dpColores) dpColoresLocal = { ...dpColoresLocal, ...res.dpColores };
+  }
+});
+
+browserAPI.storage.onChanged.addListener((changes, area) => {
+  if (area === "sync") {
+    if (changes.modoSeleccionado) modoSeleccionadoLocal = changes.modoSeleccionado.newValue;
+    if (changes.dpColores) dpColoresLocal = { ...dpColoresLocal, ...changes.dpColores.newValue };
+  }
+});
 
 let elementosResaltados = [];
 let cartelInfoDarkPattern = crearCartelInfoDarkPattern();
@@ -35,31 +61,24 @@ let mouseEstáAdentroDeElemento = false; // Bandera para simular mouseenter y mo
 alApuntarHaciaAlgúnResaltadoMostrarCartel(elementosResaltados, cartelInfoDarkPattern);
 
 /**
- * 
+ * Resalta el borde de un elemento con el color configurado para su tipo
  * @param {Element} elemento 
- * @param {string} tipo - Usar DP_TYPES para no tener errores
- * @returns 
+ * @param {string} tipo - Usar DP_TYPES
  */
-async function resaltarBorde(elemento, tipo) {
-  // Chequeo simple para saber si ya fue resaltado
-  if (elemento == undefined || elemento.dataset.darkPattern === tipo) return;
-  
-  // console.log("Resaltando borde:", elemento, "Tipo:", tipo);
-  
-  // Aplica el estilo al borde del elemento
-  elemento.style.border = `3px dashed ${(await chrome.storage.sync.get('dpColores')).dpColores[tipo]}`;
+function resaltarBorde(elemento, tipo) {
+  if (!elemento) return;
+  const color = dpColoresLocal[tipo] || '#FF0000';
+  elemento.style.border = `3px dashed ${color}`;
   elemento.dataset.darkPattern = tipo;
 }
 
 /**
- * 
+ * Función para obtener un selector único para un elemento
  * @param {Element} elemento 
- * @param {string} tipo Usar DP_TYPES para no tener errores
- * @returns 
+ * @returns {string}
  */
-
-// Función para obtener un selector único para un elemento
 function getUniqueSelector(elemento) {
+  if (!elemento) return '';
   if (elemento.id) return `#${elemento.id}`;
   let path = '';
   let el = elemento;
@@ -77,6 +96,8 @@ function getUniqueSelector(elemento) {
 }
 
 function resaltarElementoConTexto(elemento, tipo) {
+  if (!elemento) return;
+
   let ignoreList = [];
   try {
     ignoreList = JSON.parse(localStorage.getItem('ignoreDP')) || [];
@@ -85,71 +106,55 @@ function resaltarElementoConTexto(elemento, tipo) {
   }
   const selector = getUniqueSelector(elemento);
   if (ignoreList.includes(selector)) {
-    console.info("Elemento ignorado: ", elemento, "Tipo: " + tipo);
     return;
   }
-  if (elemento == undefined || elemento.dataset.darkPattern === tipo) return;
 
-  // console.info("Resaltando elemento: ", elemento, "Tipo: " + tipo);
-  
   resaltarBorde(elemento, tipo);
-
-  elementosResaltados.push(elemento);
+  if (!elementosResaltados.includes(elemento)) {
+    elementosResaltados.push(elemento);
+  }
 }
 
 /**
- *
  * @param {string} tipo Patrón a desresaltar
  */
-async function desresaltarElementoConTipo(tipo) {
-  // console.log("Desresaltando elementos del tipo:", tipo);
-  
-  // Buscar todos los elementos que fueron resaltados con este tipo
-  const elementos = document.querySelectorAll(`[data-dark-pattern=${tipo}]`);
-  
+function desresaltarElementoConTipo(tipo) {
+  const elementos = document.querySelectorAll(`[data-dark-pattern="${tipo}"]`);
   elementos.forEach((elemento) => {
-    // Quitar borde y clase
     elemento.style.border = '';
     elemento.dataset.darkPattern = '';
-
-    //// Buscar y eliminar el globo de texto relacionado
-    //const hijos = Array.from(elemento.children);
-    //hijos.forEach((hijo) => {
-    //  if (hijo.classList && hijo.classList.contains('resaltado-dark-pattern')) {
-    //    elemento.removeChild(hijo);
-    //  }
-    //});
   });
-  if ((await chrome.storage.sync.get('modoSeleccionado')).modoSeleccionado != 'TODO') {
+  elementosResaltados = elementosResaltados.filter(el => el.dataset.darkPattern && el.dataset.darkPattern !== '');
+  if (modoSeleccionadoLocal !== 'TODO') {
     ocultarCartel(cartelInfoDarkPattern);
   }
 }
 
 function inyectarFuenteEnCSS() {
-  const fontUrlRegular = chrome.runtime.getURL('fonts/SpaceMono-Regular.ttf');
-  const fontUrlBold = chrome.runtime.getURL('fonts/SpaceMono-Bold.ttf');
+  const fontUrlRegular = browserAPI.runtime.getURL('fuentes/SpaceMono-Regular.ttf');
+  const fontUrlBold = browserAPI.runtime.getURL('fuentes/SpaceMono-Bold.ttf');
   const style = document.createElement('style');
   style.textContent = `
     @font-face {
       font-family: 'Space Mono';
       font-weight: 400;
-      src: url('${fontUrlRegular}') format('woff2');
+      src: url('${fontUrlRegular}') format('truetype');
     }
     @font-face {
       font-family: 'Space Mono';
       font-weight: 700;
-      src: url('${fontUrlBold}') format('woff2');
+      src: url('${fontUrlBold}') format('truetype');
     }
   `;
   document.head.appendChild(style);
 }
 
 function crearCartelInfoDarkPattern() {
-  cartelNuevo = document.createElement('span');
-  //cartelNuevo.classList.add('resaltado-dark-pattern');
-  // Agrega texto al globo
+  const cartelNuevo = document.createElement('span');
+  cartelNuevo.id = 'cartelInfoDarkPattern_ext';
+
   const logo = document.createElement('img');
-  logo.src = chrome.runtime.getURL('menu/imagenes/icono.png');
+  logo.src = browserAPI.runtime.getURL('menu/imagenes/icono.png');
   Object.assign(logo.style, {
     display: 'inline',
     boxSizing: 'border-box',
@@ -159,6 +164,7 @@ function crearCartelInfoDarkPattern() {
     borderRadius: '1.5em'
   });
   cartelNuevo.appendChild(logo);
+
   const texto = document.createElement('div');
   Object.assign(texto.style, {
     width: '100%',
@@ -166,6 +172,7 @@ function crearCartelInfoDarkPattern() {
     margin: '0',
     fontFamily: '"Space Mono", monospace'
   });
+
   const titulo = document.createElement('p');
   titulo.id = 'TituloDP';
   Object.assign(titulo.style, {
@@ -173,6 +180,7 @@ function crearCartelInfoDarkPattern() {
     fontFamily: 'inherit',
     margin: '0'
   });
+
   const descripcion = document.createElement('p');
   descripcion.id = 'DescripcionDP';
   Object.assign(descripcion.style, {
@@ -180,11 +188,11 @@ function crearCartelInfoDarkPattern() {
     fontFamily: 'inherit',
     margin: '0'
   });
+
   texto.appendChild(titulo);
   texto.appendChild(descripcion);
   cartelNuevo.appendChild(texto);
 
-  // Crea el botón de cerrar (la cruz)
   const botonCerrar = document.createElement('button');
   botonCerrar.innerHTML = 'Dejar de marcar este caso';
   Object.assign(botonCerrar.style, {
@@ -195,25 +203,18 @@ function crearCartelInfoDarkPattern() {
     border: '1px solid #702020',
     borderRadius: '0.5em',
     backgroundColor: 'rgba(255, 255, 255, 0.5)',
-    padding: '0 0.5em'
+    padding: '0 0.5em',
+    marginTop: '0.5em'
   });
 
-  // Función para cerrar el globo
   botonCerrar.addEventListener('click', function () {
     if (cartelNuevo.elementoApuntado) {
       const elementoApuntado = cartelNuevo.elementoApuntado;
-      const respuesta = confirm("¿Queres que este caso no se detecte más?");
-      // Si el usuario confirma, se elimina el resaltado y se guarda en localStorage para no detectarlo más
+      const respuesta = confirm("¿Querés que este caso no se detecte más?");
       if (respuesta) {
-        // Quitar borde y clase solo de este tipo
         elementoApuntado.style.border = '';
         elementoApuntado.dataset.darkPattern = '';
-        // Eliminar el globo de texto
-        if (cartelNuevo.parentNode === elementoApuntado) {
-          elementoApuntado.removeChild(cartelNuevo);
-        }
 
-        // Traigo la lista de ignorados del localStorage
         let ignoreList = [];
         try {
           ignoreList = JSON.parse(localStorage.getItem('ignoreDP')) || [];
@@ -222,134 +223,166 @@ function crearCartelInfoDarkPattern() {
         }
         const selector = getUniqueSelector(elementoApuntado);
         ignoreList.push(selector);
-        // Guardar la lista de ignorados en localStorage
         localStorage.setItem('ignoreDP', JSON.stringify(ignoreList));
+        ocultarCartel(cartelNuevo);
       } else {
-        // Solo cierra el globo, pero deja el resaltado
-        cartelNuevo.removeChild(descripcion);
-        cartelNuevo.removeChild(botonCerrar);
-        if (!cartelNuevo.hasChildNodes()) cartelNuevo.remove();
+        ocultarCartel(cartelNuevo);
       }
     }
-  })
+  });
 
   Object.assign(cartelNuevo.style, {
     position: 'absolute',
     left: '0',
     top: '0',
-    zIndex: '10000', // Asegurar que esté por encima de otros elementos
+    zIndex: '2147483647',
     padding: '10px',
     color: 'black',
     borderRadius: '5px',
     boxShadow: '0 2px 5px rgba(0, 0, 0, 0.3)',
     fontSize: '16px',
     whiteSpace: 'normal',
-    minWidth: '120px', // Para que haya espacio para el botón de cerrar
+    minWidth: '120px',
     textAlign: 'center',
     opacity: '0',
     visibility: 'hidden',
+    pointerEvents: 'auto',
     transition: 'opacity .2s ease, visibility .2s ease'
   });
 
-  // Añadir el botón de cerrar al globo
   cartelNuevo.appendChild(botonCerrar);
-
-  // Agrega el globo como hijo del elemento
   document.body.appendChild(cartelNuevo);
   return cartelNuevo;
 }
 
 function alApuntarHaciaAlgúnResaltadoMostrarCartel(elementosResaltados, cartelInfoDarkPattern) {
+  function encontrarElementoResaltado(x, y, target) {
+    // 1. Prioridad: el elemento bajo el cursor o su ancestro más cercano con data-dark-pattern
+    if (target && target.closest) {
+      const directo = target.closest('[data-dark-pattern]');
+      if (directo && directo.dataset.darkPattern && directo !== cartelInfoDarkPattern && !cartelInfoDarkPattern.contains(directo)) {
+        return directo;
+      }
+    }
 
-  window.addEventListener('mousemove', async (event) => {
-    // Coordenadas del cursor
+    // 2. Elementos registrados en la lista de resaltados por coordenadas
+    const encontradoEnLista = elementosResaltados.find(el => el && el.isConnected && coordenadasCoincidenConElemento(x, y, el));
+    if (encontradoEnLista) return encontradoEnLista;
+
+    // 3. Fallback: cualquier elemento con data-dark-pattern activo en el DOM
+    const all = document.querySelectorAll('[data-dark-pattern]');
+    for (let i = 0; i < all.length; i++) {
+      const el = all[i];
+      if (el.dataset.darkPattern && el !== cartelInfoDarkPattern && !cartelInfoDarkPattern.contains(el)) {
+        if (coordenadasCoincidenConElemento(x, y, el)) {
+          return el;
+        }
+      }
+    }
+    return null;
+  }
+
+  window.addEventListener('mousemove', (event) => {
+    // Si el modo no es "TODO", no interactúa el globo
+    if (modoSeleccionadoLocal !== "TODO") return;
+
     const x = event.clientX;
     const y = event.clientY;
 
-    const resaltadoApuntadoPorMouse = elementosResaltados.find(elementoResaltado => coordenadasCoincidenConElemento(x, y, elementoResaltado));
     const cartelApuntadoPorMouse = coordenadasCoincidenConElemento(x, y, cartelInfoDarkPattern);
+    const resaltadoApuntadoPorMouse = encontrarElementoResaltado(x, y, event.target);
 
-    // Simula el evento 'mouseenter'
-    if ((await chrome.storage.sync.get('modoSeleccionado')).modoSeleccionado === "TODO" && (!cartelApuntadoPorMouse || (cartelInfoDarkPattern.style.visibility == 'hidden')) && resaltadoApuntadoPorMouse && (resaltadoApuntadoPorMouse != mouseEstáAdentroDeElemento)) {
+    if ((!cartelApuntadoPorMouse || cartelInfoDarkPattern.style.visibility === 'hidden') &&
+      resaltadoApuntadoPorMouse &&
+      (resaltadoApuntadoPorMouse !== mouseEstáAdentroDeElemento)) {
       mouseEstáAdentroDeElemento = resaltadoApuntadoPorMouse;
-      console.log('¡Simulación de mouseenter activa!');
       actualizarTipoYPosiciónDeCartel(cartelInfoDarkPattern, resaltadoApuntadoPorMouse);
     }
 
-    // Simula el evento 'mouseleave'
     if (!resaltadoApuntadoPorMouse && !cartelApuntadoPorMouse && mouseEstáAdentroDeElemento) {
       mouseEstáAdentroDeElemento = false;
-      console.log('¡Simulación de mouseleave activa!');
       ocultarCartel(cartelInfoDarkPattern);
     }
+  }, { passive: true });
 
-    // Simula el evento 'mouseover'
-    if (resaltadoApuntadoPorMouse == mouseEstáAdentroDeElemento) {
-
-    }
-  });
   document.addEventListener('mouseleave', () => {
     mouseEstáAdentroDeElemento = false;
     ocultarCartel(cartelInfoDarkPattern);
-  })
-  function coordenadasCoincidenConElemento(x, y, elemento) {
-      // Obtiene la posición exacta del elemento en la pantalla actual
-      const rect = elemento.getBoundingClientRect();
+  });
 
-      // Verifica si el cursor está dentro de los límites del elemento
-      return (
-        x >= rect.left &&
-        x <= rect.right &&
-        y >= rect.top &&
-        y <= rect.bottom
-      );
-    }
+  function coordenadasCoincidenConElemento(x, y, elemento) {
+    if (!elemento) return false;
+    const rect = elemento.getBoundingClientRect();
+    return (
+      x >= rect.left &&
+      x <= rect.right &&
+      y >= rect.top &&
+      y <= rect.bottom
+    );
+  }
 }
 
-async function actualizarTipoYPosiciónDeCartel(cartel, elemento) {
+function actualizarTipoYPosiciónDeCartel(cartel, elemento) {
+  if (!elemento) return;
   const tipo = elemento.dataset.darkPattern;
+  if (!tipo) return;
+
   let titulo = cartel.querySelector('#TituloDP');
-  titulo.textContent = DP_TEXT[tipo];
+  if (titulo) titulo.textContent = DP_TEXT[tipo] || tipo;
+
   let descripcion = cartel.querySelector('#DescripcionDP');
-  descripcion.textContent = DP_DESCRIPTION[tipo];
-  const cartelRect = cartel.getBoundingClientRect();
+  if (descripcion) descripcion.textContent = DP_DESCRIPTION[tipo] || '';
+
+  // Habilitar display para medir dimensiones reales
+  cartel.style.display = 'block';
+
   const rect = elemento.getBoundingClientRect();
+  const cartelRect = cartel.getBoundingClientRect();
   const centroElemento = rect.left + (rect.width) / 2;
-  const posiciónFinalX = Math.max(centroElemento - (cartelRect.width / 2) + window.scrollX, window.scrollX); // Para que no se salga del borde izquierdo de la pantalla
-  const posiciónFinalY = Math.max(rect.top - cartelRect.height + window.scrollY, window.scrollY); // Para que no se salga del borde superior de la pantalla
-  const backgroundColor = `${ajustarBrilloDeColor((await chrome.storage.sync.get('dpColores')).dpColores[tipo], 180)}`;
-  const border = `2px solid ${ajustarBrilloDeColor((await chrome.storage.sync.get('dpColores')).dpColores[tipo], -100)}`;
+  const posiciónFinalX = Math.max(centroElemento - (cartelRect.width / 2) + window.scrollX, window.scrollX + 5);
+
+  // Posicionar arriba si entra en pantalla, sino abajo del elemento
+  let posiciónFinalY = rect.top - cartelRect.height + window.scrollY;
+  if (rect.top < cartelRect.height + 15) {
+    posiciónFinalY = rect.bottom + window.scrollY + 8;
+  }
+
+  const colorBase = dpColoresLocal[tipo] || '#FF0000';
+  const backgroundColor = `${ajustarBrilloDeColor(colorBase, 180)}`;
+  const border = `2px solid ${ajustarBrilloDeColor(colorBase, -100)}`;
+
   Object.assign(cartel.style, {
     left: `${posiciónFinalX}px`,
-    top: posiciónFinalY == window.scrollY ? `calc(${window.scrollY}px + 1em)` : `${posiciónFinalY}px`,
-    color: `${ajustarBrilloDeColor((await chrome.storage.sync.get('dpColores')).dpColores[tipo], -100)}`,
-    backgroundColor: backgroundColor,
-    border: border
-  });
-  let img = cartel.querySelector('img');
-  Object.assign(img.style, {
+    top: `${posiciónFinalY}px`,
+    color: `${ajustarBrilloDeColor(colorBase, -100)}`,
     backgroundColor: backgroundColor,
     border: border,
+    visibility: 'visible',
+    opacity: '1'
   });
-  cartel.elementoApuntado = elemento;
 
-  //setTimeout(() => {
-    Object.assign(cartel.style, {
-      opacity: 1,
-      visibility: 'visible'
+  let img = cartel.querySelector('img');
+  if (img) {
+    Object.assign(img.style, {
+      backgroundColor: backgroundColor,
+      border: border,
     });
-  //}, 1);
+  }
+
+  cartel.elementoApuntado = elemento;
 }
 
 function ocultarCartel(cartel) {
-  cartel.style.opacity = 0;
-  cartel.style.visibility = 'hidden';
+  if (cartel) {
+    cartel.style.opacity = '0';
+    cartel.style.visibility = 'hidden';
+  }
 }
 
-// Source - https://stackoverflow.com/a/57401891
-// Posted by supersan
-// Retrieved 2026-09-03, License - CC BY-SA 4.0
-
 function ajustarBrilloDeColor(color, amount) {
-    return '#' + color.replace(/^#/, '').replace(/../g, color => ('0'+Math.min(255, Math.max(0, parseInt(color, 16) + amount)).toString(16)).substr(-2));
+  try {
+    return '#' + color.replace(/^#/, '').replace(/../g, c => ('0' + Math.min(255, Math.max(0, parseInt(c, 16) + amount)).toString(16)).substr(-2));
+  } catch (e) {
+    return color;
+  }
 }

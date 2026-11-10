@@ -212,7 +212,7 @@ function calcularPesoVisual(elemento, parent) {
 
   // Opacidad: elementos más opacos son más visibles
   const opacity = parseFloat(styles.opacity) || 1;
-  pesoV0isual *= opacity;
+  pesoVisual *= opacity;
 
   // Background color diferente del fondo: indica más énfasis
   const bg = styles.backgroundColor;

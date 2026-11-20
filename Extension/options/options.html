@@ -253,13 +253,21 @@
 
         <hr>
 
-        <!-- Servidor API -->
+        <!-- Privacidad y Servidor API -->
         <section class="section-block">
-          <h2 class="section-title">SERVIDOR DE DETECCIÓN (API DE PROCESAMIENTO DE LENGUAJE)</h2>
-          <div class="api-box">
-            <input type="url" id="apiUrlInput" placeholder="http://localhost:5000" class="api-input">
-            <button type="button" id="btnGuardarApiUrl" class="btn-api">Guardar</button>
-            <span id="apiStatusMessage" class="api-msg"></span>
+          <h2 class="section-title">PRIVACIDAD Y SERVIDOR DE ANÁLISIS</h2>
+          <div class="privacy-notice-card">
+            <p class="privacy-notice-text">
+              <strong>Tratamiento de datos:</strong> Los detectores de <em>Confirm Shaming</em>, <em>Fake Urgency</em> y
+              <em>Fake Scarcity</em> inician desactivados por defecto. Al activarlos, la extensión envía únicamente
+              fragmentos de texto visibles de la página y su ruta estructural (<code>XPath</code>) mediante conexión
+              cifrada (HTTPS) al servidor académico de <strong>LIFIA (UNLP)</strong> para su clasificación en tiempo real.
+              No se recopilan ni almacenan URLs, cookies, credenciales ni datos personales.
+            </p>
+            <div class="privacy-endpoint">
+              <span class="privacy-endpoint-label">Servidor institucional:</span>
+              <code class="privacy-endpoint-url">https://dark-patterns-extension.lifia.info.unlp.edu.ar</code>
+            </div>
           </div>
         </section>
       </div>
@@ -341,6 +349,26 @@
                   investigación y el desarrollo tecnológico al servicio de la comunidad y la soberanía digital de los
                   ciudadanos.
                 </p>
+              </div>
+            </div>
+
+            <hr class="inner-hr">
+
+            <div class="about-repos">
+              <h3 class="about-repos-title">Código Fuente y Repositorios Públicos</h3>
+              <p class="about-repos-desc">
+                Este proyecto es abierto y transparente. Podés consultar el código fuente completo de la extensión y del
+                servidor de análisis de lenguaje natural en GitHub:
+              </p>
+              <div class="about-repos-links">
+                <a href="https://github.com/jcgardey/dark-patterns-alumnos-front/tree/main/Extension" target="_blank" rel="noopener noreferrer" class="repo-link-card">
+                  <span class="repo-link-title">Extensión Web (Frontend)</span>
+                  <span class="repo-link-url">github.com/jcgardey/dark-patterns-alumnos-front</span>
+                </a>
+                <a href="https://github.com/jcgardey/dark-patterns-alumnos-back" target="_blank" rel="noopener noreferrer" class="repo-link-card">
+                  <span class="repo-link-title">API de Detección NLP (Backend)</span>
+                  <span class="repo-link-url">github.com/jcgardey/dark-patterns-alumnos-back</span>
+                </a>
               </div>
             </div>
           </div>

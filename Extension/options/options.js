@@ -9,13 +9,10 @@ const DEFAULT_COLORES = {
   SCARCITY: '#FFFF00'
 };
 
-const DEFAULT_API_URL = "http://localhost:5000";
-
 document.addEventListener('DOMContentLoaded', () => {
   initTabs();
   initPatronesYColores();
   initModoAviso();
-  initApiConfig();
   listenStorageChanges();
 });
 
@@ -151,30 +148,6 @@ function initModoAviso() {
         browserAPI.storage.sync.set({ modoSeleccionado: radio.value }, () => {
           browserAPI.runtime.sendMessage({ tipo: "MODO_AVISO" }).catch(() => {});
         });
-      }
-    });
-  });
-}
-
-// --- Configuración de URL de API ---
-function initApiConfig() {
-  const apiUrlInput = document.getElementById('apiUrlInput');
-  const btnGuardar = document.getElementById('btnGuardarApiUrl');
-  const msgEl = document.getElementById('apiStatusMessage');
-
-  browserAPI.storage.sync.get({ apiUrl: DEFAULT_API_URL }, (res) => {
-    if (apiUrlInput) apiUrlInput.value = res.apiUrl || DEFAULT_API_URL;
-  });
-
-  btnGuardar?.addEventListener('click', () => {
-    const url = apiUrlInput.value.trim().replace(/\/+$/, "");
-    if (!url) return;
-
-    browserAPI.storage.sync.set({ apiUrl: url }, () => {
-      if (msgEl) {
-        msgEl.textContent = "✓ Guardado";
-        msgEl.className = "api-msg success";
-        setTimeout(() => { msgEl.textContent = ""; }, 2500);
       }
     });
   });

@@ -10,7 +10,7 @@ const DP_TYPES = {
   PRESELECTION: 'PRESELECTION'
 };
 
-const DEFAULT_API_URL = "http://localhost:5000";
+const API_BASE_URL = "https://dark-patterns-extension.lifia.info.unlp.edu.ar";
 
 // Inicializa valores por defecto al instalar
 browserAPI.runtime.onInstalled.addListener(() => {
@@ -32,12 +32,11 @@ browserAPI.runtime.onInstalled.addListener(() => {
     SCARCITY: '#FFFF00'
   };
 
-  browserAPI.storage.sync.get(["dpActivos", "modoSeleccionado", "dpColores", "apiUrl"], (result) => {
+  browserAPI.storage.sync.get(["dpActivos", "modoSeleccionado", "dpColores"], (result) => {
     browserAPI.storage.sync.set({
       dpActivos: result.dpActivos || valoresPorDefecto,
       modoSeleccionado: result.modoSeleccionado || modoSeleccionado,
-      dpColores: result.dpColores || coloresPorDefecto,
-      apiUrl: result.apiUrl || DEFAULT_API_URL
+      dpColores: result.dpColores || coloresPorDefecto
     }, () => {
       console.info("Configuración por defecto de Dark Patterns guardada.");
     });
@@ -60,35 +59,26 @@ browserAPI.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
   // Peticiones a la API de NLP desde los content scripts
   if (requestPatterns.includes(message.pattern)) {
-    getApiUrl((baseUrl) => {
-      let endpoint = "";
-      let payload = {};
+    let endpoint = "";
+    let payload = {};
 
-      if (message.pattern === DP_TYPES.SHAMING) {
-        endpoint = `${baseUrl}/shaming`;
-        payload = { Version: '1.0', tokens: message.data };
-      } else if (message.pattern === DP_TYPES.URGENCY) {
-        endpoint = `${baseUrl}/urgency`;
-        payload = { version: '1.0', texts: message.data };
-      } else if (message.pattern === DP_TYPES.SCARCITY) {
-        endpoint = `${baseUrl}/scarcity`;
-        payload = { version: '1.0', texts: message.data };
-      }
+    if (message.pattern === DP_TYPES.SHAMING) {
+      endpoint = `${API_BASE_URL}/shaming`;
+      payload = { Version: '1.0', tokens: message.data };
+    } else if (message.pattern === DP_TYPES.URGENCY) {
+      endpoint = `${API_BASE_URL}/urgency`;
+      payload = { version: '1.0', texts: message.data };
+    } else if (message.pattern === DP_TYPES.SCARCITY) {
+      endpoint = `${API_BASE_URL}/scarcity`;
+      payload = { version: '1.0', texts: message.data };
+    }
 
-      sendRequest(endpoint, payload, sendResponse);
-    });
+    sendRequest(endpoint, payload, sendResponse);
     return true; // Respuesta asíncrona
   }
 });
 
 const requestPatterns = [DP_TYPES.SHAMING, DP_TYPES.URGENCY, DP_TYPES.SCARCITY];
-
-function getApiUrl(callback) {
-  browserAPI.storage.sync.get({ apiUrl: DEFAULT_API_URL }, (res) => {
-    let url = res.apiUrl || DEFAULT_API_URL;
-    callback(url.replace(/\/+$/, ""));
-  });
-}
 
 function sendMessageCurrentTab(data) {
   getCurrentTab((tab) => {

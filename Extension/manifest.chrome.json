@@ -6,7 +6,7 @@
 
   "permissions": ["activeTab", "storage"],
   "host_permissions": [
-    "http://localhost:5000/*",
+    "https://dark-patterns-extension.lifia.info.unlp.edu.ar/*",
     "http://*/*",
     "https://*/*"
   ],

@@ -194,7 +194,7 @@ function crearCartelInfoDarkPattern() {
   cartelNuevo.appendChild(texto);
 
   const botonCerrar = document.createElement('button');
-  botonCerrar.innerHTML = 'Dejar de marcar este caso';
+  botonCerrar.textContent = 'Dejar de marcar este caso';
   Object.assign(botonCerrar.style, {
     cursor: 'pointer',
     color: '#a00000',
